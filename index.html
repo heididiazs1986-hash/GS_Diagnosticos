@@ -1,0 +1,1183 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>GS Diagnósticos</title>
+  <meta name="theme-color" content="#d40000" />
+  <link rel="manifest" href="manifest.json">
+  <style>
+    :root{--rojo:#d40000;--gris:#f5f5f5;--borde:#dedede;--texto:#1f1f1f;--muted:#6a6a6a;--card:#fff;--shadow:0 10px 26px rgba(0,0,0,.08);--radius:18px;}
+    *{box-sizing:border-box;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;}
+    body{margin:0;background:var(--gris);color:var(--texto);}
+    header{position:sticky;top:0;z-index:10;background:linear-gradient(135deg,var(--rojo),#ff3a3a);color:#fff;padding:14px 16px;box-shadow:0 8px 18px rgba(0,0,0,.12);}
+    header .row{display:flex;align-items:center;justify-content:space-between;gap:10px;}
+    header h1{font-size:17px;margin:0;font-weight:800;letter-spacing:.2px;}
+    header .badge{font-size:13px;padding:6px 10px;border-radius:999px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.22);white-space:nowrap;}
+    main{padding:14px;max-width:1020px;margin:0 auto;}
+    .card{background:var(--card);border:1px solid var(--borde);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px;margin:12px 0;}
+    .title{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;}
+    .title h2{margin:0;font-size:16px}
+    .kpi{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;}
+    .pill{display:inline-flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--borde);padding:8px 10px;border-radius:999px;font-size:13px;color:var(--muted);}
+    .grid{display:grid;grid-template-columns:1fr;gap:12px;margin-top:12px;}
+    @media(min-width:860px){.grid.two{grid-template-columns:1fr 1fr;} .grid.three{grid-template-columns:1fr 1fr 1fr;}}
+    label{display:block;font-size:13px;color:var(--muted);margin:0 0 6px;}
+    input,select,textarea{width:100%;padding:12px 12px;border-radius:14px;border:1px solid var(--borde);background:#fff;outline:none;font-size:18px;}
+    textarea{min-height:96px;resize:vertical;}
+    input:focus,select:focus,textarea:focus{border-color:rgba(212,0,0,.55);box-shadow:0 0 0 4px rgba(212,0,0,.12);}
+    .btnrow{display:flex;flex-wrap:wrap;gap:12px;margin-top:14px;}
+    button{border:0;border-radius:14px;padding:12px 16px;font-weight:800;background:var(--rojo);color:#fff;cursor:pointer;font-size:15px;}
+    button.secondary{background:#fff;color:#111;border:1px solid var(--borde);}
+    button.ok{background:var(--rojo);}
+    button:disabled{opacity:.45;cursor:not-allowed;}
+    .sep{height:1px;background:var(--borde);margin:14px 0;}
+    .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:14px;background:#111;color:#fff;padding:10px 12px;border-radius:12px;font-size:14px;box-shadow:0 10px 30px rgba(0,0,0,.22);max-width:92vw;opacity:0;pointer-events:none;transition:.18s ease;}
+    .toast.show{opacity:1;}
+    .chips{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;}
+    .chip{display:flex;gap:10px;align-items:center;background:#fff;border:1px solid var(--borde);border-radius:16px;padding:10px 12px;}
+    .chip.radioBig{background:var(--rojo);border-color:rgba(255,255,255,.2);color:#fff;padding:16px 18px;font-size:16px;border-radius:18px;min-height:54px;}
+    .chip.radioBig input{transform:scale(1.25);}
+    .chip.radioBig:has(input:checked){box-shadow:0 0 0 4px rgba(255,255,255,.18) inset, 0 10px 22px rgba(0,0,0,.18);}
+
+    .chip input{width:auto;margin:0;}
+  
+    /* --- Overrides v2 --- */
+    .chips{display:flex;flex-direction:column;gap:10px;flex-wrap:nowrap;margin-top:10px;}
+    .chip{border:0;background:transparent;padding:0;border-radius:0;}
+    .chip input[type="checkbox"]{transform:scale(1.15);}
+    /* Texto en MAYÚSCULAS (visual) */
+    input[type="text"], input[type="tel"], input[type="search"], textarea{ text-transform: uppercase; }
+    /* Guardar en rojo oficial */
+    button.ok{background:var(--rojo); color:#fff;}
+
+
+    /* Modal overlay */
+    .modalBack{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:center;justify-content:center;z-index:9999;padding:18px;}
+    .modalCard{width:min(520px,100%);background:#fff;border-radius:18px;padding:18px;box-shadow:0 18px 60px rgba(0,0,0,.35);}
+    .vBtns{display:flex;flex-direction:column;gap:10px;margin-top:12px;}
+    .vBtns button{width:100%;padding:14px 12px;border-radius:14px;font-size:16px;}
+
+</style>
+</head>
+<body>
+<header>
+  <div class="row">
+    <h1>GS Diagnósticos</h1>
+    <div class="badge" id="hdrBadge">INMEL ingeniría SAS</div>
+  </div>
+</header>
+
+<main>
+  <section class="card" id="screen1">
+    <div class="title">
+      <div><h2>Centro de distribución</h2></div>
+      <div class="kpi" id="activeBox" style="display:none;">
+        <div class="pill">⚡ <b id="activeCdTxt"></b></div>
+</div>
+    </div>
+
+    <div class="chips">
+      <label class="chip radioBig"><input type="radio" name="modoCd" value="crear" checked> Crear nuevo CD</label>
+      <label class="chip radioBig"><input type="radio" name="modoCd" value="continuar"> Continuar con CD activo</label>
+    </div>
+
+    <div style="margin-top:14px;">
+      <div class="grid two" id="cdCapBlock">
+        <div>
+          <label for="cdInput">Transformador (CD)</label>
+          <input id="cdInput" placeholder="E21282TR1" autocomplete="off" />
+        </div>
+        <div>
+          <label for="capSelect">Capacidad transformador kVA</label>
+          <select id="capSelect">
+            <option value="">Selecciona…</option>
+            <option>5 kVA</option><option>10 kVA</option><option>15 kVA</option><option>25 kVA</option>
+            <option>30 kVA</option><option>45 kVA</option><option>75 kVA</option><option>112.5 kVA</option>
+            <option>150 kVA</option><option>225 kVA</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="grid three">
+        <div><label>Tipo Nodo</label>
+          <select id="est_tipo_nodo"><option value="">Selecciona…</option><option>Nodo BT</option><option>Nodo MT</option></select>
+        </div>
+        <div><label>Material Nodo</label>
+          <select id="est_material_nodo"><option value="">Selecciona…</option><option>Fibra de vidrio</option><option>Hormigón</option><option>Madera</option><option>Metálico</option></select>
+        </div>
+        <div><label>Características Nodo</label>
+          <select id="est_caracteristicas"><option value="">Selecciona…</option></select>
+        </div>
+      </div>
+
+      <div class="grid three">
+        <div><label>Punto Físico</label><input id="est_punto_fisico" autocomplete="off"></div>
+        <div><label>Tipo de Redes BT</label><select id="est_tipo_red_bt"><option value="">Selecciona…</option><option>Abierta</option><option>Trenzada</option></select></div>
+        <div><label>Luminarias (AP)</label><input id="est_luminarias" inputmode="numeric" placeholder="0"></div>
+      </div>
+
+      <div class="grid three">
+        <div><label>Latitud (Y)</label><input id="est_lat" readonly placeholder="GPS"></div>
+        <div><label>Longitud (X)</label><input id="est_lon" readonly placeholder="GPS"></div>
+        <div><label>Fotos</label><input id="est_fotos" type="file" accept="image/*" multiple data-max="3"></div>
+      </div>
+
+      <div class="btnrow">
+        <button class="secondary" id="est_btnGPS" type="button">📍 Coordenadas</button>
+        <button class="ok" id="btnGuardarEstructura" type="button">Guardar</button>
+      </div>
+    </div>
+
+    <div class="btnrow">
+      <button id="btnIrARegistro" type="button">Registrar diagnóstico</button>
+      <button class="secondary" id="btnExportar" type="button">Exportar (Excel + Fotos ZIP)</button>
+      <button class="secondary" id="btnActualizar" type="button">Actualizar</button>
+      <button class="secondary" id="btnConteos" type="button">Conteos</button>
+    </div>
+  </section>
+
+  <section class="card" id="screen2" style="display:none;">
+    <div class="title">
+      <div><h2>Caraterización</h2></div>
+      <div class="kpi">
+        <div class="pill">⚡ <b id="cdPill"></b></div>
+</div>
+    </div>
+
+    <div class="btnrow">
+      <button id="btnUNC" type="button">UNC</button>
+      <button id="btnCliente" type="button">Cliente</button>
+      <button id="btnSusp" type="button">Suspensión</button>
+      <button id="btnBaldio">Baldíos</button>
+      <button class="secondary" id="btnBack1" type="button">Volver</button>
+    </div>
+
+    <div id="formUNC" style="display:none;">
+      <div class="sep"></div>
+      <div class="grid three">
+        <div><label>Nombres</label><input id="unc_nombres" type="text" autocomplete="name"></div>
+        <div><label>Identificación</label><input id="unc_identificacion" inputmode="numeric"></div>
+        <div><label>Contacto</label><input id="unc_contacto" inputmode="numeric"></div>
+      </div>
+      <h3 class="section">CARACTERIZACIÓN DE PREDIO</h3>
+      <div class="grid two">
+        <div><label>Punto Físico</label><select id="unc_pf"></select></div>
+        <div></div>
+      </div>
+      <div class="grid three">
+        <div><label>Sede</label><select id="unc_sede"></select></div>
+        <div><label>Municipio</label><select id="unc_municipio"></select></div>
+        <div><label>Dirección</label><input id="unc_direccion" type="text" autocomplete="street-address"></div>
+      </div>
+      <div class="grid three">
+        <div><label>Localidad (Barrio/Vereda)</label><input id="unc_localidad"></div>
+        <div><label>Tipo Zona</label><select id="unc_tipo_zona"><option value="">Selecciona…</option><option>Rural</option><option>Urbana</option></select></div>
+        <div><label>Tipo material</label><select id="unc_tipo_material"><option value="">Selecciona…</option><option>No perdurable</option><option>Perdurable</option></select></div>
+      </div>
+      <div class="grid two">
+        <div><label>Estado</label>
+          <select id="unc_estado">
+            <option value="">Selecciona…</option>
+            <option>Normalizado - requiere solo medidor</option>
+            <option>Requiere obra externa completa</option>
+            <option>Requiere obra externa parcial</option>
+            <option>Requiere obra interna completa</option>
+            <option>Requiere obra interna parcial</option>
+            <option>Requiere obras interna/externa completas</option>
+            <option>Requiere obras interna/externa parciales</option>
+          </select>
+        </div>
+        <div class="chips">
+          <label class="chip"><input type="checkbox" id="unc_predio_habitable"> ¿Predio habitable?</label>
+          <label class="chip"><input type="checkbox" id="unc_ampliacion_redes"> Para servicio requiere ampliación de redes</label>
+        </div>
+      </div>
+
+      <div class="grid three">
+        <div><label>Latitud (Y)</label><input id="unc_lat" readonly placeholder="GPS"></div>
+        <div><label>Longitud (X)</label><input id="unc_lon" readonly placeholder="GPS"></div>
+      <div class="btnrow">
+        <button class="secondary" id="unc_btnGPS" type="button">📍 Coordenadas</button>
+      </div>
+</div>
+      <div class="grid">
+        <div><label>Fotos</label><input id="unc_fotos" type="file" accept="image/*" multiple data-max="5"></div>
+      </div>
+
+      <div class="sep"></div>
+      <h3 class="section">DOCUMENTOS ENTREGADOS POR USUARIO</h3>
+      <div class="grid two">
+        <div><label>Documento de propiedad</label>
+          <select id="unc_doc_propiedad">
+            <option value="">Selecciona…</option>
+            <option>Certificado de libertad y tradición</option>
+            <option>Contrato de donación</option>
+            <option>Contrato de permuta</option>
+            <option>Contrato de sesión de bien inmueble</option>
+            <option>Contrato o promesa de compraventa</option>
+            <option>Declaración con fines extraprocesales</option>
+            <option>Declaración extrajuicio</option>
+            <option>Declaración juramentada</option>
+            <option>Escritura pública</option>
+            <option>Matrícula inmobiliaria</option>
+            <option>No entrega documento</option>
+            <option>Sana posesión emitida por autoridad local</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="chips">
+<label class="chip"><input type="checkbox" id="unc_cedula_prop"> Cédula propietario</label>
+        <label class="chip"><input type="checkbox" id="unc_e1"> Formato E1</label>
+        <label class="chip"><input type="checkbox" id="unc_ar"> AR</label>
+        <label class="chip"><input type="checkbox" id="unc_dj"> DJ</label>
+        <label class="chip"><input type="checkbox" id="unc_e6"> E6</label>
+        <label class="chip"><input type="checkbox" id="unc_ec_part"> EC Particular</label>
+        <label class="chip"><input type="checkbox" id="unc_doc_elec"> Doc. electricista</label>
+        <label class="chip"><input type="checkbox" id="unc_retie"> RETIE</label>
+        <label class="chip"><input type="checkbox" id="unc_ec_inmel"> EC Inmel</label>
+      </div>
+
+      <div class="sep"></div>
+      <h3 class="section">PENDIENTES PARA CUMPLIMIENTO DE NORMA TÉCNICA</h3>
+      <div class="chips">
+        <label class="chip"><input type="checkbox" id="unc_requiere_muro"> ¿Requiere construir muro?</label>
+        <label class="chip"><input type="checkbox" id="unc_acometida"> Acometida</label>
+        <label class="chip"><input type="checkbox" id="unc_ducto"> Ducto 1&quot; Galv.</label>
+        <label class="chip"><input type="checkbox" id="unc_celda"> Celda</label>
+        <label class="chip"><input type="checkbox" id="unc_interruptor"> Interruptor</label>
+        <label class="chip"><input type="checkbox" id="unc_spt"> SPT (Tierra)</label>
+        <label class="chip"><input type="checkbox" id="unc_inst_interna"> Instalación interna</label>
+      </div>
+
+      <div class="grid">
+        <div><label>Observaciones</label><textarea id="unc_obs"></textarea></div>
+      </div>
+    </div>
+
+    
+    <div id="formCliente" style="display:none;">
+      <h3 class="section">CLIENTES</h3>
+      <div class="sep"></div>
+
+      <div class="grid two">
+        <div><label>Punto Físico</label><select id="cli_pf"></select></div>
+        <div></div>
+      </div>
+
+      <div class="grid three">
+        <div><label>Serie de medidor</label><input id="cli_serie" inputmode="numeric"></div>
+        <div><label>Marca de medidor</label><input id="cli_marca"></div>
+        <div><label>No. Fases</label><select id="cli_fases"><option value="">Selecciona…</option><option>Monofásico</option><option>Bifásico</option><option>Trifásico</option></select></div>
+      </div>
+
+      <div class="grid three">
+        <div><label>Latitud (Y)</label><input id="cli_lat" readonly placeholder="GPS"></div>
+        <div><label>Longitud (X)</label><input id="cli_lon" readonly placeholder="GPS"></div>
+        <div></div>
+      </div>
+      <div class="btnrow">
+        <button class="secondary" id="cli_btnGPS" type="button">📍 Coordenadas</button>
+      </div>
+
+      <div class="grid three">
+        <div><label>Estado de medidor</label><select id="cli_estado_medidor"><option value="">Selecciona…</option><option>Bueno</option><option>Malo</option></select></div>
+        <div class="chips"><label class="chip"><input type="checkbox" id="cli_req_inspeccion"> ¿Requiere inspección/Cambio?</label></div>
+        <div><label>Estado de visor</label><select id="cli_estado_visor"><option value="">Selecciona…</option><option>Normal</option><option>Cambio</option></select></div>
+      </div>
+
+      <div class="grid">
+        <div><label>Fotos</label><input id="cli_fotos" type="file" accept="image/*" multiple data-max="2"></div>
+      </div>
+
+      <div class="btnrow">
+        <button class="ok" id="btnGuardarCli" type="button">Guardar</button>
+        <button class="secondary" id="btnCancelCli" type="button">Cancelar</button>
+      </div>
+    </div>
+
+    <div id="formSusp" style="display:none;">
+      <h3 class="section">SUSPENSIÓN</h3>
+      <div class="sep"></div>
+
+      <div class="grid two">
+        <div><label>Punto Físico</label><select id="sus_pf"></select></div>
+        <div></div>
+      </div>
+
+      <div class="grid three">
+        <div><label>Latitud (Y)</label><input id="sus_lat" readonly placeholder="GPS"></div>
+        <div><label>Longitud (X)</label><input id="sus_lon" readonly placeholder="GPS"></div>
+        <div></div>
+      </div>
+      <div class="btnrow">
+        <button class="secondary" id="sus_btnGPS" type="button">📍 Coordenadas</button>
+      </div>
+
+      <div class="grid">
+        <div><label>Motivo de suspensión</label>
+          <select id="sus_motivo">
+            <option value="">Selecciona…</option>
+            <option>Riesgo eléctrico - No se halla quien atienda</option>
+            <option>Usuario se niega a ser vinculado al proceso de legalización</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="grid">
+        <div><label>Fotos</label><input id="sus_fotos" type="file" accept="image/*" multiple data-max="2"></div>
+      </div>
+
+      <div class="btnrow">
+        <button class="ok" id="btnGuardarSus" type="button">Guardar</button>
+        <button class="secondary" id="btnCancelSus" type="button">Cancelar</button>
+      </div>
+    </div>
+
+    <div class="grid two">
+        <div><label>Punto Físico</label><select id="bal_pf"></select></div>
+        <div><label>Estado</label>
+          <select id="bal_estado">
+            <option value="">Selecciona…</option>
+            <option>LOTE BALDÍO, SIN CONSTRUCCIÓN</option>
+            <option>PREDIO EN CONSTRUCCIÓN, INHABITABLE – SIN SERVICIO DIRECTO</option>
+            <option>PREDIO EN CONSTRUCCIÓN, INHABITABLE – CON SERVICIO DIRECTO</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="grid two">
+        <div><label>Latitud (Y)</label><input id="bal_lat" readonly placeholder="GPS"></div>
+        <div><label>Longitud (X)</label><input id="bal_lon" readonly placeholder="GPS"></div>
+      </div>
+      <div class="btnrow">
+        <button class="secondary" id="bal_btnGPS" type="button">📍 Coordenadas</button>
+      </div>
+
+      <div class="grid">
+        <div><label>Fotos</label><input id="bal_fotos" accept="image/*" type="file" data-max="3" multiple></div>
+      </div>
+
+      <div class="btnrow">
+        <button class="ok" id="btnGuardarBaldio" type="button">Guardar</button>
+        <button class="secondary" id="btnCancelBaldio" type="button">Cancelar</button>
+      </div>
+    </div>
+<div id="formEstructura" style="display:none;">
+      <div class="sep"></div>
+      <div class="grid three">
+        <div><label>Tipo Nodo</label><select id="est2_tipo_nodo"><option value="">Selecciona…</option><option>Nodo BT</option><option>Nodo MT</option></select></div>
+        <div><label>Material Nodo</label><select id="est2_material_nodo"><option value="">Selecciona…</option><option>Fibra de vidrio</option><option>Hormigón</option><option>Madera</option><option>Metálico</option></select></div>
+        <div><label>Características Nodo</label><select id="est2_caracteristicas"><option value="">Selecciona…</option></select></div>
+      </div>
+      <div class="grid three">
+        <div><label>Punto Físico</label><input id="est2_punto_fisico"></div>
+        <div><label>Tipo de Redes BT</label><select id="est2_tipo_red_bt"><option value="">Selecciona…</option><option>Abierta</option><option>Trenzada</option></select></div>
+        <div><label>Luminarias (AP)</label><input id="est2_luminarias" inputmode="numeric" placeholder="0"></div>
+      </div>
+      <div class="grid three">
+        <div><label>Latitud (Y)</label><input id="est2_lat" readonly placeholder="GPS"></div>
+        <div><label>Longitud (X)</label><input id="est2_lon" readonly placeholder="GPS"></div>
+        <div><label>Fotos</label><input id="est2_fotos" type="file" accept="image/*" multiple></div>
+      </div>
+      <div class="btnrow">
+        <button class="secondary" id="est2_btnGPS" type="button">📍 Coordenadas</button>
+        <button class="ok" id="btnGuardarEst2" type="button">Guardar</button>
+        <button class="secondary" id="btnCancelEst2" type="button">Cancelar</button>
+      </div>
+    </div>
+  </section>
+
+  <div class="toast" id="toast"></div>
+
+  </main>
+
+<script>
+function crc32(buf){
+  let c = 0xFFFFFFFF;
+  for(let i=0;i<buf.length;i++){
+    c ^= buf[i];
+    for(let k=0;k<8;k++) c = (c & 1) ? (0xEDB88320 ^ (c>>>1)) : (c>>>1);
+  }
+  return (c ^ 0xFFFFFFFF) >>> 0;
+}
+function u16(v){ return [v & 255, (v>>>8) & 255]; }
+function u32(v){ return [v & 255, (v>>>8) & 255, (v>>>16) & 255, (v>>>24) & 255]; }
+function strBytes(s){ return new TextEncoder().encode(s); }
+function concatArrays(arrs){
+  let total=0; for(const a of arrs) total+=a.length;
+  const out=new Uint8Array(total); let off=0;
+  for(const a of arrs){ out.set(a,off); off+=a.length; }
+  return out;
+}
+class TinyZip{
+  constructor(){ this.files=[]; }
+  add(path,dataU8){
+    const name=path.replace(/\\/g,"/");
+    const nameBytes=strBytes(name);
+    const crc=crc32(dataU8);
+    const size=dataU8.length;
+    this.files.push({name,nameBytes,dataU8,crc,size});
+  }
+  finalize(){
+    let offset=0;
+    const locals=[]; const centrals=[];
+    for(const f of this.files){
+      const localHeader=concatArrays([
+        new Uint8Array([0x50,0x4B,0x03,0x04]),
+        new Uint8Array(u16(20)),
+        new Uint8Array(u16(0)),
+        new Uint8Array(u16(0)),
+        new Uint8Array(u16(0)),
+        new Uint8Array(u16(0)),
+        new Uint8Array(u32(f.crc)),
+        new Uint8Array(u32(f.size)),
+        new Uint8Array(u32(f.size)),
+        new Uint8Array(u16(f.nameBytes.length)),
+        new Uint8Array(u16(0)),
+        f.nameBytes
+      ]);
+      locals.push(localHeader,f.dataU8);
+
+      const centralHeader=concatArrays([
+        new Uint8Array([0x50,0x4B,0x01,0x02]),
+        new Uint8Array(u16(20)),
+        new Uint8Array(u16(20)),
+        new Uint8Array(u16(0)),
+        new Uint8Array(u16(0)),
+        new Uint8Array(u16(0)),
+        new Uint8Array(u16(0)),
+        new Uint8Array(u32(f.crc)),
+        new Uint8Array(u32(f.size)),
+        new Uint8Array(u32(f.size)),
+        new Uint8Array(u16(f.nameBytes.length)),
+        new Uint8Array(u16(0)),
+        new Uint8Array(u16(0)),
+        new Uint8Array(u16(0)),
+        new Uint8Array(u16(0)),
+        new Uint8Array(u32(0)),
+        new Uint8Array(u32(offset)),
+        f.nameBytes
+      ]);
+      centrals.push(centralHeader);
+
+      offset += localHeader.length + f.dataU8.length;
+    }
+    const centralStart=offset;
+    const centralBlob=concatArrays(centrals);
+    offset += centralBlob.length;
+
+    const end=concatArrays([
+      new Uint8Array([0x50,0x4B,0x05,0x06]),
+      new Uint8Array(u16(0)),
+      new Uint8Array(u16(0)),
+      new Uint8Array(u16(this.files.length)),
+      new Uint8Array(u16(this.files.length)),
+      new Uint8Array(u32(centralBlob.length)),
+      new Uint8Array(u32(centralStart)),
+      new Uint8Array(u16(0))
+    ]);
+    return concatArrays([...locals, centralBlob, end]);
+  }
+}
+
+const HDR_U = ["Ítem", "Transformador (CD)", "Capacidad transformador kVA", "Nombres", "Identificación", "Contacto", "Sede", "Municipio", "Dirección", "Localidad (Barrio/Vereda)", "Tipo Zona", "Latitud (Y)", "Longitud (X)", "Tipo material", "¿Predio habitable?", "¿Requiere construir muro?","Para servicio requiere ampliación de redes", "Documento de propiedad", "Cédula propietario", "Formato E1 Solicitud", "Aceptación de requisitos", "Declaración Juramentada", "Formato E6 RT", "EC Particular", "Documentos electricista", "Declaración RETIE", "EC Inmel", "Estado", "Acometida", "Ducto 1\" Galv.", "Celda", "Interruptor", "SPT (Tierra)", "Instalación interna", "Observaciones"];
+
+const $ = (id)=>document.getElementById(id);
+const toastEl=$("toast");
+function toast(msg){toastEl.textContent=msg;toastEl.classList.add("show");setTimeout(()=>toastEl.classList.remove("show"),2200);}
+function setBadge(msg){$("hdrBadge").textContent=msg;}
+function upperAlnum(s){return (s||"").toString().toUpperCase().trim();}
+function toTitleCase(s){s=(s||"").toString().trim().toLowerCase();return s.replace(/\b([a-záéíóúñü])/g,m=>m.toUpperCase());}
+function onlyDigits(s){return (s||"").toString().replace(/\D+/g,"");}
+
+/* Características Nodo (dependiente) */
+const caracteristicas = {
+  "Nodo BT|Fibra de vidrio":["8mx510kgf","10mx510kgf","10mx750kgf","10mx1050kgf"],
+  "Nodo BT|Hormigón":["8mx510kgf","10mx510kgf","10mx750kgf","10mx1050kgf"],
+  "Nodo BT|Madera":["10m"],
+  "Nodo BT|Metálico":["8mx510kgf","10mx510kgf","10mx750kgf","10mx1050kgf"],
+  "Nodo MT|Fibra de vidrio":["12mx510kgf","12mx750kgf","12mx1050kgf","14mx750kgf","14mx1050kgf","16mx750kgf","16mx1050kgf"],
+  "Nodo MT|Hormigón":["12mx510kgf","12mx750kgf","12mx1050kgf","14mx750kgf","14mx1050kgf","14mx1350kgf","16mx750kgf","16mx1050kgf","16mx1350kgf"],
+  "Nodo MT|Madera":["12m","14m"],
+  "Nodo MT|Metálico":["12mx510kgf","12mx750kgf","12mx1050kgf","14mx750kgf","14mx1050kgf","14mx1350kgf","16mx750kgf","16mx1050kgf","16mx1350kgf"]
+};
+function fillCaracteristicas(tSel,mSel,cSel){
+  const key = `${tSel.value}|${mSel.value}`;
+  const opts = caracteristicas[key] || [];
+  cSel.innerHTML = `<option value="">Selecciona…</option>` + opts.map(x=>`<option>${x}</option>`).join("");
+}
+function wireCarDep(tipoId, matId, carId){
+  const t=$(tipoId), m=$(matId), c=$(carId);
+  if(!(t&&m&&c)) return;
+  t.addEventListener("change", ()=>fillCaracteristicas(t,m,c));
+  m.addEventListener("change", ()=>fillCaracteristicas(t,m,c));
+  // inicializa
+  fillCaracteristicas(t,m,c);
+}
+
+/* Sede -> Municipio (dependiente) */
+const sedeMunicipios = {
+  "Girardot":["Agua De Dios","Apulo","Beltrán","Coello","Flandes","Girardot","Guataquí","Jerusalén","Mesitas Del Colegio","Nariño","Nilo","Pulí","Ricaurte","Tocaima","Viotá"],
+  "Cáqueza":["Cabuyaro","Cáqueza","Chipaque","Choachi","El Calvario","Fomeque","Fosca","Guayabetal","Gutiérrez","Medina","Paratebueno","Quetame","San Juanito","Ubaque","Une"],
+  "La Mesa":["Anapoima","Anolaima","Cachipay","La Mesa","Quipile","San Antonio Del Tequendama","Tena"],
+  "Facatativá":[],
+  "Fusagasugá":["Arbeláez","Bogotá","Cabrera","Fusagasugá","Granada","Icononzo","Pandi","Pasca","San Bernardo","Sibaté","Silvania","Soacha","Tibacuy","Venecia"],
+  "Zipaquirá":[]
+};
+function fillSedeMunicipio(){
+  const sedeSel=$("unc_sede"), munSel=$("unc_municipio");
+  sedeSel.innerHTML=`<option value="">Selecciona…</option>` + Object.keys(sedeMunicipios).map(s=>`<option>${s}</option>`).join("");
+  munSel.innerHTML=`<option value="">Selecciona sede…</option>`;
+  sedeSel.addEventListener("change",()=>{
+    const items=sedeMunicipios[sedeSel.value]||[];
+    munSel.innerHTML=`<option value="">Selecciona…</option>` + items.map(m=>`<option>${m}</option>`).join("");
+  });
+}
+
+const DB_NAME="gs_dx_db_fix"; const DB_VER=1; let db;
+function openDB(){ return new Promise((resolve,reject)=>{
+  const req=indexedDB.open(DB_NAME,DB_VER);
+  req.onupgradeneeded=(e)=>{
+    const d=e.target.result;
+    if(!d.objectStoreNames.contains("meta")) d.createObjectStore("meta",{keyPath:"key"});
+    ["estructuras","unc","clientes","susp","baldios"].forEach(s=>{ if(!d.objectStoreNames.contains(s)) d.createObjectStore(s,{keyPath:"id",autoIncrement:true}); });
+  };
+  req.onsuccess=()=>{db=req.result; resolve(db);};
+  req.onerror=()=>reject(req.error);
+}); }
+function tx(store,mode="readonly"){ return db.transaction(store,mode).objectStore(store); }
+function getMeta(key){ return new Promise(res=>{ const r=tx("meta").get(key); r.onsuccess=()=>res(r.result?r.result.value:null); r.onerror=()=>res(null); }); }
+function setMeta(key,value){ return new Promise((res,rej)=>{ const r=tx("meta","readwrite").put({key,value}); r.onsuccess=()=>res(true); r.onerror=()=>rej(r.error); }); }
+function putRec(store,obj){ return new Promise((res,rej)=>{ const r=tx(store,"readwrite").put(obj); r.onsuccess=()=>res(r.result); r.onerror=()=>rej(r.error); }); }
+function getById(store,id){ return new Promise(res=>{ const r=tx(store).get(id); r.onsuccess=()=>res(r.result||null); r.onerror=()=>res(null); }); }
+function addRec(store,obj){ return new Promise((res,rej)=>{ const r=tx(store,"readwrite").add(obj); r.onsuccess=()=>res(r.result); r.onerror=()=>rej(r.error); }); }
+function getAll(store){ return new Promise(res=>{ const r=tx(store).getAll(); r.onsuccess=()=>res(r.result||[]); r.onerror=()=>res([]); }); }
+function count(store){ return new Promise(res=>{ const r=tx(store).count(); r.onsuccess=()=>res(r.result||0); r.onerror=()=>res(0); }); }
+async function nextItem(storeKey){ const key=`seq_${storeKey}`; const v=await getMeta(key); const n=(v?Number(v):0)+1; await setMeta(key,n); return n; }
+
+/* GPS (robusto) */
+function gpsErrMsg(err){
+  if(!err) return "No se pudo capturar";
+  if(err.code===1) return "Permiso de ubicación denegado";
+  if(err.code===2) return "Ubicación no disponible";
+  if(err.code===3) return "Tiempo de espera agotado";
+  return "No se pudo capturar";
+}
+function enforceUpper(el){
+  if(!el) return;
+  el.addEventListener("input",()=>{
+    const start=el.selectionStart, end=el.selectionEnd;
+    const v=el.value;
+    const up=v.toUpperCase();
+    if(v!==up){ el.value=up; try{ el.setSelectionRange(start,end);}catch(e){} }
+  });
+}
+
+function captureGPS(latEl, lonEl){
+  setBadge("GPS… 📡");
+  if(!navigator.geolocation){ setBadge("Listo ✅"); toast("Sin GPS"); return; }
+
+  const opts={enableHighAccuracy:true,timeout:20000,maximumAge:0};
+  let done=false;
+
+  const success=(pos)=>{
+    if(done) return; done=true;
+    latEl.value=pos.coords.latitude.toFixed(7);
+    lonEl.value=pos.coords.longitude.toFixed(7);
+    setBadge("Listo ✅"); toast("Coordenadas ✅");
+    if(watchId!=null) navigator.geolocation.clearWatch(watchId);
+  };
+  const fail=(err)=>{
+    if(done) return;
+    setBadge("Listo ✅");
+    toast(gpsErrMsg(err));
+    console.warn(err);
+    if(watchId!=null) navigator.geolocation.clearWatch(watchId);
+  };
+
+  let watchId=null;
+  // 1) intento normal
+  navigator.geolocation.getCurrentPosition(success, (err)=>{
+    // 2) fallback: watchPosition por 1 lectura
+    watchId = navigator.geolocation.watchPosition(success, fail, opts);
+    // 3) si ni con watch, falla:
+    setTimeout(()=>{ if(!done) fail(err); }, 21000);
+  }, opts);
+}
+
+/* Fotos -> DataURL */
+function enforceMaxFiles(inputEl){
+  const max=Number(inputEl.getAttribute('data-max')||0);
+  if(!max) return;
+  inputEl.addEventListener('change',()=>{
+    const n=(inputEl.files||[]).length;
+    if(n>max){ toast(`Máximo ${max} fotos`); inputEl.value=''; }
+  });
+}
+
+function readFiles(inputEl){
+  const max=Number(inputEl.getAttribute('data-max')||0);
+  let files=[...(inputEl.files||[])];
+  if(max && files.length>max) files=files.slice(0,max);
+
+  return Promise.all(files.map(f=>new Promise(res=>{
+    const fr=new FileReader();
+    fr.onload=()=>res({name:f.name||"foto.jpg",type:f.type||"image/jpeg",dataURL:fr.result});
+    fr.readAsDataURL(f);
+  })));
+}
+function dataURLtoU8(dataURL){
+  const b64=(dataURL.split(",")[1]||"");
+  const bin=atob(b64);
+  const out=new Uint8Array(bin.length);
+  for(let i=0;i<bin.length;i++) out[i]=bin.charCodeAt(i);
+  return out;
+}
+
+let activeCD=null, activeCAP=null;
+function show(id){ ["screen1","screen2"].forEach(x=>$(x).style.display=(x===id)?"":"none"); window.scrollTo({top:0,behavior:"smooth"}); }
+function updateActiveUI(){
+  const has=!!(activeCD&&activeCAP);
+  $("activeBox").style.display=has?"":"none";
+  $("activeCdTxt").textContent=`CD: ${activeCD||""}`;
+    $("cdPill").textContent=activeCD?`CD: ${activeCD}`:"CD: -";
+  
+  $("btnIrARegistro").disabled=!has;
+  $("btnExportar").disabled=!has;
+}
+function refreshModoCd(){
+  const modo=document.querySelector('input[name="modoCd"]:checked').value;
+  $("cdCapBlock").style.display = (modo==="continuar") ? "none" : "";
+}
+function validateSection(containerId){
+  const el = typeof containerId==="string" ? $(containerId) : containerId;
+  if(!el) return true;
+  const fields=[...el.querySelectorAll("input,select,textarea")].filter(f=>{
+    if(f.type==="file") return false;
+    if(f.type==="checkbox") return false;
+    if(f.disabled) return false;
+    if(f.offsetParent===null) return false;
+    if(f.hasAttribute("readonly")) return false;
+    return true;
+  });
+  for(const f of fields){
+    if(((f.value||"")+"").trim()===""){
+      toast("Faltan campos por completar");
+      try{f.focus();}catch(e){}
+      return false;
+    }
+  }
+  return true;
+}
+
+function resetForms(){ ["formUNC","formCliente","formSusp","formEstructura"].forEach(id=>$(id).style.display="none"); }
+
+/* Builders */
+async function buildEstructura(fromScreen2){
+  const modo=document.querySelector('input[name="modoCd"]:checked').value;
+  let cd=activeCD, cap=activeCAP;
+  const isNew = (!fromScreen2 && modo==="crear");
+  if(isNew){
+    cd=upperAlnum($("cdInput").value); cap=$("capSelect").value||"";
+    if(!cd){toast("Falta CD"); return null;}
+    if(!cap){toast("Falta kVA"); return null;}
+  } else {
+    if(!(cd&&cap)){toast("Sin CD activo"); return null;}
+  }
+  const t = fromScreen2 ? $("est2_tipo_nodo").value : $("est_tipo_nodo").value;
+  const m = fromScreen2 ? $("est2_material_nodo").value : $("est_material_nodo").value;
+  const c = fromScreen2 ? $("est2_caracteristicas").value : $("est_caracteristicas").value;
+  const pf = upperAlnum(fromScreen2 ? $("est2_punto_fisico").value : $("est_punto_fisico").value);
+  const tr = fromScreen2 ? $("est2_tipo_red_bt").value : $("est_tipo_red_bt").value;
+  const lum = onlyDigits(fromScreen2 ? $("est2_luminarias").value : $("est_luminarias").value);
+  const lat = fromScreen2 ? $("est2_lat").value : $("est_lat").value;
+  const lon = fromScreen2 ? $("est2_lon").value : $("est_lon").value;
+
+  const obj={fechaISO:new Date().toISOString(),Transformador:cd,Capacidad_kVA:cap,TipoNodo:t,MaterialNodo:m,CaracteristicasNodo:c,PuntoFisico:pf,TipoRedBT:tr,Luminarias:lum,Latitud:lat,Longitud:lon,Fotos:[]};
+  if(!obj.TipoNodo){toast("Falta Tipo Nodo"); return null;}
+  if(!obj.MaterialNodo){toast("Falta Material Nodo"); return null;}
+  if(!obj.CaracteristicasNodo){toast("Falta Características"); return null;}
+  if(!obj.PuntoFisico){toast("Falta Punto Físico"); return null;}
+  if(!obj.TipoRedBT){toast("Falta Tipo Redes BT"); return null;}
+  return {obj,isNew};
+}
+
+async function buildUNC(){
+    const nombres=upperAlnum($("unc_nombres").value);
+  $("unc_nombres").value=nombres;
+  const obj={
+    fechaISO:new Date().toISOString(),
+    Transformador:activeCD, Capacidad_kVA:activeCAP,
+    PuntoFisico:$("unc_pf")?($("unc_pf").value||""):"",
+    Nombres:nombres,
+    Identificacion:onlyDigits($("unc_identificacion").value),
+    Contacto:onlyDigits($("unc_contacto").value),
+    Sede:$("unc_sede").value||"",
+    Municipio:$("unc_municipio").value||"",
+    Direccion:upperAlnum($("unc_direccion").value)||"",
+    Localidad:$("unc_localidad").value||"",
+    TipoZona:$("unc_tipo_zona").value||"",
+    Latitud:$("unc_lat").value||"",
+    Longitud:$("unc_lon").value||"",
+    TipoMaterial:$("unc_tipo_material").value||"",
+    PredioHabitable:$("unc_predio_habitable").checked?"Sí":"No",
+    RequiereMuro:$("unc_requiere_muro").checked?"Sí":"No",
+    AmpliacionRedes:$("unc_ampliacion_redes").checked?"Sí":"No",
+    DocPropiedad:$("unc_doc_propiedad").value||"",
+    CedulaProp:$("unc_cedula_prop").checked?"Sí":"No",
+    E1:$("unc_e1").checked?"Sí":"No",
+    AR:$("unc_ar").checked?"Sí":"No",
+    DJ:$("unc_dj").checked?"Sí":"No",
+    E6:$("unc_e6").checked?"Sí":"No",
+    ECPart:$("unc_ec_part").checked?"Sí":"No",
+    DocElectricista:$("unc_doc_elec").checked?"Sí":"No",
+    RETIE:$("unc_retie").checked?"Sí":"No",
+    ECInmel:$("unc_ec_inmel").checked?"Sí":"No",
+    Estado:$("unc_estado").value||"",
+    Acometida:$("unc_acometida").checked?"Sí":"No",
+    Ducto:$("unc_ducto").checked?"Sí":"No",
+    Celda:$("unc_celda").checked?"Sí":"No",
+    Interruptor:$("unc_interruptor").checked?"Sí":"No",
+    SPT:$("unc_spt").checked?"Sí":"No",
+    InstalacionInterna:$("unc_inst_interna").checked?"Sí":"No",
+    Observaciones:$("unc_obs").value||"",
+    Fotos:[]
+  };
+  if(!obj.Nombres){toast("Falta Nombres");return null;}
+  if(!obj.Sede){toast("Falta Sede");return null;}
+  if(!obj.Municipio){toast("Falta Municipio");return null;}
+  return obj;
+}
+
+async function buildCliente(){
+  const obj={
+    fechaISO:new Date().toISOString(),
+    Transformador:activeCD, Capacidad_kVA:activeCAP,
+    PuntoFisico:$("cli_pf")?($("cli_pf").value||""):"",
+    SerieMedidor:onlyDigits($("cli_serie").value),
+    MarcaMedidor:upperAlnum($("cli_marca").value),
+    Fases:$("cli_fases").value||"",
+    Latitud:$("cli_lat").value||"",
+    Longitud:$("cli_lon").value||"",
+    EstadoMedidor:$("cli_estado_medidor").value||"",
+    EstadoVisor:$("cli_estado_visor").value||"",
+    ReqInspeccion:$("cli_req_inspeccion").checked?"Sí":"No",
+    Fotos:[]
+  };
+  if(!obj.PuntoFisico){toast("Falta Punto Físico");return null;}
+  if(!obj.SerieMedidor){toast("Falta Serie");return null;}
+  if(!obj.MarcaMedidor){toast("Falta Marca");return null;}
+  if(!obj.Fases){toast("Falta Fases");return null;}
+  return obj;
+}
+
+async function buildSusp(){
+  const obj={
+    fechaISO:new Date().toISOString(),
+    Transformador:activeCD, Capacidad_kVA:activeCAP,
+    PuntoFisico:$("sus_pf")?($("sus_pf").value||""):"",
+    Latitud:$("sus_lat").value||"",
+    Longitud:$("sus_lon").value||"",
+    Motivo:$("sus_motivo").value||"",
+    Fotos:[]
+  };
+  if(!obj.PuntoFisico){toast("Falta Punto Físico");return null;}
+  if(!obj.Motivo){toast("Falta Motivo");return null;}
+  return obj;
+}
+
+async function buildBaldio(){
+  const obj={
+    fechaISO:new Date().toISOString(),
+    Transformador:activeCD, Capacidad_kVA:activeCAP,
+    PuntoFisico:$("bal_pf").value||"",
+    Estado:$("bal_estado").value||"",
+    Latitud:$("bal_lat").value||"",
+    Longitud:$("bal_lon").value||"",
+    Fotos:[]
+  };
+  if(!validateSection("formBaldio")) return null;
+  if(!obj.PuntoFisico){toast("Selecciona Punto Físico");return null;}
+  if(!obj.Latitud||!obj.Longitud){toast("Captura coordenadas");return null;}
+  return obj;
+}
+
+/* Excel XML */
+function xmlEscape(s){return (s??"").toString().replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&apos;");}
+function makeWorksheet(name,headers,rows){
+  const headerRow=`<Row>` + headers.map(h=>`<Cell><Data ss:Type="String">${xmlEscape(h)}</Data></Cell>`).join("") + `</Row>`;
+  const body=rows.map(r=>`<Row>` + headers.map(h=>{
+    const v=r[h]??"";
+    const isNum=typeof v==="number"||(/^-?\d+(\.\d+)?$/.test(v)&&v!=="");
+    const t=isNum?"Number":"String";
+    return `<Cell><Data ss:Type="${t}">${xmlEscape(v)}</Data></Cell>`;
+  }).join("") + `</Row>`).join("");
+  return `<Worksheet ss:Name="${xmlEscape(name)}"><Table>${headerRow}${body}</Table></Worksheet>`;
+}
+function buildExcel(estr,unc,cli,sus,bal){
+  const hdrE=["Ítem","Transformador (CD)","Capacidad transformador kVA","Tipo Nodo","Material Nodo","Características Nodo","Punto Físico","Tipo de Redes BT","Luminarias (AP)","Latitud (Y)","Longitud (X)"];
+  const hdrU=HDR_U;
+  const hdrC=["Ítem","Transformador (CD)","Capacidad transformador kVA","Serie de medidor","Marca de medidor","No. Fases","Latitud (Y)","Longitud (X)","Estado de medidor","Estado de visor","¿Medidor requiere inspección/Cambio?"];
+  const hdrS=["Ítem","Transformador (CD)","Capacidad transformador kVA","Punto Físico","Latitud (Y)","Longitud (X)","Motivo de suspensión"];
+  const hdrB=["Ítem","Transformador (CD)","Capacidad transformador kVA","Punto Físico","Latitud (Y)","Longitud (X)","Estado"];
+
+  const rowsE=estr.map(x=>({
+    "Ítem":x.item,"Transformador (CD)":x.Transformador,"Capacidad transformador kVA":x.Capacidad_kVA,
+    "Tipo Nodo":x.TipoNodo,"Material Nodo":x.MaterialNodo,"Características Nodo":x.CaracteristicasNodo,
+    "Punto Físico":x.PuntoFisico,"Tipo de Redes BT":x.TipoRedBT,"Luminarias (AP)":x.Luminarias,
+    "Latitud (Y)":x.Latitud,"Longitud (X)":x.Longitud
+  }));
+  const rowsU=unc.map(x=>({
+    "Ítem":x.item,"Transformador (CD)":x.Transformador,"Capacidad transformador kVA":x.Capacidad_kVA,
+    "Nombres":x.Nombres,"Identificación":x.Identificacion,"Contacto":x.Contacto,
+    "Sede":x.Sede,"Municipio":x.Municipio,"Dirección":x.Direccion,"Localidad (Barrio/Vereda)":x.Localidad,"Tipo Zona":x.TipoZona,
+    "Latitud (Y)":x.Latitud,"Longitud (X)":x.Longitud,"Tipo material":x.TipoMaterial,
+    "¿Predio habitable?":x.PredioHabitable,"¿Requiere construir muro?":x.RequiereMuro,"Para servicio requiere ampliación de redes":x.AmpliacionRedes,
+    "Documento de propiedad":x.DocPropiedad,"Cédula propietario":x.CedulaProp,
+    "Formato E1 Solicitud":x.E1,"Aceptación de requisitos":x.AR,"Declaración Juramentada":x.DJ,"Formato E6 RT":x.E6,
+    "EC Particular":x.ECPart,"Documentos electricista":x.DocElectricista,"Declaración RETIE":x.RETIE,"EC Inmel":x.ECInmel,
+    "Estado":x.Estado,"Acometida":x.Acometida,"Ducto 1\" Galv.":x.Ducto,"Celda":x.Celda,"Interruptor":x.Interruptor,
+    "SPT (Tierra)":x.SPT,"Instalación interna":x.InstalacionInterna,"Observaciones":x.Observaciones
+  }));
+  const rowsC=cli.map(x=>({
+    "Ítem":x.item,"Transformador (CD)":x.Transformador,"Capacidad transformador kVA":x.Capacidad_kVA,
+    "Serie de medidor":x.SerieMedidor,"Marca de medidor":x.MarcaMedidor,"No. Fases":x.Fases,
+    "Latitud (Y)":x.Latitud,"Longitud (X)":x.Longitud,"Estado de medidor":x.EstadoMedidor,"Estado de visor":x.EstadoVisor,
+    "¿Medidor requiere inspección/Cambio?":x.ReqInspeccion
+  }));
+  const rowsB=bal.map(x=>({
+    "Ítem":x.item,"Transformador (CD)":x.Transformador,"Capacidad transformador kVA":x.Capacidad_kVA,
+    "Punto Físico":x.PuntoFisico,"Latitud (Y)":x.Latitud,"Longitud (X)":x.Longitud,"Estado":x.Estado
+  }));
+
+  const rowsS=sus.map(x=>({
+    "Ítem":x.item,"Transformador (CD)":x.Transformador,"Capacidad transformador kVA":x.Capacidad_kVA,
+    "Punto Físico":x.PuntoFisico,"Latitud (Y)":x.Latitud,"Longitud (X)":x.Longitud,"Motivo de suspensión":x.Motivo
+  }));
+
+  const xml=`<?xml version="1.0"?><?mso-application progid="Excel.Sheet"?>
+<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
+ xmlns:o="urn:schemas-microsoft-com:office:office"
+ xmlns:x="urn:schemas-microsoft-com:office:excel"
+ xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"
+ xmlns:html="http://www.w3.org/TR/REC-html40">
+<DocumentProperties xmlns="urn:schemas-microsoft-com:office:office"><Author>GS</Author><Created>${new Date().toISOString()}</Created></DocumentProperties>
+${makeWorksheet("Registro_estructuras",hdrE,rowsE)}
+${makeWorksheet("Registro_UNC",hdrU,rowsU)}
+${makeWorksheet("Registro_clientes",hdrC,rowsC)}
+${makeWorksheet("Registro_SUSP_ESPT",hdrS,rowsS)}
+${makeWorksheet("Baldíos",hdrB,rowsB)}
+</Workbook>`;
+  return new TextEncoder().encode(xml);
+}
+
+/* Export ZIP */
+function downloadBlob(filename,mime,u8){
+  const blob=new Blob([u8],{type:mime});
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(blob);
+  a.download=filename;
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(()=>{URL.revokeObjectURL(a.href); a.remove();},1000);
+}
+function safeName(s){return (s||"").toString().trim().replace(/[\\/:*?\"<>|]+/g," ").replace(/\s+/g," ").trim();}
+
+function openModal(id){ const m=$(id); if(m) m.style.display="flex"; }
+function closeModal(id){ const m=$(id); if(m) m.style.display="none"; }
+async function afterSaveAskNext(){ openModal("modalNext"); }
+
+async function exportAll(){
+  setBadge("Exportando… 📦");
+  const estr=await getAll("estructuras"), unc=await getAll("unc"), cli=await getAll("clientes"), sus=await getAll("susp"), bal=await getAll("baldios");
+  const now=new Date();
+  const stamp=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,"0")}-${String(now.getDate()).padStart(2,"0")}_${String(now.getHours()).padStart(2,"0")}${String(now.getMinutes()).padStart(2,"0")}`;
+  const excelName=`GS_Diagnosticos_${stamp}.xls`;
+  const excelU8=buildExcel(estr,unc,cli,sus,bal);
+
+  const zip=new TinyZip();
+  zip.add(excelName, excelU8);
+
+  for(const r of estr){
+    const folder=safeName(`${r.Transformador}_${r.PuntoFisico||("ITEM_"+r.item)}`);
+    (r.Fotos||[]).forEach((f,i)=>zip.add(`${folder}/foto_${i+1}.jpg`, dataURLtoU8(f.dataURL)));
+  }
+  for(const r of unc){
+    const folder=safeName(`${r.Transformador}_${r.Nombres||("ITEM_"+r.item)}`);
+    (r.Fotos||[]).forEach((f,i)=>zip.add(`${folder}/foto_${i+1}.jpg`, dataURLtoU8(f.dataURL)));
+  }
+  for(const r of cli){
+    const folder=safeName(`${r.Transformador}_${r.SerieMedidor||("ITEM_"+r.item)}`);
+    (r.Fotos||[]).forEach((f,i)=>zip.add(`${folder}/foto_${i+1}.jpg`, dataURLtoU8(f.dataURL)));
+  }
+  for(const r of bal){
+    const folder=safeName(`${r.Transformador}_${r.PuntoFisico||""}_BALDIO_${r.item}`);
+    (r.Fotos||[]).forEach((f,i)=>zip.add(`${folder}/foto_${i+1}.jpg`, dataURLtoU8(f.dataURL)));
+  }
+
+  for(const r of sus){
+    const folder=safeName(`${r.Transformador}_${r.item}`);
+    (r.Fotos||[]).forEach((f,i)=>zip.add(`${folder}/foto_${i+1}.jpg`, dataURLtoU8(f.dataURL)));
+  }
+
+  downloadBlob(`GS_Diagnosticos_${stamp}.zip`,"application/zip",zip.finalize());
+  setBadge("Listo ✅");
+  toast("Exportado ✅");
+}
+
+/* Service Worker: solo si NO es file:// */
+async function registerSW(){
+  if(location.protocol==="file:") return;
+  if("serviceWorker" in navigator){ try{ await navigator.serviceWorker.register("./sw.js"); }catch(e){ console.warn(e); } }
+}
+
+
+async function refreshPFSelectors(){
+  const estr = await getAll("estructuras");
+  const puntos = estr
+    .filter(r=>r.Transformador===activeCD)
+    .map(r=>(r.PuntoFisico||"").trim())
+    .filter(x=>x)
+    .sort((a,b)=>a.localeCompare(b));
+  const ids=["unc_pf","cli_pf","sus_pf","bal_pf"];
+  ids.forEach(id=>{
+    const sel=$(id); if(!sel) return;
+    sel.innerHTML = `<option value="">Selecciona…</option>` + puntos.map(p=>`<option>${p}</option>`).join("");
+  });
+}
+
+function wireEvents(){
+  document.querySelectorAll('input[name="modoCd"]').forEach(r=>r.addEventListener("change",refreshModoCd));
+  refreshModoCd();
+  document.querySelectorAll('input[type="file"][data-max]').forEach(enforceMaxFiles);
+
+  // MAYÚSCULAS en campos de texto
+  document.querySelectorAll('input[type="text"], input[type="tel"], input[type="search"], textarea').forEach(enforceUpper);
+
+
+  $("cdInput").addEventListener("input", e=>e.target.value=upperAlnum(e.target.value));
+  $("est_punto_fisico").addEventListener("input", e=>e.target.value=upperAlnum(e.target.value));
+  $("est2_punto_fisico").addEventListener("input", e=>e.target.value=upperAlnum(e.target.value));
+  $("cli_marca").addEventListener("input", e=>e.target.value=upperAlnum(e.target.value));
+
+  $("est_btnGPS").addEventListener("click", ()=>captureGPS($("est_lat"),$("est_lon")));
+  $("unc_btnGPS").addEventListener("click", ()=>captureGPS($("unc_lat"),$("unc_lon")));
+  $("cli_btnGPS").addEventListener("click", ()=>captureGPS($("cli_lat"),$("cli_lon")));
+  $("sus_btnGPS").addEventListener("click", ()=>captureGPS($("sus_lat"),$("sus_lon")));
+  $("bal_btnGPS").addEventListener("click", ()=>captureGPS($("bal_lat"),$("bal_lon")));
+  $("est2_btnGPS").addEventListener("click", ()=>captureGPS($("est2_lat"),$("est2_lon")));
+
+  $("btnGuardarEstructura").addEventListener("click", async ()=>{
+    if(!validateSection("screen1")) return;
+
+    const built=await buildEstructura(false); if(!built) return;
+    const {obj,isNew}=built;
+    obj.Fotos=await readFiles($("est_fotos"));
+    const item=await nextItem("estructuras");
+    await addRec("estructuras",{...obj,item});
+    if(isNew){
+      activeCD=obj.Transformador; activeCAP=obj.Capacidad_kVA;
+      await setMeta("activeCD",activeCD); await setMeta("activeCAP",activeCAP);
+    }
+    updateActiveUI();
+    toast("Guardado ✅");
+    $("est_tipo_nodo").value=""; $("est_material_nodo").value=""; fillCaracteristicas($("est_tipo_nodo"),$("est_material_nodo"),$("est_caracteristicas"));
+    $("est_punto_fisico").value=""; $("est_tipo_red_bt").value=""; $("est_luminarias").value="";
+    $("est_lat").value=""; $("est_lon").value=""; $("est_fotos").value="";
+  });
+
+  $("btnIrARegistro").addEventListener("click", ()=>{ if(!(activeCD&&activeCAP)) return toast("Registra CD primero"); resetForms(); show("screen2"); });
+  $("btnBack1").addEventListener("click", ()=>{ resetForms(); show("screen1"); });
+
+  $("btnUNC").addEventListener("click", async ()=>{ resetForms(); await refreshPFSelectors(); $("formUNC").style.display=""; });
+  $("btnCliente").addEventListener("click", async ()=>{ resetForms(); await refreshPFSelectors(); $("formCliente").style.display=""; });
+  $("btnSusp").addEventListener("click", async ()=>{ resetForms(); await refreshPFSelectors(); $("formSusp").style.display=""; });
+  $("btnBaldio").addEventListener("click", async ()=>{ resetForms(); await refreshPFSelectors(); show("screenBaldio"); $("formBaldio").style.display=""; });
+
+  $("btnCancelUNC").addEventListener("click", ()=>resetForms());
+  $("btnCancelCli").addEventListener("click", ()=>resetForms());
+  $("btnCancelSus").addEventListener("click", ()=>resetForms());
+  $("btnCancelBaldio").addEventListener("click", ()=>resetForms());
+  $("btnCancelEst2").addEventListener("click", ()=>resetForms());
+
+  $("btnGuardarUNC").addEventListener("click", async ()=>{
+    if(!validateSection("formUNC")) return;
+
+    if(!(activeCD&&activeCAP)) return toast("Sin CD activo");
+    const obj=await buildUNC(); if(!obj) return;
+    obj.Fotos=await readFiles($("unc_fotos"));
+    const item=await nextItem("unc");
+    if(editCtx && editCtx.store==="unc"){ await putRec("unc",{...obj,id:editCtx.id,item}); editCtx=null; } else { await addRec("unc",{...obj,item}); }
+    toast("Guardado ✅"); resetForms(); await afterSaveAskNext();
+  });
+  $("btnGuardarCli").addEventListener("click", async ()=>{
+    if(!validateSection("formCliente")) return;
+
+    if(!(activeCD&&activeCAP)) return toast("Sin CD activo");
+    const obj=await buildCliente(); if(!obj) return;
+    obj.Fotos=await readFiles($("cli_fotos"));
+    const item=await nextItem("clientes");
+    if(editCtx && editCtx.store==="clientes"){ await putRec("clientes",{...obj,id:editCtx.id,item}); editCtx=null; } else { await addRec("clientes",{...obj,item}); }
+    toast("Guardado ✅"); resetForms(); await afterSaveAskNext();
+  });
+  if($("btnGuardarBaldio")) $("btnGuardarBaldio").addEventListener("click", async ()=>{
+    if(!validateSection("formBaldio")) return;
+
+    if(!(activeCD&&activeCAP)) return toast("Sin CD activo");
+    const obj=await buildBaldio(); if(!obj) return;
+    obj.Fotos=await readFiles($("bal_fotos"));
+    if(!(obj.Fotos&&obj.Fotos.length)) return toast("Adjunta fotos");
+    const item=await nextItem("baldios");
+    await addRec("baldios",{...obj,item});
+    toast("Guardado ✅"); resetForms(); await afterSaveAskNext(); await updateKPIs();
+  });
+
+  $("btnGuardarSus").addEventListener("click", async ()=>{
+    if(!validateSection("formSusp")) return;
+
+    if(!(activeCD&&activeCAP)) return toast("Sin CD activo");
+    const obj=await buildSusp(); if(!obj) return;
+    obj.Fotos=await readFiles($("sus_fotos"));
+    const item=await nextItem("susp");
+    await addRec("susp",{...obj,item});
+    toast("Guardado ✅"); resetForms(); await afterSaveAskNext();
+  });
+  $("btnGuardarEst2").addEventListener("click", async ()=>{
+    if(!(activeCD&&activeCAP)) return toast("Sin CD activo");
+    const built=await buildEstructura(true); if(!built) return;
+    const {obj}=built;
+    obj.Fotos=await readFiles($("est2_fotos"));
+    const item=await nextItem("estructuras");
+    await addRec("estructuras",{...obj,item});
+    toast("Guardado ✅"); resetForms(); await afterSaveAskNext();
+  });
+
+  $("btnExportar").addEventListener("click", exportAll);
+  // After-save modal
+  $("afterYes").addEventListener("click", ()=>{ $("afterSaveQ").style.display="none"; $("afterBtns").style.display="flex"; });
+  $("afterNo").addEventListener("click", ()=>{ closeModal("modalAfterSave"); resetForms(); show("screen1"); });
+  $("goBackQ").addEventListener("click", ()=>{ $("afterBtns").style.display="none"; $("afterSaveQ").style.display="flex"; });
+  $("goUNC").addEventListener("click", async ()=>{ closeModal("modalAfterSave"); resetForms(); await refreshPFSelectors(); show("screen2"); $("formUNC").style.display=""; });
+  $("goCLI").addEventListener("click", async ()=>{ closeModal("modalAfterSave"); resetForms(); await refreshPFSelectors(); show("screen2"); $("formCliente").style.display=""; });
+  $("goSUS").addEventListener("click", async ()=>{ closeModal("modalAfterSave"); resetForms(); await refreshPFSelectors(); show("screen2"); $("formSusp").style.display=""; });
+  $("goBAL").addEventListener("click", async ()=>{ closeModal("modalAfterSave"); resetForms(); await refreshPFSelectors(); show("screenBaldio"); $("formBaldio").style.display=""; });
+
+  // Actualizar
+  $("btnActualizar").addEventListener("click", ()=>{ openModal("modalUpdate"); $("updPick").style.display="flex"; $("updListWrap").style.display="none"; });
+  $("updClose").addEventListener("click", ()=>closeModal("modalUpdate"));
+  $("updBack").addEventListener("click", ()=>{ $("updPick").style.display="flex"; $("updListWrap").style.display="none"; });
+  let updStore=null;
+  async function loadUpdList(store){
+    updStore=store;
+    const all=await getAll(store);
+    const filtered=all.filter(r=>r.Transformador===activeCD);
+    const sel=$("updSelect");
+    sel.innerHTML = `<option value="">Selecciona…</option>` + filtered.map(r=>{
+      const key = store==="unc" ? (r.Nombres||"") : (r.SerieMedidor||"");
+      const pf = r.PuntoFisico||"";
+      return `<option value="${r.id}">${pf} | ${key} | ID:${r.id}</option>`;
+    }).join("");
+    $("updHint").textContent = filtered.length ? "Selecciona un registro para editar" : "No hay registros en este CD";
+    $("updPick").style.display="none"; $("updListWrap").style.display="block";
+  }
+  $("updUNC").addEventListener("click", ()=>loadUpdList("unc"));
+  $("updCLI").addEventListener("click", ()=>loadUpdList("clientes"));
+  $("updLoad").addEventListener("click", async ()=>{
+    const id=Number($("updSelect").value||0); if(!id) return toast("Selecciona un registro");
+    const rec=await getById(updStore,id); if(!rec) return toast("No encontrado");
+    editCtx={store:updStore,id};
+    closeModal("modalUpdate");
+    resetForms(); await refreshPFSelectors();
+    if(updStore==="unc"){
+      show("screen2"); $("formUNC").style.display="";
+      if($("unc_pf")) $("unc_pf").value = rec.PuntoFisico||"";
+      $("unc_nombres").value = (rec.Nombres||"");
+      $("unc_direccion").value = (rec.Direccion||"");
+      if($("unc_estado")) $("unc_estado").value = rec.Estado||"";
+      if($("unc_lat")) $("unc_lat").value = rec.Latitud||"";
+      if($("unc_lon")) $("unc_lon").value = rec.Longitud||"";
+      // checkboxes
+      if($("unc_predio_habitable")) $("unc_predio_habitable").checked = (rec.PredioHabitable==="Sí");
+      if($("unc_ampliacion_redes")) $("unc_ampliacion_redes").checked = (rec.AmpliacionRedes==="Sí");
+      if($("unc_requiere_muro")) $("unc_requiere_muro").checked = (rec.RequiereMuro==="Sí");
+    } else {
+      show("screen2"); $("formCliente").style.display="";
+      if($("cli_pf")) $("cli_pf").value = rec.PuntoFisico||"";
+      $("cli_serie").value = rec.SerieMedidor||"";
+      $("cli_marca").value = rec.Marca||"";
+      if($("cli_fases")) $("cli_fases").value = rec.Fases||"";
+      if($("cli_lat")) $("cli_lat").value = rec.Latitud||"";
+      if($("cli_lon")) $("cli_lon").value = rec.Longitud||"";
+      if($("cli_estado_medidor")) $("cli_estado_medidor").value = rec.EstadoMedidor||"";
+      if($("cli_req_inspeccion")) $("cli_req_inspeccion").checked = (rec.ReqInspeccion==="Sí");
+      if($("cli_estado_visor")) $("cli_estado_visor").value = rec.EstadoVisor||"";
+    }
+    toast("Modo edición ✅");
+  });
+
+  $("btnConteos").addEventListener("click", async ()=>{ const a=await count("estructuras"),b=await count("unc"),c=await count("clientes"),d=await count("susp"),e=await count("baldios"); toast(`Estructuras: ${a} | UNC: ${b} | Clientes: ${c} | Susp: ${d} | Baldíos: ${e}`); });
+}
+
+(async function init(){
+  try{
+    await openDB();
+    fillSedeMunicipio();
+
+    // ✅ aquí estaba el fallo: no se estaba "enganchando" el desplegable
+    wireCarDep("est_tipo_nodo","est_material_nodo","est_caracteristicas");
+    wireCarDep("est2_tipo_nodo","est2_material_nodo","est2_caracteristicas");
+
+    activeCD=await getMeta("activeCD");
+    activeCAP=await getMeta("activeCAP");
+    updateActiveUI();
+
+    wireEvents();
+    await registerSW();
+  }catch(e){
+    console.error(e);
+    toast("Error cargando app");
+  }
+})();
+</script>
+
+  <div class="modalBack" id="modalAfterSave">
+    <div class="modalCard">
+      <div style="font-weight:900;font-size:16px;">¿DESEA REALIZAR OTRO REGISTRO EN ESTE NODO?</div>
+      <div class="vBtns" id="afterSaveQ">
+        <button class="ok" id="afterYes" type="button">SÍ</button>
+        <button class="secondary" id="afterNo" type="button">NO</button>
+      </div>
+      <div class="vBtns" id="afterBtns" style="display:none;">
+        <button class="secondary" id="goUNC" type="button">UNC</button>
+        <button class="secondary" id="goCLI" type="button">CLIENTE</button>
+        <button class="secondary" id="goSUS" type="button">SUSPENSIÓN</button>
+        <button class="secondary" id="goBAL" type="button">BALDÍO</button>
+        <button class="secondary" id="goBackQ" type="button">Volver</button>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="modalBack" id="modalUpdate">
+    <div class="modalCard">
+      <div style="font-weight:900;font-size:16px;">Actualizar registro</div>
+      <div class="vBtns" id="updPick">
+        <button class="secondary" id="updUNC" type="button">UNC</button>
+        <button class="secondary" id="updCLI" type="button">CLIENTE</button>
+        <button class="secondary" id="updClose" type="button">Cerrar</button>
+      </div>
+      <div id="updListWrap" style="display:none;margin-top:10px;">
+        <div class="hint" id="updHint"></div>
+        <select id="updSelect" style="margin-top:10px;"></select>
+        <div class="btnrow" style="margin-top:10px;">
+          <button class="ok" id="updLoad" type="button">Cargar</button>
+          <button class="secondary" id="updBack" type="button">Atrás</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
