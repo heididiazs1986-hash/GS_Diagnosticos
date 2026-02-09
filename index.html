@@ -335,6 +335,45 @@
       </div>
     </div>
 
+<div id="formEstructura" style="display:none;">
+      <div class="sep"></div>
+      <div class="grid three">
+        <div><label>Tipo Nodo</label><select id="est2_tipo_nodo"><option value="">Selecciona…</option><option>Nodo BT</option><option>Nodo MT</option></select></div>
+        <div><label>Material Nodo</label><select id="est2_material_nodo"><option value="">Selecciona…</option><option>Fibra de vidrio</option><option>Hormigón</option><option>Madera</option><option>Metálico</option></select></div>
+        <div><label>Características Nodo</label><select id="est2_caracteristicas"><option value="">Selecciona…</option></select></div>
+      </div>
+      <div class="grid three">
+        <div><label>Punto Físico</label><input id="est2_punto_fisico"></div>
+        <div><label>Tipo de Redes BT</label><select id="est2_tipo_red_bt"><option value="">Selecciona…</option><option>Abierta</option><option>Trenzada</option></select></div>
+        <div><label>Luminarias (AP)</label><input id="est2_luminarias" inputmode="numeric" placeholder="0"></div>
+      </div>
+      <div class="grid three">
+        <div><label>Latitud (Y)</label><input id="est2_lat" readonly placeholder="GPS"></div>
+        <div><label>Longitud (X)</label><input id="est2_lon" readonly placeholder="GPS"></div>
+        <div><label>Fotos</label><input id="est2_fotos" type="file" accept="image/*" multiple></div>
+      </div>
+      <div class="btnrow">
+        <button class="secondary" id="est2_btnGPS" type="button">📍 Coordenadas</button>
+        <button class="ok" id="btnGuardarEst2" type="button">Guardar</button>
+        <button class="secondary" id="btnCancelEst2" type="button">Cancelar</button>
+      </div>
+    </div>
+  
+</section>
+
+  <section class="card" id="screenBaldio" style="display:none;">
+    <div class="title">
+      <div><h2>Baldíos</h2></div>
+      <div class="kpi"><div class="pill">⚡ <b id="cdPillBal"></b></div></div>
+    </div>
+
+    <div class="btnrow">
+      <button class="secondary" id="btnBackBaldio" type="button">Volver</button>
+    </div>
+
+    <div id="formBaldio" style="display:none;">
+      <div class="sep"></div>
+      <h3 class="section">BALDÍOS</h3>
     <div class="grid two">
         <div><label>Punto Físico</label><select id="bal_pf"></select></div>
         <div><label>Estado</label>
@@ -362,29 +401,6 @@
       <div class="btnrow">
         <button class="ok" id="btnGuardarBaldio" type="button">Guardar</button>
         <button class="secondary" id="btnCancelBaldio" type="button">Cancelar</button>
-      </div>
-    </div>
-<div id="formEstructura" style="display:none;">
-      <div class="sep"></div>
-      <div class="grid three">
-        <div><label>Tipo Nodo</label><select id="est2_tipo_nodo"><option value="">Selecciona…</option><option>Nodo BT</option><option>Nodo MT</option></select></div>
-        <div><label>Material Nodo</label><select id="est2_material_nodo"><option value="">Selecciona…</option><option>Fibra de vidrio</option><option>Hormigón</option><option>Madera</option><option>Metálico</option></select></div>
-        <div><label>Características Nodo</label><select id="est2_caracteristicas"><option value="">Selecciona…</option></select></div>
-      </div>
-      <div class="grid three">
-        <div><label>Punto Físico</label><input id="est2_punto_fisico"></div>
-        <div><label>Tipo de Redes BT</label><select id="est2_tipo_red_bt"><option value="">Selecciona…</option><option>Abierta</option><option>Trenzada</option></select></div>
-        <div><label>Luminarias (AP)</label><input id="est2_luminarias" inputmode="numeric" placeholder="0"></div>
-      </div>
-      <div class="grid three">
-        <div><label>Latitud (Y)</label><input id="est2_lat" readonly placeholder="GPS"></div>
-        <div><label>Longitud (X)</label><input id="est2_lon" readonly placeholder="GPS"></div>
-        <div><label>Fotos</label><input id="est2_fotos" type="file" accept="image/*" multiple></div>
-      </div>
-      <div class="btnrow">
-        <button class="secondary" id="est2_btnGPS" type="button">📍 Coordenadas</button>
-        <button class="ok" id="btnGuardarEst2" type="button">Guardar</button>
-        <button class="secondary" id="btnCancelEst2" type="button">Cancelar</button>
       </div>
     </div>
   </section>
@@ -672,7 +688,7 @@ function validateSection(containerId){
   return true;
 }
 
-function resetForms(){ ["formUNC","formCliente","formSusp","formEstructura"].forEach(id=>$(id).style.display="none"); }
+function resetForms(){ ["formUNC","formCliente","formSusp","formBaldio","formEstructura"].forEach(id=>$(id).style.display="none"); }
 
 /* Builders */
 async function buildEstructura(fromScreen2){
@@ -990,16 +1006,17 @@ function wireEvents(){
 
   $("btnIrARegistro").addEventListener("click", ()=>{ if(!(activeCD&&activeCAP)) return toast("Registra CD primero"); resetForms(); show("screen2"); });
   $("btnBack1").addEventListener("click", ()=>{ resetForms(); show("screen1"); });
+  $("btnBackBaldio").addEventListener("click", ()=>{ resetForms(); show("screen2"); });
 
   $("btnUNC").addEventListener("click", async ()=>{ resetForms(); await refreshPFSelectors(); $("formUNC").style.display=""; });
   $("btnCliente").addEventListener("click", async ()=>{ resetForms(); await refreshPFSelectors(); $("formCliente").style.display=""; });
   $("btnSusp").addEventListener("click", async ()=>{ resetForms(); await refreshPFSelectors(); $("formSusp").style.display=""; });
-  $("btnBaldio").addEventListener("click", async ()=>{ resetForms(); await refreshPFSelectors(); show("screenBaldio"); $("formBaldio").style.display=""; });
+  $("btnBaldio").addEventListener("click", async ()=>{ resetForms(); await refreshPFSelectors(); $("cdPillBal").textContent = activeCD||""; show("screenBaldio"); $("formBaldio").style.display=""; });
 
   $("btnCancelUNC").addEventListener("click", ()=>resetForms());
   $("btnCancelCli").addEventListener("click", ()=>resetForms());
   $("btnCancelSus").addEventListener("click", ()=>resetForms());
-  $("btnCancelBaldio").addEventListener("click", ()=>resetForms());
+  $("btnCancelBaldio").addEventListener("click", ()=>{ resetForms(); show("screen2"); });
   $("btnCancelEst2").addEventListener("click", ()=>resetForms());
 
   $("btnGuardarUNC").addEventListener("click", async ()=>{
@@ -1062,7 +1079,7 @@ function wireEvents(){
   $("goUNC").addEventListener("click", async ()=>{ closeModal("modalAfterSave"); resetForms(); await refreshPFSelectors(); show("screen2"); $("formUNC").style.display=""; });
   $("goCLI").addEventListener("click", async ()=>{ closeModal("modalAfterSave"); resetForms(); await refreshPFSelectors(); show("screen2"); $("formCliente").style.display=""; });
   $("goSUS").addEventListener("click", async ()=>{ closeModal("modalAfterSave"); resetForms(); await refreshPFSelectors(); show("screen2"); $("formSusp").style.display=""; });
-  $("goBAL").addEventListener("click", async ()=>{ closeModal("modalAfterSave"); resetForms(); await refreshPFSelectors(); show("screenBaldio"); $("formBaldio").style.display=""; });
+  $("goBAL").addEventListener("click", async ()=>{ closeModal("modalAfterSave"); resetForms(); await refreshPFSelectors(); $("cdPillBal").textContent = activeCD||""; show("screenBaldio"); $("formBaldio").style.display=""; });
 
   // Actualizar
   $("btnActualizar").addEventListener("click", ()=>{ openModal("modalUpdate"); $("updPick").style.display="flex"; $("updListWrap").style.display="none"; });
