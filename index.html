@@ -64,7 +64,7 @@
 <main>
   <section class="card" id="screen1">
     <div class="title">
-      <div><h2>Centro de distribución</h2></div>
+      <div><h2>Estrucutras de centro de distribución</h2></div>
       <div class="kpi" id="activeBox" style="display:none;">
         <div class="pill">⚡ <b id="activeCdTxt"></b></div>
 </div>
@@ -143,7 +143,7 @@
 
     <div class="btnrow">
       <button id="btnUNC" type="button">UNC</button>
-      <button id="btnCliente" type="button">Cliente</button>
+      <button id="btnCliente" type="button">Clientes</button>
       <button id="btnSusp" type="button">Suspensión</button>
       <button id="btnBaldio" type="button">Baldíos</button>
       <button class="secondary" id="btnBack1" type="button">Volver</button>
@@ -152,13 +152,15 @@
     <div id="formUNC" style="display:none;">
       <div class="sep"></div>
       <div class="grid three">
+      <h2 class="section">INFORMACIÓN DE USUARIO</h2>
+        <div><label>Punto Físico</label><select id="unc_pf"></select></div>
         <div><label>Nombres</label><input id="unc_nombres"></div>
         <div><label>Identificación</label><input id="unc_identificacion" inputmode="numeric"></div>
         <div><label>Contacto</label><input id="unc_contacto" inputmode="numeric"></div>
       </div>
-      <h3 class="section">CARACTERIZACIÓN DE PREDIO</h3>
+      <h2 class="section">CARACTERIZACIÓN DE PREDIO</h2>
       <div class="grid two">
-        <div><label>Punto Físico</label><select id="unc_pf"></select></div>
+        
         <div></div>
       </div>
       <div class="grid three">
@@ -198,16 +200,11 @@
         <button class="secondary" id="unc_btnGPS" type="button">📍 Coordenadas</button>
       </div>
       <div class="grid">
-        <div><label>Fotos</label><input id="unc_fotos" type="file" accept="image/*" capture="environment" multiple data-max="5"></div>
-      </div>
-
-      <div class="btnrow">
-        <button class="ok" id="btnGuardarUNC" type="button">Guardar</button>
-        <button class="secondary" id="btnCancelUNC" type="button">Cancelar</button>
+        <div><label>Fotos</label><input id="unc_fotos" type="file" accept="image/*" multiple data-max="5"></div>
       </div>
 
       <div class="sep"></div>
-      <h3 class="section">DOCUMENTOS ENTREGADOS POR USUARIO</h3>
+      <h2 class="section">DOCUMENTOS ENTREGADOS POR USUARIO</h2>
       <div class="grid two">
         <div><label>Documento de propiedad</label>
           <select id="unc_doc_propiedad">
@@ -230,18 +227,18 @@
 
       <div class="chips">
 <label class="chip"><input type="checkbox" id="unc_cedula_prop"> Cédula propietario</label>
-        <label class="chip"><input type="checkbox" id="unc_e1"> Formato E1</label>
-        <label class="chip"><input type="checkbox" id="unc_ar"> AR</label>
-        <label class="chip"><input type="checkbox" id="unc_dj"> DJ</label>
-        <label class="chip"><input type="checkbox" id="unc_e6"> E6</label>
-        <label class="chip"><input type="checkbox" id="unc_ec_part"> EC Particular</label>
+        <label class="chip"><input type="checkbox" id="unc_e1"> Formato de solicitud (E1)</label>
+        <label class="chip"><input type="checkbox" id="unc_ar"> Aceptación de requisitos (AR)</label>
+        <label class="chip"><input type="checkbox" id="unc_dj"> Declaración juramentada (DJ)</label>
+        <label class="chip"><input type="checkbox" id="unc_e6"> Recibo técnico (E6)</label>
+        <label class="chip"><input type="checkbox" id="unc_ec_part"> Esquema eléctrico (EC) Particular</label>
         <label class="chip"><input type="checkbox" id="unc_doc_elec"> Doc. electricista</label>
         <label class="chip"><input type="checkbox" id="unc_retie"> RETIE</label>
-        <label class="chip"><input type="checkbox" id="unc_ec_inmel"> EC Inmel</label>
+        <label class="chip"><input type="checkbox" id="unc_ec_inmel"> Esquema eléctrico (EC) Inmel</label>
       </div>
 
       <div class="sep"></div>
-      <h3 class="section">PENDIENTES PARA CUMPLIMIENTO DE NORMA TÉCNICA</h3>
+      <h2 class="section">PENDIENTES PARA CUMPLIMIENTO DE NORMA TÉCNICA</h2>
       <div class="chips">
         <label class="chip"><input type="checkbox" id="unc_requiere_muro"> ¿Requiere construir muro?</label>
         <label class="chip"><input type="checkbox" id="unc_acometida"> Acometida</label>
@@ -257,13 +254,17 @@
           <div class="btnrow" style="justify-content:flex-start;margin-top:10px;">
             <button class="secondary" id="unc_mic" type="button">🎙️ Dictar (Audio a texto)</button>
           </div>
+      <div class="btnrow">
+        <button class="ok" id="btnGuardarUNC" type="button">Guardar</button>
+        <button class="secondary" id="btnCancelUNC" type="button">Cancelar</button>
+      </div>
         </div>
       </div>
     </div>
 
     
     <div id="formCliente" style="display:none;">
-      <h3 class="section">CLIENTES</h3>
+      <h2 class="section">CLIENTES</h2>
       <div class="sep"></div>
 
       <div class="grid two">
@@ -303,7 +304,7 @@
     </div>
 
     <div id="formSusp" style="display:none;">
-      <h3 class="section">SUSPENSIÓN</h3>
+      <h2 class="section">SUSPENSIÓN</h2>
       <div class="sep"></div>
 
       <div class="grid two">
@@ -341,7 +342,7 @@
     </div>
 
     <div id="formBaldio" style="display:none;">
-      <h3 class="section">BALDÍOS</h3>
+      <h2 class="section">BALDÍOS</h2>
       <div class="sep"></div>
 
       <div class="grid two">
