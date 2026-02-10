@@ -550,12 +550,12 @@ function wireCarDep(tipoId, matId, carId){
 
 /* Sede -> Municipio (dependiente) */
 const sedeMunicipios = {
-  "Girardot":["Agua De Dios","Apulo","Beltrán","Coello","Flandes","Girardot","Guataquí","Jerusalén","Mesitas Del Colegio","Nariño","Nilo","Pulí","Ricaurte","Tocaima","Viotá"],
-  "Cáqueza":["Cabuyaro","Cáqueza","Chipaque","Choachi","El Calvario","Fomeque","Fosca","Guayabetal","Gutiérrez","Medina","Paratebueno","Quetame","San Juanito","Ubaque","Une"],
-  "La Mesa":["Anapoima","Anolaima","Cachipay","La Mesa","Quipile","San Antonio Del Tequendama","Tena"],
-  "Facatativá":[],
-  "Fusagasugá":["Arbeláez","Bogotá","Cabrera","Fusagasugá","Granada","Icononzo","Pandi","Pasca","San Bernardo","Sibaté","Silvania","Soacha","Tibacuy","Venecia"],
-  "Zipaquirá":[]
+  "GIRARDOT":["AGUA DE DIOS","ANAPOIMA","ANOLAIMA","APULO","BELTRÁN","CACHIPAY","COELLO","FLANDES","GIRARDOT","GUATAQUÍ","JERUSALÉN","LA MESA","MESITAS DEL COLEGIO","NARIÑO","NILO","PULÍ","QUIPILE","RICAURTE","SAN ANTONIO DEL TEQUENDAMA","TENA","TOCAIMA","VIOTÁ"],
+  "CÁQUEZA":["CABUYARO","CÁQUEZA","CHIPAQUE","CHOACHI","EL CALVARIO","FOMEQUE","FOSCA","GUAYABETAL","GUTIÉRREZ","MEDINA","PARATEBUENO","QUETAME","SAN JUANITO","UBAQUE","UNE"],
+  "FACATATIVÁ":["ALBÁN","BITUIMA","BOJACÁ","CAPARRAPÍ","CHAGUANÍ","EL PEÑÓN","EL ROSAL","FACATATIVÁ","FUNZA","GUADUAS","GUAYABAL DE SÍQUIMA","LA PALMA","LA PEÑA","LA VEGA","MADRID","MOSQUERA","NIMAIMA","NOCAIMA","PUERTO SALGAR","QUEBRADANEGRA","QUÍPILE","SAN FRANCISCO","SAN JUAN DE RÍO SECO","SASAIMA","SUBACHOQUE","SUPATÁ","TOPAIPÍ","ÚTICA","VERGARA","VIANÍ","VILLETA","YACOPÍ","ZIPACÓN"],
+"FUSAGASUGÁ":["ARBELÁEZ","BOGOTÁ","CABRERA","CABUYARO","CÁQUEZA","CHIPAQUE","CHOACHÍ","EL CALVARIO","FÓMEQUE","FOSCA","FUSAGASUGÁ","GRANADA","GUTIÉRREZ","GUAYABETAL","ICONONZO","MEDINA","PANDI","PARATEBUENO","PASCA","QUETAME","SAN BERNARDO","SAN JUANITO","SIBATÉ","SILVANIA","SOACHA","TIBACUY","UBAQUE","UNE","VENECIA"],
+  "ZIPAQUIRÁ":["BUENAVISTA","CAJICÁ","CALDAS","CARMEN DE CARUPA","CHÍA","CHIQUINQUIRÁ","CHOCONTÁ","COGUA","COPÉR","COTA","CUCUNUBÁ","FÚQUENE","GACHALÁ","GACHANCIPÁ","GACHETÁ","GAMA","GUACHETÁ","GUASCA","GUATAVITA","JUNÍN","LA CALERA","LENGUAZAQUE","MACHETÁ","MANTA","MUZO","NEMOCÓN","PACHO","PAIME","QUÍPAMA","RÁQUIRA","SAN CAYETANO","SAN MIGUEL DE SEMA","SESQUILÉ","SIMIJACA","SOPÓ","SUESCA","SUSA","SUTATAUSA","TABIO","TAUSA","TENJO","TIBIRITA","TOCANCIPÁ","UBALÁ","UBATÉ","VILLA DE SAN DIEGO DE UBATÉ","VILLAGÓMEZ","VILLAPINZÓN","ZIPAQUIRÁ"]
+
 };
 function fillSedeMunicipio(){
   const sedeSel=$("unc_sede"), munSel=$("unc_municipio");
