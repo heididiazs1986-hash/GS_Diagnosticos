@@ -1135,7 +1135,9 @@ function wireEvents(){
 
   // --- UNC: Localidad siempre en MAYÚSCULAS ---
   if ($("unc_localidad")) $("unc_localidad").addEventListener("input", e=>{ e.target.value = (e.target.value||"").toUpperCase(); });
-
+  if ($("unc_nombres")) $("unc_nombres").addEventListener("input", e=>{ e.target.value = (e.target.value||"").toUpperCase(); });
+  if ($("unc_direccion")) $("unc_direccion").addEventListener("input", e=>{ e.target.value = (e.target.value||"").toUpperCase(); });
+  
   // --- UNC: Dictado (audio a texto) en Observaciones ---
   if ($("unc_mic")) $("unc_mic").addEventListener("click", ()=>{
     const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
