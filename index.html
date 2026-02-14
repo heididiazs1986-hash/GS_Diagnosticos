@@ -117,18 +117,10 @@
         <div><label>Luminarias (AP)</label><input id="est_luminarias" inputmode="numeric" placeholder="0"></div>
       </div>
 
-      <div class="grid four">
+      <div class="grid three">
         <div><label>Latitud (Y)</label><input id="est_lat" readonly placeholder="GPS"></div>
         <div><label>Longitud (X)</label><input id="est_lon" readonly placeholder="GPS"></div>
-        <div><label>Precisión (m)</label><input id="est_acc" readonly placeholder="GPS"></div><div><label>Fotos</label><input id="est_fotos" type="file" accept="image/*" multiple data-max="5">
-      <div style="margin-top:10px;">
-        <label>Observaciones (opcional)</label>
-        <div class="dictWrap">
-          <textarea id="est_obs" placeholder="(Opcional)"></textarea>
-          <button class="secondary mic" type="button" data-target="est_obs" title="Dictar">🎤</button>
-        </div>
-      </div>
-</div>
+        <div><label>Fotos</label><input id="est_fotos" type="file" accept="image/*" multiple data-max="5"></div>
       </div>
 
       <div class="btnrow">
@@ -202,10 +194,10 @@
         </div>
       </div>
 
-      <div class="grid four">
+      <div class="grid three">
         <div><label>Latitud (Y)</label><input id="unc_lat" readonly placeholder="GPS"></div>
         <div><label>Longitud (X)</label><input id="unc_lon" readonly placeholder="GPS"></div>
-      <div><label>Precisión (m)</label><input id="unc_acc" readonly placeholder="GPS"></div><div class="btnrow">
+      <div class="btnrow">
         <button class="secondary" id="unc_btnGPS" type="button">📍 Coordenadas</button>
       </div>
 </div>
@@ -260,7 +252,7 @@
       </div>
 
       <div class="grid">
-        <div><label>Observaciones</label><div class="dictWrap"><textarea id="unc_obs"></textarea><button class="secondary mic" type="button" data-target="unc_obs" title="Dictar">🎤</button></div></div>
+        <div><label>Observaciones</label><textarea id="unc_obs"></textarea></div>
       </div>
     </div>
 
@@ -280,10 +272,10 @@
         <div><label>No. Fases</label><select id="cli_fases"><option value="">Selecciona…</option><option>Monofásico</option><option>Bifásico</option><option>Trifásico</option></select></div>
       </div>
 
-      <div class="grid four">
+      <div class="grid three">
         <div><label>Latitud (Y)</label><input id="cli_lat" readonly placeholder="GPS"></div>
         <div><label>Longitud (X)</label><input id="cli_lon" readonly placeholder="GPS"></div>
-        <div><label>Precisión (m)</label><input id="cli_acc" readonly placeholder="GPS"></div><div></div>
+        <div></div>
       </div>
       <div class="btnrow">
         <button class="secondary" id="cli_btnGPS" type="button">📍 Coordenadas</button>
@@ -296,15 +288,7 @@
       </div>
 
       <div class="grid">
-        <div><label>Fotos</label><input id="cli_fotos" type="file" accept="image/*" multiple data-max="5">
-      <div style="margin-top:10px;">
-        <label>Observaciones (opcional)</label>
-        <div class="dictWrap">
-          <textarea id="cli_obs" placeholder="(Opcional)"></textarea>
-          <button class="secondary mic" type="button" data-target="cli_obs" title="Dictar">🎤</button>
-        </div>
-      </div>
-</div>
+        <div><label>Fotos</label><input id="cli_fotos" type="file" accept="image/*" multiple data-max="2"></div>
       </div>
 
       <div class="btnrow">
@@ -322,10 +306,10 @@
         <div></div>
       </div>
 
-      <div class="grid four">
+      <div class="grid three">
         <div><label>Latitud (Y)</label><input id="sus_lat" readonly placeholder="GPS"></div>
         <div><label>Longitud (X)</label><input id="sus_lon" readonly placeholder="GPS"></div>
-        <div><label>Precisión (m)</label><input id="sus_acc" readonly placeholder="GPS"></div><div></div>
+        <div></div>
       </div>
       <div class="btnrow">
         <button class="secondary" id="sus_btnGPS" type="button">📍 Coordenadas</button>
@@ -342,15 +326,7 @@
       </div>
 
       <div class="grid">
-        <div><label>Fotos</label><input id="sus_fotos" type="file" accept="image/*" multiple data-max="5">
-      <div style="margin-top:10px;">
-        <label>Observaciones (opcional)</label>
-        <div class="dictWrap">
-          <textarea id="sus_obs" placeholder="(Opcional)"></textarea>
-          <button class="secondary mic" type="button" data-target="sus_obs" title="Dictar">🎤</button>
-        </div>
-      </div>
-</div>
+        <div><label>Fotos</label><input id="sus_fotos" type="file" accept="image/*" multiple data-max="2"></div>
       </div>
 
       <div class="btnrow">
@@ -374,21 +350,13 @@
       <div class="grid two">
         <div><label>Latitud (Y)</label><input id="bal_lat" readonly placeholder="GPS"></div>
         <div><label>Longitud (X)</label><input id="bal_lon" readonly placeholder="GPS"></div>
-      <div><label>Precisión (m)</label><input id="bal_acc" readonly placeholder="GPS"></div></div>
+      </div>
       <div class="btnrow">
         <button class="secondary" id="bal_btnGPS" type="button">📍 Coordenadas</button>
       </div>
 
       <div class="grid">
-        <div><label>Fotos</label><input id="bal_fotos" accept="image/*" type="file" data-max="5" multiple>
-      <div style="margin-top:10px;">
-        <label>Observaciones (opcional)</label>
-        <div class="dictWrap">
-          <textarea id="bal_obs" placeholder="(Opcional)"></textarea>
-          <button class="secondary mic" type="button" data-target="bal_obs" title="Dictar">🎤</button>
-        </div>
-      </div>
-</div>
+        <div><label>Fotos</label><input id="bal_fotos" accept="image/*" type="file" data-max="5" multiple></div>
       </div>
 
       <div class="btnrow">
@@ -919,36 +887,23 @@ function safeName(s){return (s||"").toString().trim().replace(/[\\/:*?\"<>|]+/g,
 
 function openModal(id){ const m=$(id); if(m) m.style.display="flex"; }
 function closeModal(id){ const m=$(id); if(m) m.style.display="none"; }
-let pendingCD = null;
-function openExportGate(nextCD){
-  pendingCD = nextCD;
-  openModal("modalExportGate");
-}
-$("gateCancel").addEventListener("click",()=>{ pendingCD=null; closeModal("modalExportGate"); });
-$("gateExport").addEventListener("click", async ()=>{
-  closeModal("modalExportGate");
-  await exportAll();
-  localStorage.setItem("exported_"+activeCD,"1");
-  if(pendingCD){
-    const cd= pendingCD;
-    pendingCD=null;
-    await setActiveCD(cd);
-  }
-});
-
+// Luego de guardar un registro, se pregunta si desea crear otro en el mismo nodo.
+// Este flujo se gestiona con el modal "modalAfterSave".
 async function afterSaveAskNext(){
-  $("afterSaveQ").style.display="none";
-  $("afterBtns").style.display="flex";
-  openModal("modalAfterSave");
+  // Reset del modal a su estado inicial (pregunta visible, opciones ocultas)
+  const q = document.getElementById('afterSaveQ');
+  const b = document.getElementById('afterBtns');
+  if(q) q.style.display = '';
+  if(b) b.style.display = 'none';
+  openModal('modalAfterSave');
 }
 
 async function exportAll(){
   setBadge("Exportando… 📦");
   const estr=await getAll("estructuras"), unc=await getAll("unc"), cli=await getAll("clientes"), sus=await getAll("susp"), bal=await getAll("baldios");
   const now=new Date();
-  const stamp = new Date().toISOString().slice(0,10);
-  const cdSafe = (cd+"").replace(/[^A-Z0-9_\-]/gi,"_");
-  const excelName = `GS_Diagnosticos_${cdSafe}_${stamp}.xls`;
+  const stamp=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,"0")}-${String(now.getDate()).padStart(2,"0")}_${String(now.getHours()).padStart(2,"0")}${String(now.getMinutes()).padStart(2,"0")}`;
+  const excelName=`GS_Diagnosticos_${stamp}.xls`;
   const excelU8=buildExcel(estr,unc,cli,sus,bal);
 
   const zip=new TinyZip();
@@ -1016,11 +971,11 @@ function wireEvents(){
   $("est2_punto_fisico").addEventListener("input", e=>e.target.value=upperAlnum(e.target.value));
   $("cli_marca").addEventListener("input", e=>e.target.value=upperAlnum(e.target.value));
 
-  $("est_btnGPS").addEventListener("click", ()=>captureGPS($("est_lat"),$("est_lon"),$("est_acc")));
-  $("unc_btnGPS").addEventListener("click", ()=>captureGPS($("unc_lat"),$("unc_lon"),$("unc_acc")));
-  $("cli_btnGPS").addEventListener("click", ()=>captureGPS($("cli_lat"),$("cli_lon"),$("cli_acc")));
-  $("sus_btnGPS").addEventListener("click", ()=>captureGPS($("sus_lat"),$("sus_lon"),$("sus_acc")));
-  $("bal_btnGPS").addEventListener("click", ()=>captureGPS($("bal_lat"),$("bal_lon"),$("bal_acc")));
+  $("est_btnGPS").addEventListener("click", ()=>captureGPS($("est_lat"),$("est_lon")));
+  $("unc_btnGPS").addEventListener("click", ()=>captureGPS($("unc_lat"),$("unc_lon")));
+  $("cli_btnGPS").addEventListener("click", ()=>captureGPS($("cli_lat"),$("cli_lon")));
+  $("sus_btnGPS").addEventListener("click", ()=>captureGPS($("sus_lat"),$("sus_lon")));
+  $("bal_btnGPS").addEventListener("click", ()=>captureGPS($("bal_lat"),$("bal_lon")));
   $("est2_btnGPS").addEventListener("click", ()=>captureGPS($("est2_lat"),$("est2_lon")));
 
   $("btnGuardarEstructura").addEventListener("click", async ()=>{
@@ -1039,9 +994,7 @@ function wireEvents(){
     toast("Guardado ✅");
     $("est_tipo_nodo").value=""; $("est_material_nodo").value=""; fillCaracteristicas($("est_tipo_nodo"),$("est_material_nodo"),$("est_caracteristicas"));
     $("est_punto_fisico").value=""; $("est_tipo_red_bt").value=""; $("est_luminarias").value="";
-    $("est_lat").value=""; $("est_lon").value="";
-      $("est_acc").value="";
-      $("est_obs").value=""; $("est_fotos").value="";
+    $("est_lat").value=""; $("est_lon").value=""; $("est_fotos").value="";
   });
 
   $("btnIrARegistro").addEventListener("click", ()=>{ if(!(activeCD&&activeCAP)) return toast("Registra CD primero"); resetForms(); show("screen2"); });
@@ -1202,15 +1155,15 @@ function wireEvents(){
     <div class="modalCard">
       <div style="font-weight:900;font-size:16px;">¿DESEA REALIZAR OTRO REGISTRO EN ESTE NODO?</div>
       <div class="vBtns" id="afterSaveQ">
-        <button class="ok" id="afterYes" style="display:none" type="button">SÍ</button>
-        <button class="secondary" id="afterNo" style="display:none" type="button">NO</button>
+        <button class="ok" id="afterYes" type="button">SÍ</button>
+        <button class="secondary" id="afterNo" type="button">NO</button>
       </div>
       <div class="vBtns" id="afterBtns" style="display:none;">
         <button class="secondary" id="goUNC" type="button">UNC</button>
         <button class="secondary" id="goCLI" type="button">CLIENTE</button>
         <button class="secondary" id="goSUS" type="button">SUSPENSIÓN</button>
         <button class="secondary" id="goBAL" type="button">BALDÍO</button>
-        <button class="secondary" id="goBackQ" style="display:none" type="button">Volver</button>
+        <button class="secondary" id="goBackQ" type="button">Volver</button>
       </div>
     </div>
   </div>
@@ -1231,18 +1184,6 @@ function wireEvents(){
           <button class="ok" id="updLoad" type="button">Cargar</button>
           <button class="secondary" id="updBack" type="button">Atrás</button>
         </div>
-      </div>
-    </div>
-  </div>
-
-
-  <div class="modalBack" id="modalExportGate">
-    <div class="modalCard">
-      <div style="font-weight:900;font-size:16px;">Debe exportar TODO antes de cambiar de CD</div>
-      <div style="margin-top:8px;font-size:13px;opacity:.9;">Esto genera el Excel y el ZIP fotográfico del CD actual.</div>
-      <div class="vBtns" style="margin-top:14px;">
-        <button class="ok" id="gateExport" type="button">EXPORTAR TODO</button>
-        <button class="secondary" id="gateCancel" type="button">CANCELAR</button>
       </div>
     </div>
   </div>
