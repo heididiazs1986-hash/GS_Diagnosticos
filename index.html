@@ -50,13 +50,14 @@
     input[type="text"], input[type="tel"], input[type="search"], textarea{ text-transform: uppercase; }
     /* Guardar en rojo oficial */
     button.ok{background:var(--rojo); color:#fff;}
-
-
-    /* Modal overlay */
-    .modalBack{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:center;justify-content:center;z-index:9999;padding:18px;}
-    .modalCard{width:min(520px,100%);background:#fff;border-radius:18px;padding:18px;box-shadow:0 18px 60px rgba(0,0,0,.35);}
-    .vBtns{display:flex;flex-direction:column;gap:10px;margin-top:12px;}
-    .vBtns button{width:100%;padding:14px 12px;border-radius:14px;font-size:16px;}
+    .creditos-app {
+  text-align: center;
+  font-size: 12px;
+  color: #777;
+  padding: 10px 6px 16px;
+  margin-top: 30px;
+  font-style: italic;
+}
 
 </style>
 </head>
@@ -71,7 +72,7 @@
 <main>
   <section class="card" id="screen1">
     <div class="title">
-      <div><h2>Centro de distribución</h2></div>
+      <div><h2>Estructuras de centro de distribución</h2></div>
       <div class="kpi" id="activeBox" style="display:none;">
         <div class="pill">⚡ <b id="activeCdTxt"></b></div>
 </div>
@@ -117,14 +118,18 @@
         <div><label>Luminarias (AP)</label><input id="est_luminarias" inputmode="numeric" placeholder="0"></div>
       </div>
 
-      <div class="grid three">
+      <div class="grid two">
         <div><label>Latitud (Y)</label><input id="est_lat" readonly placeholder="GPS"></div>
         <div><label>Longitud (X)</label><input id="est_lon" readonly placeholder="GPS"></div>
+      </div>
+      <div class="btnrow" style="justify-content:flex-start;">
+        <button class="secondary" id="est_btnGPS" type="button">📍 Coordenadas</button>
+      </div>
+      <div class="grid">
         <div><label>Fotos</label><input id="est_fotos" type="file" accept="image/*" multiple data-max="5"></div>
       </div>
 
       <div class="btnrow">
-        <button class="secondary" id="est_btnGPS" type="button">📍 Coordenadas</button>
         <button class="ok" id="btnGuardarEstructura" type="button">Guardar</button>
       </div>
     </div>
@@ -132,7 +137,6 @@
     <div class="btnrow">
       <button id="btnIrARegistro" type="button">Registrar diagnóstico</button>
       <button class="secondary" id="btnExportar" type="button">Exportar (Excel + Fotos ZIP)</button>
-      <button class="secondary" id="btnActualizar" type="button">Actualizar</button>
       <button class="secondary" id="btnConteos" type="button">Conteos</button>
     </div>
   </section>
@@ -147,28 +151,30 @@
 
     <div class="btnrow">
       <button id="btnUNC" type="button">UNC</button>
-      <button id="btnCliente" type="button">Cliente</button>
+      <button id="btnCliente" type="button">Clientes</button>
       <button id="btnSusp" type="button">Suspensión</button>
-      <button id="btnBaldio">Baldíos</button>
+      <button id="btnBaldio" type="button">Baldíos</button>
       <button class="secondary" id="btnBack1" type="button">Volver</button>
     </div>
 
     <div id="formUNC" style="display:none;">
       <div class="sep"></div>
       <div class="grid three">
-        <div><label>Nombres</label><input id="unc_nombres" type="text" autocomplete="name"></div>
+      <h2 class="section">INFORMACIÓN DE USUARIO</h2>
+        <div><label>Punto Físico</label><select id="unc_pf"></select></div>
+        <div><label>Nombres</label><input id="unc_nombres"></div>
         <div><label>Identificación</label><input id="unc_identificacion" inputmode="numeric"></div>
         <div><label>Contacto</label><input id="unc_contacto" inputmode="numeric"></div>
       </div>
-      <h3 class="section">CARACTERIZACIÓN DE PREDIO</h3>
+      <h2 class="section">CARACTERIZACIÓN DE PREDIO</h2>
       <div class="grid two">
-        <div><label>Punto Físico</label><select id="unc_pf"></select></div>
+        
         <div></div>
       </div>
       <div class="grid three">
         <div><label>Sede</label><select id="unc_sede"></select></div>
         <div><label>Municipio</label><select id="unc_municipio"></select></div>
-        <div><label>Dirección</label><input id="unc_direccion" type="text" autocomplete="street-address"></div>
+        <div><label>Dirección</label><input id="unc_direccion"></div>
       </div>
       <div class="grid three">
         <div><label>Localidad (Barrio/Vereda)</label><input id="unc_localidad"></div>
@@ -190,23 +196,23 @@
         </div>
         <div class="chips">
           <label class="chip"><input type="checkbox" id="unc_predio_habitable"> ¿Predio habitable?</label>
-          <label class="chip"><input type="checkbox" id="unc_ampliacion_redes"> Para servicio requiere ampliación de redes</label>
+          <label class="chip"><input type="checkbox" id="unc_ampliacion_redes"> ¿Para servicio requiere ampliación de redes?</label>
         </div>
       </div>
 
-      <div class="grid three">
+      <div class="grid two">
         <div><label>Latitud (Y)</label><input id="unc_lat" readonly placeholder="GPS"></div>
         <div><label>Longitud (X)</label><input id="unc_lon" readonly placeholder="GPS"></div>
-      <div class="btnrow">
+      </div>
+      <div class="btnrow" style="justify-content:flex-start;">
         <button class="secondary" id="unc_btnGPS" type="button">📍 Coordenadas</button>
       </div>
-</div>
       <div class="grid">
         <div><label>Fotos</label><input id="unc_fotos" type="file" accept="image/*" multiple data-max="5"></div>
       </div>
 
       <div class="sep"></div>
-      <h3 class="section">DOCUMENTOS ENTREGADOS POR USUARIO</h3>
+      <h2 class="section">DOCUMENTOS ENTREGADOS POR USUARIO</h2>
       <div class="grid two">
         <div><label>Documento de propiedad</label>
           <select id="unc_doc_propiedad">
@@ -229,18 +235,18 @@
 
       <div class="chips">
 <label class="chip"><input type="checkbox" id="unc_cedula_prop"> Cédula propietario</label>
-        <label class="chip"><input type="checkbox" id="unc_e1"> Formato E1</label>
-        <label class="chip"><input type="checkbox" id="unc_ar"> AR</label>
-        <label class="chip"><input type="checkbox" id="unc_dj"> DJ</label>
-        <label class="chip"><input type="checkbox" id="unc_e6"> E6</label>
-        <label class="chip"><input type="checkbox" id="unc_ec_part"> EC Particular</label>
+        <label class="chip"><input type="checkbox" id="unc_e1"> Formato de solicitud (E1)</label>
+        <label class="chip"><input type="checkbox" id="unc_ar"> Aceptación de requisitos (AR)</label>
+        <label class="chip"><input type="checkbox" id="unc_dj"> Declaración juramentada (DJ)</label>
+        <label class="chip"><input type="checkbox" id="unc_e6"> Recibo técnico (E6)</label>
+        <label class="chip"><input type="checkbox" id="unc_ec_part"> Esquema eléctrico (EC) Particular</label>
         <label class="chip"><input type="checkbox" id="unc_doc_elec"> Doc. electricista</label>
         <label class="chip"><input type="checkbox" id="unc_retie"> RETIE</label>
-        <label class="chip"><input type="checkbox" id="unc_ec_inmel"> EC Inmel</label>
+        <label class="chip"><input type="checkbox" id="unc_ec_inmel"> Esquema eléctrico (EC) Inmel</label>
       </div>
 
       <div class="sep"></div>
-      <h3 class="section">PENDIENTES PARA CUMPLIMIENTO DE NORMA TÉCNICA</h3>
+      <h2 class="section">PENDIENTES PARA CUMPLIMIENTO DE NORMA TÉCNICA</h2>
       <div class="chips">
         <label class="chip"><input type="checkbox" id="unc_requiere_muro"> ¿Requiere construir muro?</label>
         <label class="chip"><input type="checkbox" id="unc_acometida"> Acometida</label>
@@ -252,13 +258,21 @@
       </div>
 
       <div class="grid">
-        <div><label>Observaciones</label><textarea id="unc_obs"></textarea></div>
+        <div><label>Observaciones</label><textarea id="unc_obs"></textarea>
+          <div class="btnrow" style="justify-content:flex-start;margin-top:10px;">
+            <button class="secondary" id="unc_mic" type="button">🎙️ Dictar (Audio a texto)</button>
+          </div>
+      <div class="btnrow">
+        <button class="ok" id="btnGuardarUNC" type="button">Guardar</button>
+        <button class="secondary" id="btnCancelUNC" type="button">Cancelar</button>
+      </div>
+        </div>
       </div>
     </div>
 
     
     <div id="formCliente" style="display:none;">
-      <h3 class="section">CLIENTES</h3>
+      <h2 class="section">CLIENTES</h2>
       <div class="sep"></div>
 
       <div class="grid two">
@@ -298,7 +312,7 @@
     </div>
 
     <div id="formSusp" style="display:none;">
-      <h3 class="section">SUSPENSIÓN</h3>
+      <h2 class="section">SUSPENSIÓN</h2>
       <div class="sep"></div>
 
       <div class="grid two">
@@ -335,7 +349,11 @@
       </div>
     </div>
 
-    <div class="grid two">
+    <div id="formBaldio" style="display:none;">
+      <h2 class="section">BALDÍOS</h2>
+      <div class="sep"></div>
+
+      <div class="grid two">
         <div><label>Punto Físico</label><select id="bal_pf"></select></div>
         <div><label>Estado</label>
           <select id="bal_estado">
@@ -356,7 +374,7 @@
       </div>
 
       <div class="grid">
-        <div><label>Fotos</label><input id="bal_fotos" accept="image/*" type="file" data-max="5" multiple></div>
+        <div><label>Fotos</label><input id="bal_fotos" accept="image/*" type="file" accept="image/*" multiple data-max="3"></div>
       </div>
 
       <div class="btnrow">
@@ -391,7 +409,28 @@
 
   <div class="toast" id="toast"></div>
 
-  </main>
+  <div class="modalBack" id="modalNext">
+    <div class="modalCard">
+      <div style="font-weight:900;font-size:16px;">¿DESEA REALIZAR OTRO REGISTRO EN ESTE NODO?</div>
+      <div class="vBtns">
+        <button class="ok" id="nextSi" type="button">SÍ</button>
+        <button class="secondary" id="nextNo" type="button">NO</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modalBack" id="modalPick">
+    <div class="modalCard">
+      <div style="font-weight:900;font-size:16px;">Seleccione el registro</div>
+      <div class="vBtns">
+        <button class="secondary" id="pickUNC" type="button">UNC</button>
+        <button class="secondary" id="pickCLI" type="button">CLIENTE</button>
+        <button class="secondary" id="pickSUS" type="button">SUSPENSIÓN</button>
+        <button class="secondary" id="pickBAL" type="button">BALDÍO</button>
+      </div>
+    </div>
+  </div>
+</main>
 
 <script>
 function crc32(buf){
@@ -519,12 +558,12 @@ function wireCarDep(tipoId, matId, carId){
 
 /* Sede -> Municipio (dependiente) */
 const sedeMunicipios = {
-  "Girardot":["Agua De Dios","Apulo","Beltrán","Coello","Flandes","Girardot","Guataquí","Jerusalén","Mesitas Del Colegio","Nariño","Nilo","Pulí","Ricaurte","Tocaima","Viotá"],
-  "Cáqueza":["Cabuyaro","Cáqueza","Chipaque","Choachi","El Calvario","Fomeque","Fosca","Guayabetal","Gutiérrez","Medina","Paratebueno","Quetame","San Juanito","Ubaque","Une"],
-  "La Mesa":["Anapoima","Anolaima","Cachipay","La Mesa","Quipile","San Antonio Del Tequendama","Tena"],
-  "Facatativá":[],
-  "Fusagasugá":["Arbeláez","Bogotá","Cabrera","Fusagasugá","Granada","Icononzo","Pandi","Pasca","San Bernardo","Sibaté","Silvania","Soacha","Tibacuy","Venecia"],
-  "Zipaquirá":[]
+  "GIRARDOT":["AGUA DE DIOS","ANAPOIMA","ANOLAIMA","APULO","BELTRÁN","CACHIPAY","COELLO","FLANDES","GIRARDOT","GUATAQUÍ","JERUSALÉN","LA MESA","MESITAS DEL COLEGIO","NARIÑO","NILO","PULÍ","QUIPILE","RICAURTE","SAN ANTONIO DEL TEQUENDAMA","TENA","TOCAIMA","VIOTÁ"],
+  "CÁQUEZA":["CABUYARO","CÁQUEZA","CHIPAQUE","CHOACHI","EL CALVARIO","FOMEQUE","FOSCA","GUAYABETAL","GUTIÉRREZ","MEDINA","PARATEBUENO","QUETAME","SAN JUANITO","UBAQUE","UNE"],
+  "FACATATIVÁ":["ALBÁN","BITUIMA","BOJACÁ","CAPARRAPÍ","CHAGUANÍ","EL PEÑÓN","EL ROSAL","FACATATIVÁ","FUNZA","GUADUAS","GUAYABAL DE SÍQUIMA","LA PALMA","LA PEÑA","LA VEGA","MADRID","MOSQUERA","NIMAIMA","NOCAIMA","PUERTO SALGAR","QUEBRADANEGRA","QUÍPILE","SAN FRANCISCO","SAN JUAN DE RÍO SECO","SASAIMA","SUBACHOQUE","SUPATÁ","TOPAIPÍ","ÚTICA","VERGARA","VIANÍ","VILLETA","YACOPÍ","ZIPACÓN"],
+"FUSAGASUGÁ":["ARBELÁEZ","BOGOTÁ","CABRERA","CABUYARO","CÁQUEZA","CHIPAQUE","CHOACHÍ","EL CALVARIO","FÓMEQUE","FOSCA","FUSAGASUGÁ","GRANADA","GUTIÉRREZ","GUAYABETAL","ICONONZO","MEDINA","PANDI","PARATEBUENO","PASCA","QUETAME","SAN BERNARDO","SAN JUANITO","SIBATÉ","SILVANIA","SOACHA","TIBACUY","UBAQUE","UNE","VENECIA"],
+  "ZIPAQUIRÁ":["BUENAVISTA","CAJICÁ","CALDAS","CARMEN DE CARUPA","CHÍA","CHIQUINQUIRÁ","CHOCONTÁ","COGUA","COPÉR","COTA","CUCUNUBÁ","FÚQUENE","GACHALÁ","GACHANCIPÁ","GACHETÁ","GAMA","GUACHETÁ","GUASCA","GUATAVITA","JUNÍN","LA CALERA","LENGUAZAQUE","MACHETÁ","MANTA","MUZO","NEMOCÓN","PACHO","PAIME","QUÍPAMA","RÁQUIRA","SAN CAYETANO","SAN MIGUEL DE SEMA","SESQUILÉ","SIMIJACA","SOPÓ","SUESCA","SUSA","SUTATAUSA","TABIO","TAUSA","TENJO","TIBIRITA","TOCANCIPÁ","UBALÁ","UBATÉ","VILLA DE SAN DIEGO DE UBATÉ","VILLAGÓMEZ","VILLAPINZÓN","ZIPAQUIRÁ"]
+
 };
 function fillSedeMunicipio(){
   const sedeSel=$("unc_sede"), munSel=$("unc_municipio");
@@ -550,8 +589,6 @@ function openDB(){ return new Promise((resolve,reject)=>{
 function tx(store,mode="readonly"){ return db.transaction(store,mode).objectStore(store); }
 function getMeta(key){ return new Promise(res=>{ const r=tx("meta").get(key); r.onsuccess=()=>res(r.result?r.result.value:null); r.onerror=()=>res(null); }); }
 function setMeta(key,value){ return new Promise((res,rej)=>{ const r=tx("meta","readwrite").put({key,value}); r.onsuccess=()=>res(true); r.onerror=()=>rej(r.error); }); }
-function putRec(store,obj){ return new Promise((res,rej)=>{ const r=tx(store,"readwrite").put(obj); r.onsuccess=()=>res(r.result); r.onerror=()=>rej(r.error); }); }
-function getById(store,id){ return new Promise(res=>{ const r=tx(store).get(id); r.onsuccess=()=>res(r.result||null); r.onerror=()=>res(null); }); }
 function addRec(store,obj){ return new Promise((res,rej)=>{ const r=tx(store,"readwrite").add(obj); r.onsuccess=()=>res(r.result); r.onerror=()=>rej(r.error); }); }
 function getAll(store){ return new Promise(res=>{ const r=tx(store).getAll(); r.onsuccess=()=>res(r.result||[]); r.onerror=()=>res([]); }); }
 function count(store){ return new Promise(res=>{ const r=tx(store).count(); r.onsuccess=()=>res(r.result||0); r.onerror=()=>res(0); }); }
@@ -672,7 +709,7 @@ function validateSection(containerId){
   return true;
 }
 
-function resetForms(){ ["formUNC","formCliente","formSusp","formEstructura"].forEach(id=>$(id).style.display="none"); }
+function resetForms(){ ["formUNC","formCliente","formSusp","formBaldio","formEstructura"].forEach(id=>$(id).style.display="none"); }
 
 /* Builders */
 async function buildEstructura(fromScreen2){
@@ -887,16 +924,7 @@ function safeName(s){return (s||"").toString().trim().replace(/[\\/:*?\"<>|]+/g,
 
 function openModal(id){ const m=$(id); if(m) m.style.display="flex"; }
 function closeModal(id){ const m=$(id); if(m) m.style.display="none"; }
-// Luego de guardar un registro, se pregunta si desea crear otro en el mismo nodo.
-// Este flujo se gestiona con el modal "modalAfterSave".
-async function afterSaveAskNext(){
-  // Reset del modal a su estado inicial (pregunta visible, opciones ocultas)
-  const q = document.getElementById('afterSaveQ');
-  const b = document.getElementById('afterBtns');
-  if(q) q.style.display = '';
-  if(b) b.style.display = 'none';
-  openModal('modalAfterSave');
-}
+async function afterSaveAskNext(){ openModal("modalNext"); }
 
 async function exportAll(){
   setBadge("Exportando… 📦");
@@ -1003,7 +1031,7 @@ function wireEvents(){
   $("btnUNC").addEventListener("click", async ()=>{ resetForms(); await refreshPFSelectors(); $("formUNC").style.display=""; });
   $("btnCliente").addEventListener("click", async ()=>{ resetForms(); await refreshPFSelectors(); $("formCliente").style.display=""; });
   $("btnSusp").addEventListener("click", async ()=>{ resetForms(); await refreshPFSelectors(); $("formSusp").style.display=""; });
-  $("btnBaldio").addEventListener("click", async ()=>{ resetForms(); await refreshPFSelectors(); show("screenBaldio"); $("formBaldio").style.display=""; });
+  $("btnBaldio").addEventListener("click", async ()=>{ resetForms(); await refreshPFSelectors(); $("formBaldio").style.display=""; });
 
   $("btnCancelUNC").addEventListener("click", ()=>resetForms());
   $("btnCancelCli").addEventListener("click", ()=>resetForms());
@@ -1018,7 +1046,7 @@ function wireEvents(){
     const obj=await buildUNC(); if(!obj) return;
     obj.Fotos=await readFiles($("unc_fotos"));
     const item=await nextItem("unc");
-    if(editCtx && editCtx.store==="unc"){ await putRec("unc",{...obj,id:editCtx.id,item}); editCtx=null; } else { await addRec("unc",{...obj,item}); }
+    await addRec("unc",{...obj,item});
     toast("Guardado ✅"); resetForms(); await afterSaveAskNext();
   });
   $("btnGuardarCli").addEventListener("click", async ()=>{
@@ -1028,7 +1056,7 @@ function wireEvents(){
     const obj=await buildCliente(); if(!obj) return;
     obj.Fotos=await readFiles($("cli_fotos"));
     const item=await nextItem("clientes");
-    if(editCtx && editCtx.store==="clientes"){ await putRec("clientes",{...obj,id:editCtx.id,item}); editCtx=null; } else { await addRec("clientes",{...obj,item}); }
+    await addRec("clientes",{...obj,item});
     toast("Guardado ✅"); resetForms(); await afterSaveAskNext();
   });
   if($("btnGuardarBaldio")) $("btnGuardarBaldio").addEventListener("click", async ()=>{
@@ -1064,68 +1092,6 @@ function wireEvents(){
   });
 
   $("btnExportar").addEventListener("click", exportAll);
-  // After-save modal
-  $("afterYes").addEventListener("click", ()=>{ $("afterSaveQ").style.display="none"; $("afterBtns").style.display="flex"; });
-  $("afterNo").addEventListener("click", ()=>{ closeModal("modalAfterSave"); resetForms(); show("screen1"); });
-  $("goBackQ").addEventListener("click", ()=>{ $("afterBtns").style.display="none"; $("afterSaveQ").style.display="flex"; });
-  $("goUNC").addEventListener("click", async ()=>{ closeModal("modalAfterSave"); resetForms(); await refreshPFSelectors(); show("screen2"); $("formUNC").style.display=""; });
-  $("goCLI").addEventListener("click", async ()=>{ closeModal("modalAfterSave"); resetForms(); await refreshPFSelectors(); show("screen2"); $("formCliente").style.display=""; });
-  $("goSUS").addEventListener("click", async ()=>{ closeModal("modalAfterSave"); resetForms(); await refreshPFSelectors(); show("screen2"); $("formSusp").style.display=""; });
-  $("goBAL").addEventListener("click", async ()=>{ closeModal("modalAfterSave"); resetForms(); await refreshPFSelectors(); show("screenBaldio"); $("formBaldio").style.display=""; });
-
-  // Actualizar
-  $("btnActualizar").addEventListener("click", ()=>{ openModal("modalUpdate"); $("updPick").style.display="flex"; $("updListWrap").style.display="none"; });
-  $("updClose").addEventListener("click", ()=>closeModal("modalUpdate"));
-  $("updBack").addEventListener("click", ()=>{ $("updPick").style.display="flex"; $("updListWrap").style.display="none"; });
-  let updStore=null;
-  async function loadUpdList(store){
-    updStore=store;
-    const all=await getAll(store);
-    const filtered=all.filter(r=>r.Transformador===activeCD);
-    const sel=$("updSelect");
-    sel.innerHTML = `<option value="">Selecciona…</option>` + filtered.map(r=>{
-      const key = store==="unc" ? (r.Nombres||"") : (r.SerieMedidor||"");
-      const pf = r.PuntoFisico||"";
-      return `<option value="${r.id}">${pf} | ${key} | ID:${r.id}</option>`;
-    }).join("");
-    $("updHint").textContent = filtered.length ? "Selecciona un registro para editar" : "No hay registros en este CD";
-    $("updPick").style.display="none"; $("updListWrap").style.display="block";
-  }
-  $("updUNC").addEventListener("click", ()=>loadUpdList("unc"));
-  $("updCLI").addEventListener("click", ()=>loadUpdList("clientes"));
-  $("updLoad").addEventListener("click", async ()=>{
-    const id=Number($("updSelect").value||0); if(!id) return toast("Selecciona un registro");
-    const rec=await getById(updStore,id); if(!rec) return toast("No encontrado");
-    editCtx={store:updStore,id};
-    closeModal("modalUpdate");
-    resetForms(); await refreshPFSelectors();
-    if(updStore==="unc"){
-      show("screen2"); $("formUNC").style.display="";
-      if($("unc_pf")) $("unc_pf").value = rec.PuntoFisico||"";
-      $("unc_nombres").value = (rec.Nombres||"");
-      $("unc_direccion").value = (rec.Direccion||"");
-      if($("unc_estado")) $("unc_estado").value = rec.Estado||"";
-      if($("unc_lat")) $("unc_lat").value = rec.Latitud||"";
-      if($("unc_lon")) $("unc_lon").value = rec.Longitud||"";
-      // checkboxes
-      if($("unc_predio_habitable")) $("unc_predio_habitable").checked = (rec.PredioHabitable==="Sí");
-      if($("unc_ampliacion_redes")) $("unc_ampliacion_redes").checked = (rec.AmpliacionRedes==="Sí");
-      if($("unc_requiere_muro")) $("unc_requiere_muro").checked = (rec.RequiereMuro==="Sí");
-    } else {
-      show("screen2"); $("formCliente").style.display="";
-      if($("cli_pf")) $("cli_pf").value = rec.PuntoFisico||"";
-      $("cli_serie").value = rec.SerieMedidor||"";
-      $("cli_marca").value = rec.Marca||"";
-      if($("cli_fases")) $("cli_fases").value = rec.Fases||"";
-      if($("cli_lat")) $("cli_lat").value = rec.Latitud||"";
-      if($("cli_lon")) $("cli_lon").value = rec.Longitud||"";
-      if($("cli_estado_medidor")) $("cli_estado_medidor").value = rec.EstadoMedidor||"";
-      if($("cli_req_inspeccion")) $("cli_req_inspeccion").checked = (rec.ReqInspeccion==="Sí");
-      if($("cli_estado_visor")) $("cli_estado_visor").value = rec.EstadoVisor||"";
-    }
-    toast("Modo edición ✅");
-  });
-
   $("btnConteos").addEventListener("click", async ()=>{ const a=await count("estructuras"),b=await count("unc"),c=await count("clientes"),d=await count("susp"),e=await count("baldios"); toast(`Estructuras: ${a} | UNC: ${b} | Clientes: ${c} | Susp: ${d} | Baldíos: ${e}`); });
 }
 
@@ -1149,44 +1115,59 @@ function wireEvents(){
     toast("Error cargando app");
   }
 })();
+
+  // --- Flujo post-guardar: SÍ/NO + selección de formulario ---
+  if ($("nextSi")) $("nextSi").addEventListener("click", ()=>{ closeModal("modalNext"); openModal("modalPick"); });
+  if ($("nextNo")) $("nextNo").addEventListener("click", ()=>{ closeModal("modalNext"); closeModal("modalPick"); show("screen1"); window.scrollTo({top:0,behavior:"smooth"}); });
+
+  function goToForm(formId){
+    closeModal("modalPick");
+    show("screen2");
+    resetForms();
+    const el = $(formId);
+    if (el) el.style.display = "block";
+    window.scrollTo({top:0,behavior:"smooth"});
+  }
+  if ($("pickUNC")) $("pickUNC").addEventListener("click", ()=>goToForm("formUNC"));
+  if ($("pickCLI")) $("pickCLI").addEventListener("click", ()=>goToForm("formCliente"));
+  if ($("pickSUS")) $("pickSUS").addEventListener("click", ()=>goToForm("formSusp"));
+  if ($("pickBAL")) $("pickBAL").addEventListener("click", ()=>goToForm("formBaldio"));
+
+  // --- UNC: Localidad siempre en MAYÚSCULAS ---
+  if ($("unc_localidad")) $("unc_localidad").addEventListener("input", e=>{ e.target.value = (e.target.value||"").toUpperCase(); });
+  if ($("unc_nombres")) $("unc_nombres").addEventListener("input", e=>{ e.target.value = (e.target.value||"").toUpperCase(); });
+  if ($("unc_direccion")) $("unc_direccion").addEventListener("input", e=>{ e.target.value = (e.target.value||"").toUpperCase(); });
+  
+  // --- UNC: Dictado (audio a texto) en Observaciones ---
+  if ($("unc_mic")) $("unc_mic").addEventListener("click", ()=>{
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if(!SR) return toast("Dictado no disponible en este navegador");
+    try{
+      const rec = new SR();
+      rec.lang = "es-CO";
+      rec.interimResults = false;
+      rec.maxAlternatives = 1;
+      toast("Escuchando… 🎙️");
+      rec.onresult = (ev)=>{
+        const t = ev.results?.[0]?.[0]?.transcript || "";
+        const box = $("unc_obs");
+        if(box){
+          const sep = (box.value && !box.value.endsWith(" ")) ? " " : "";
+          box.value = (box.value || "") + sep + t;
+        }
+        toast("Listo ✅");
+      };
+      rec.onerror = ()=>toast("No se pudo dictar (permiso/ruido/red)");
+      rec.start();
+    }catch(e){
+      toast("No se pudo iniciar el dictado");
+    }
+  });
+
 </script>
-
-  <div class="modalBack" id="modalAfterSave">
-    <div class="modalCard">
-      <div style="font-weight:900;font-size:16px;">¿DESEA REALIZAR OTRO REGISTRO EN ESTE NODO?</div>
-      <div class="vBtns" id="afterSaveQ">
-        <button class="ok" id="afterYes" type="button">SÍ</button>
-        <button class="secondary" id="afterNo" type="button">NO</button>
-      </div>
-      <div class="vBtns" id="afterBtns" style="display:none;">
-        <button class="secondary" id="goUNC" type="button">UNC</button>
-        <button class="secondary" id="goCLI" type="button">CLIENTE</button>
-        <button class="secondary" id="goSUS" type="button">SUSPENSIÓN</button>
-        <button class="secondary" id="goBAL" type="button">BALDÍO</button>
-        <button class="secondary" id="goBackQ" type="button">Volver</button>
-      </div>
-    </div>
-  </div>
-
-
-  <div class="modalBack" id="modalUpdate">
-    <div class="modalCard">
-      <div style="font-weight:900;font-size:16px;">Actualizar registro</div>
-      <div class="vBtns" id="updPick">
-        <button class="secondary" id="updUNC" type="button">UNC</button>
-        <button class="secondary" id="updCLI" type="button">CLIENTE</button>
-        <button class="secondary" id="updClose" type="button">Cerrar</button>
-      </div>
-      <div id="updListWrap" style="display:none;margin-top:10px;">
-        <div class="hint" id="updHint"></div>
-        <select id="updSelect" style="margin-top:10px;"></select>
-        <div class="btnrow" style="margin-top:10px;">
-          <button class="ok" id="updLoad" type="button">Cargar</button>
-          <button class="secondary" id="updBack" type="button">Atrás</button>
-        </div>
-      </div>
-    </div>
-  </div>
+  <footer class="creditos-app">
+  Creado por <strong>Heidi Díaz</strong> para el proceso de Gestión Social.
+</footer>
 
 </body>
 </html>
