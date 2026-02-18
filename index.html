@@ -526,6 +526,33 @@ class TinyZip{
 const HDR_U = ["Ítem", "Transformador (CD)", "Capacidad transformador kVA", "Nombres", "Identificación", "Contacto", "Sede", "Municipio", "Dirección", "Localidad (Barrio/Vereda)", "Tipo Zona", "Latitud (Y)", "Longitud (X)", "Tipo material", "¿Predio habitable?", "¿Requiere construir muro?","Para servicio requiere ampliación de redes", "Documento de propiedad", "Cédula propietario", "Formato E1 Solicitud", "Aceptación de requisitos", "Declaración Juramentada", "Formato E6 RT", "EC Particular", "Documentos electricista", "Declaración RETIE", "EC Inmel", "Estado", "Acometida", "Ducto 1\" Galv.", "Celda", "Interruptor", "SPT (Tierra)", "Instalación interna", "Observaciones"];
 
 const $ = (id)=>document.getElementById(id);
+
+/* Dictado (Web Speech API) */
+const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+let _rec=null;
+function startDictation(targetId){
+  const ta = $(targetId);
+  if(!ta) return;
+  if(!SpeechRecognition){
+    toast("Dictado no disponible en este navegador");
+    return;
+  }
+  if(_rec){ try{_rec.stop();}catch(e){} _rec=null; }
+  _rec = new SpeechRecognition();
+  _rec.lang = "es-CO";
+  _rec.interimResults = false;
+  _rec.maxAlternatives = 1;
+  setBadge("Dictando… 🎙️");
+  _rec.onresult = (e)=>{
+    const txt = (e.results && e.results[0] && e.results[0][0]) ? e.results[0][0].transcript : "";
+    const cur = ta.value || "";
+    ta.value = (cur ? (cur + " ") : "") + (txt||"").toUpperCase();
+    ta.dispatchEvent(new Event("input",{bubbles:true}));
+  };
+  _rec.onerror = ()=>{ toast("No se pudo dictar"); };
+  _rec.onend = ()=>{ setBadge("Listo ✅"); _rec=null; };
+  _rec.start();
+}
 const toastEl=$("toast");
 function toast(msg){toastEl.textContent=msg;toastEl.classList.add("show");setTimeout(()=>toastEl.classList.remove("show"),2200);}
 function setBadge(msg){$("hdrBadge").textContent=msg;}
@@ -1014,7 +1041,15 @@ async function refreshPFSelectors(){
 }
 
 function wireEvents(){
-  document.querySelectorAll('input[name="modoCd"]').forEach(r=>r.addEventListener("change",refreshModoCd));
+  
+  // Dictado: botones 🎤
+  document.querySelectorAll('button.mic[data-target]').forEach(btn=>{
+    btn.addEventListener("click", ()=>{
+      const target = btn.getAttribute("data-target");
+      startDictation(target);
+    });
+  });
+document.querySelectorAll('input[name="modoCd"]').forEach(r=>r.addEventListener("change",refreshModoCd));
   refreshModoCd();
   document.querySelectorAll('input[type="file"][data-max]').forEach(enforceMaxFiles);
 
@@ -1032,7 +1067,7 @@ function wireEvents(){
   $("cli_btnGPS").addEventListener("click", ()=>captureGPS($("cli_lat"),$("cli_lon"),$("cli_acc")));
   $("sus_btnGPS").addEventListener("click", ()=>captureGPS($("sus_lat"),$("sus_lon"),$("sus_acc")));
   $("bal_btnGPS").addEventListener("click", ()=>captureGPS($("bal_lat"),$("bal_lon"),$("bal_acc")));
-  $("est2_btnGPS").addEventListener("click", ()=>captureGPS($("est2_lat"),$("est2_lon")));
+  $("est2_btnGPS").addEventListener("click", ()=>captureGPS($("est2_lat"),$("est2_lon"),$("est2_acc")));
 
   $("btnGuardarEstructura").addEventListener("click", async ()=>{
     if(!validateSection("screen1")) return;
