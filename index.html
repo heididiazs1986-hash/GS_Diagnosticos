@@ -164,7 +164,7 @@
       <button id="btnUNC" type="button">UNC</button>
       <button id="btnCliente" type="button">Cliente</button>
       <button id="btnSusp" type="button">Suspensión</button>
-      <button id="btnBaldio">Baldíos</button>
+      <button id="btnBaldio" type="button">Baldíos</button>
       <button class="secondary" id="btnBack1" type="button">Volver</button>
     </div>
 
@@ -761,17 +761,7 @@ function validateSection(containerId){
   return true;
 }
 
-function resetForms(){ 
-  if($("formBaldio")) $("formBaldio").style.display="none";
-["formUNC","formCliente","formSusp","formEstructura"].forEach(id=>$(id).style.display="none"); }
-
-
-function hideAllForms(){
-  ["formUNC","formCliente","formSusp","formBaldio"].forEach(id=>{
-    const el = $(id);
-    if(el) el.style.display="none";
-  });
-}
+function resetForms(){ ["formUNC","formCliente","formSusp","formBaldio","formEstructura"].forEach(id=>{const el=$(id); if(el) el.style.display="none";}); }
 /* Builders */
 async function buildEstructura(fromScreen2){
   const modo=document.querySelector('input[name="modoCd"]:checked').value;
@@ -1124,7 +1114,7 @@ document.querySelectorAll('input[name="modoCd"]').forEach(r=>r.addEventListener(
   onSafe("btnUNC","click",async ()=>{ resetForms(); await refreshPFSelectors(); $("formUNC").style.display=""; });
   onSafe("btnCliente","click",async ()=>{ resetForms(); await refreshPFSelectors(); $("formCliente").style.display=""; });
   onSafe("btnSusp","click",async ()=>{ resetForms(); await refreshPFSelectors(); $("formSusp").style.display=""; });
-  onSafe("btnBaldio","click",async ()=>{ resetForms(); await refreshPFSelectors(); show("screenBaldio"); if($("formBaldio")) $("formBaldio").style.display=""; });
+  onSafe("btnBaldio","click",async ()=>{ resetForms(); await refreshPFSelectors(); if($("formBaldio")) $("formBaldio").style.display=""; });
 
   onSafe("btnCancelUNC","click",()=>resetForms());
   onSafe("btnCancelCli","click",()=>resetForms());
