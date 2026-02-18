@@ -273,7 +273,12 @@
     </div>
 
     
-    <div id="formCliente" style="display:none;">
+    
+      <div class="btnrow">
+        <button class="ok" id="btnGuardarUNC" type="button">Guardar</button>
+        <button class="secondary" id="btnCancelUNC" type="button">Cancelar</button>
+      </div>
+<div id="formCliente" style="display:none;">
       <h3 class="section">CLIENTES</h3>
       <div class="sep"></div>
 
@@ -367,7 +372,12 @@
       </div>
     </div>
 
-    <div class="grid two">
+
+    <div id="formBaldio">
+      <h3 class="section">BALDÍOS</h3>
+      <div class="sep"></div>
+
+      <div class="grid two">
         <div><label>Punto Físico</label><select id="bal_pf"></select></div>
         <div><label>Estado</label>
           <select id="bal_estado">
@@ -404,7 +414,9 @@
         <button class="ok" id="btnGuardarBaldio" type="button">Guardar</button>
         <button class="secondary" id="btnCancelBaldio" type="button">Cancelar</button>
       </div>
+    
     </div>
+</div>
 <div id="formEstructura" style="display:none;">
       <div class="sep"></div>
       <div class="grid three">
@@ -417,21 +429,17 @@
         <div><label>Tipo de Redes BT</label><select id="est2_tipo_red_bt"><option value="">Selecciona…</option><option>Abierta</option><option>Trenzada</option></select></div>
         <div><label>Luminarias (AP)</label><input id="est2_luminarias" inputmode="numeric" placeholder="0"></div>
       </div>
-      <div class="grid three">
-  <div><label>Latitud (Y)</label><input id="est2_lat" readonly placeholder="GPS"></div>
-  <div><label>Longitud (X)</label><input id="est2_lon" readonly placeholder="GPS"></div>
-  <div><label>Precisión (m)</label><input id="est2_acc" readonly placeholder="GPS"></div>
-</div>
-<div class="btnrow">
-  <button class="secondary" id="est2_btnGPS" type="button">📍 Coordenadas</button>
-</div>
-<div class="grid">
-  <div><label>Fotos</label><input id="est2_fotos" type="file" accept="image/*" multiple data-max="7"></div>
-</div>
+      <div class="grid four">
+        <div><label>Latitud (Y)</label><input id="est2_lat" readonly placeholder="GPS"></div>
+        <div><label>Longitud (X)</label><input id="est2_lon" readonly placeholder="GPS"></div>
+        <div><label>Precisión (m)</label><input id="est2_acc" readonly placeholder="GPS"></div>
+        <div><label>Fotos</label><input id="est2_fotos" type="file" accept="image/*" multiple></div>
+      </div>
       <div class="btnrow">
-  <button class="ok" id="btnGuardarEst2" type="button">Guardar</button>
-  <button class="secondary" id="btnCancelEst2" type="button">Cancelar</button>
-</div>
+        <button class="secondary" id="est2_btnGPS" type="button">📍 Coordenadas</button>
+        <button class="ok" id="btnGuardarEst2" type="button">Guardar</button>
+        <button class="secondary" id="btnCancelEst2" type="button">Cancelar</button>
+      </div>
     </div>
   </section>
 
@@ -532,6 +540,12 @@ const HDR_U = ["Ítem", "Transformador (CD)", "Capacidad transformador kVA", "No
 
 const $ = (id)=>document.getElementById(id);
 
+
+function onSafe(id, evt, fn){
+  const el = $(id);
+  if(!el) return;
+  el.addEventListener(evt, fn);
+}
 /* Dictado (Web Speech API) */
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 let _rec=null;
@@ -539,9 +553,7 @@ function startDictation(targetId){
   const ta = $(targetId);
   if(!ta) return;
   if(!SpeechRecognition){
-    // iPhone/iPad (Safari/PWA) suele no soportar Web Speech. Fallback: enfoca el campo.
-    ta.focus();
-    toast("Dictado: usa el micrófono del teclado (iPhone) o dictado del sistema");
+    toast("Dictado no disponible en este navegador");
     return;
   }
   if(_rec){ try{_rec.stop();}catch(e){} _rec=null; }
@@ -651,8 +663,6 @@ function enforceUpper(el){
 }
 
 function captureGPS(latEl, lonEl, accEl){
-  if(!latEl || !lonEl){ toast("Campos GPS no disponibles"); return; }
-
   setBadge("GPS… 📡");
   if(!navigator.geolocation){ setBadge("Listo ✅"); toast("Sin GPS"); return; }
 
@@ -1105,7 +1115,7 @@ document.querySelectorAll('input[name="modoCd"]').forEach(r=>r.addEventListener(
   $("btnUNC").addEventListener("click", async ()=>{ resetForms(); await refreshPFSelectors(); $("formUNC").style.display=""; });
   $("btnCliente").addEventListener("click", async ()=>{ resetForms(); await refreshPFSelectors(); $("formCliente").style.display=""; });
   $("btnSusp").addEventListener("click", async ()=>{ resetForms(); await refreshPFSelectors(); $("formSusp").style.display=""; });
-  $("btnBaldio").addEventListener("click", async ()=>{ resetForms(); await refreshPFSelectors(); show("screenBaldio"); $("formBaldio").style.display=""; });
+  $("btnBaldio").addEventListener("click", async ()=>{ resetForms(); await refreshPFSelectors(); show("screenBaldio"); if($("formBaldio")) $("formBaldio").style.display=""; });
 
   $("btnCancelUNC").addEventListener("click", ()=>resetForms());
   $("btnCancelCli").addEventListener("click", ()=>resetForms());
@@ -1173,7 +1183,7 @@ document.querySelectorAll('input[name="modoCd"]').forEach(r=>r.addEventListener(
   $("goUNC").addEventListener("click", async ()=>{ closeModal("modalAfterSave"); resetForms(); await refreshPFSelectors(); show("screen2"); $("formUNC").style.display=""; });
   $("goCLI").addEventListener("click", async ()=>{ closeModal("modalAfterSave"); resetForms(); await refreshPFSelectors(); show("screen2"); $("formCliente").style.display=""; });
   $("goSUS").addEventListener("click", async ()=>{ closeModal("modalAfterSave"); resetForms(); await refreshPFSelectors(); show("screen2"); $("formSusp").style.display=""; });
-  $("goBAL").addEventListener("click", async ()=>{ closeModal("modalAfterSave"); resetForms(); await refreshPFSelectors(); show("screenBaldio"); $("formBaldio").style.display=""; });
+  $("goBAL").addEventListener("click", async ()=>{ closeModal("modalAfterSave"); resetForms(); await refreshPFSelectors(); show("screenBaldio"); if($("formBaldio")) $("formBaldio").style.display=""; });
 
   // Actualizar
   $("btnActualizar").addEventListener("click", ()=>{ openModal("modalUpdate"); $("updPick").style.display="flex"; $("updListWrap").style.display="none"; });
