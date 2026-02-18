@@ -981,8 +981,8 @@ function openExportGate(nextCD){
   pendingCD = nextCD;
   openModal("modalExportGate");
 }
-$("gateCancel").addEventListener("click",()=>{ pendingCD=null; closeModal("modalExportGate"); });
-$("gateExport").addEventListener("click", async ()=>{
+onSafe("gateCancel","click",()=>{ pendingCD=null; closeModal("modalExportGate"); });
+onSafe("gateExport","click",async ()=>{
   closeModal("modalExportGate");
   await exportAll();
   localStorage.setItem("exported_"+activeCD,"1");
@@ -1076,19 +1076,19 @@ document.querySelectorAll('input[name="modoCd"]').forEach(r=>r.addEventListener(
   document.querySelectorAll('input[type="text"], input[type="tel"], input[type="search"], textarea').forEach(enforceUpper);
 
 
-  $("cdInput").addEventListener("input", e=>e.target.value=upperAlnum(e.target.value));
-  $("est_punto_fisico").addEventListener("input", e=>e.target.value=upperAlnum(e.target.value));
-  $("est2_punto_fisico").addEventListener("input", e=>e.target.value=upperAlnum(e.target.value));
-  $("cli_marca").addEventListener("input", e=>e.target.value=upperAlnum(e.target.value));
+  onSafe("cdInput","input",e=>e.target.value=upperAlnum(e.target.value));
+  onSafe("est_punto_fisico","input",e=>e.target.value=upperAlnum(e.target.value));
+  onSafe("est2_punto_fisico","input",e=>e.target.value=upperAlnum(e.target.value));
+  onSafe("cli_marca","input",e=>e.target.value=upperAlnum(e.target.value));
 
-  $("est_btnGPS").addEventListener("click", ()=>captureGPS($("est_lat"),$("est_lon"),$("est_acc")));
-  $("unc_btnGPS").addEventListener("click", ()=>captureGPS($("unc_lat"),$("unc_lon"),$("unc_acc")));
-  $("cli_btnGPS").addEventListener("click", ()=>captureGPS($("cli_lat"),$("cli_lon"),$("cli_acc")));
-  $("sus_btnGPS").addEventListener("click", ()=>captureGPS($("sus_lat"),$("sus_lon"),$("sus_acc")));
-  $("bal_btnGPS").addEventListener("click", ()=>captureGPS($("bal_lat"),$("bal_lon"),$("bal_acc")));
-  $("est2_btnGPS").addEventListener("click", ()=>captureGPS($("est2_lat"),$("est2_lon"),$("est2_acc")));
+  onSafe("est_btnGPS","click",()=>captureGPS($("est_lat"),$("est_lon"),$("est_acc")));
+  onSafe("unc_btnGPS","click",()=>captureGPS($("unc_lat"),$("unc_lon"),$("unc_acc")));
+  onSafe("cli_btnGPS","click",()=>captureGPS($("cli_lat"),$("cli_lon"),$("cli_acc")));
+  onSafe("sus_btnGPS","click",()=>captureGPS($("sus_lat"),$("sus_lon"),$("sus_acc")));
+  onSafe("bal_btnGPS","click",()=>captureGPS($("bal_lat"),$("bal_lon"),$("bal_acc")));
+  onSafe("est2_btnGPS","click",()=>captureGPS($("est2_lat"),$("est2_lon"),$("est2_acc")));
 
-  $("btnGuardarEstructura").addEventListener("click", async ()=>{
+  onSafe("btnGuardarEstructura","click",async ()=>{
     if(!validateSection("screen1")) return;
 
     const built=await buildEstructura(false); if(!built) return;
@@ -1109,21 +1109,21 @@ document.querySelectorAll('input[name="modoCd"]').forEach(r=>r.addEventListener(
       $("est_obs").value=""; $("est_fotos").value="";
   });
 
-  $("btnIrARegistro").addEventListener("click", ()=>{ if(!(activeCD&&activeCAP)) return toast("Registra CD primero"); resetForms(); show("screen2"); });
-  $("btnBack1").addEventListener("click", ()=>{ resetForms(); show("screen1"); });
+  onSafe("btnIrARegistro","click",()=>{ if(!(activeCD&&activeCAP)) return toast("Registra CD primero"); resetForms(); show("screen2"); });
+  onSafe("btnBack1","click",()=>{ resetForms(); show("screen1"); });
 
-  $("btnUNC").addEventListener("click", async ()=>{ resetForms(); await refreshPFSelectors(); $("formUNC").style.display=""; });
-  $("btnCliente").addEventListener("click", async ()=>{ resetForms(); await refreshPFSelectors(); $("formCliente").style.display=""; });
-  $("btnSusp").addEventListener("click", async ()=>{ resetForms(); await refreshPFSelectors(); $("formSusp").style.display=""; });
-  $("btnBaldio").addEventListener("click", async ()=>{ resetForms(); await refreshPFSelectors(); show("screenBaldio"); if($("formBaldio")) $("formBaldio").style.display=""; });
+  onSafe("btnUNC","click",async ()=>{ resetForms(); await refreshPFSelectors(); $("formUNC").style.display=""; });
+  onSafe("btnCliente","click",async ()=>{ resetForms(); await refreshPFSelectors(); $("formCliente").style.display=""; });
+  onSafe("btnSusp","click",async ()=>{ resetForms(); await refreshPFSelectors(); $("formSusp").style.display=""; });
+  onSafe("btnBaldio","click",async ()=>{ resetForms(); await refreshPFSelectors(); show("screenBaldio"); if($("formBaldio")) $("formBaldio").style.display=""; });
 
-  $("btnCancelUNC").addEventListener("click", ()=>resetForms());
-  $("btnCancelCli").addEventListener("click", ()=>resetForms());
-  $("btnCancelSus").addEventListener("click", ()=>resetForms());
-  $("btnCancelBaldio").addEventListener("click", ()=>resetForms());
-  $("btnCancelEst2").addEventListener("click", ()=>resetForms());
+  onSafe("btnCancelUNC","click",()=>resetForms());
+  onSafe("btnCancelCli","click",()=>resetForms());
+  onSafe("btnCancelSus","click",()=>resetForms());
+  onSafe("btnCancelBaldio","click",()=>resetForms());
+  onSafe("btnCancelEst2","click",()=>resetForms());
 
-  $("btnGuardarUNC").addEventListener("click", async ()=>{
+  onSafe("btnGuardarUNC","click",async ()=>{
     if(!validateSection("formUNC")) return;
 
     if(!(activeCD&&activeCAP)) return toast("Sin CD activo");
@@ -1133,7 +1133,7 @@ document.querySelectorAll('input[name="modoCd"]').forEach(r=>r.addEventListener(
     if(editCtx && editCtx.store==="unc"){ await putRec("unc",{...obj,id:editCtx.id,item}); editCtx=null; } else { await addRec("unc",{...obj,item}); }
     toast("Guardado ✅"); resetForms(); await afterSaveAskNext();
   });
-  $("btnGuardarCli").addEventListener("click", async ()=>{
+  onSafe("btnGuardarCli","click",async ()=>{
     if(!validateSection("formCliente")) return;
 
     if(!(activeCD&&activeCAP)) return toast("Sin CD activo");
@@ -1143,7 +1143,7 @@ document.querySelectorAll('input[name="modoCd"]').forEach(r=>r.addEventListener(
     if(editCtx && editCtx.store==="clientes"){ await putRec("clientes",{...obj,id:editCtx.id,item}); editCtx=null; } else { await addRec("clientes",{...obj,item}); }
     toast("Guardado ✅"); resetForms(); await afterSaveAskNext();
   });
-  if($("btnGuardarBaldio")) $("btnGuardarBaldio").addEventListener("click", async ()=>{
+  if($("btnGuardarBaldio")) onSafe("btnGuardarBaldio","click",async ()=>{
     if(!validateSection("formBaldio")) return;
 
     if(!(activeCD&&activeCAP)) return toast("Sin CD activo");
@@ -1155,7 +1155,7 @@ document.querySelectorAll('input[name="modoCd"]').forEach(r=>r.addEventListener(
     toast("Guardado ✅"); resetForms(); await afterSaveAskNext(); await updateKPIs();
   });
 
-  $("btnGuardarSus").addEventListener("click", async ()=>{
+  onSafe("btnGuardarSus","click",async ()=>{
     if(!validateSection("formSusp")) return;
 
     if(!(activeCD&&activeCAP)) return toast("Sin CD activo");
@@ -1165,7 +1165,7 @@ document.querySelectorAll('input[name="modoCd"]').forEach(r=>r.addEventListener(
     await addRec("susp",{...obj,item});
     toast("Guardado ✅"); resetForms(); await afterSaveAskNext();
   });
-  $("btnGuardarEst2").addEventListener("click", async ()=>{
+  onSafe("btnGuardarEst2","click",async ()=>{
     if(!(activeCD&&activeCAP)) return toast("Sin CD activo");
     const built=await buildEstructura(true); if(!built) return;
     const {obj}=built;
@@ -1175,20 +1175,20 @@ document.querySelectorAll('input[name="modoCd"]').forEach(r=>r.addEventListener(
     toast("Guardado ✅"); resetForms(); await afterSaveAskNext();
   });
 
-  $("btnExportar").addEventListener("click", exportAll);
+  onSafe("btnExportar","click",exportAll);
   // After-save modal
-  $("afterYes").addEventListener("click", ()=>{ $("afterSaveQ").style.display="none"; $("afterBtns").style.display="flex"; });
-  $("afterNo").addEventListener("click", ()=>{ closeModal("modalAfterSave"); resetForms(); show("screen1"); });
-  $("goBackQ").addEventListener("click", ()=>{ $("afterBtns").style.display="none"; $("afterSaveQ").style.display="flex"; });
-  $("goUNC").addEventListener("click", async ()=>{ closeModal("modalAfterSave"); resetForms(); await refreshPFSelectors(); show("screen2"); $("formUNC").style.display=""; });
-  $("goCLI").addEventListener("click", async ()=>{ closeModal("modalAfterSave"); resetForms(); await refreshPFSelectors(); show("screen2"); $("formCliente").style.display=""; });
-  $("goSUS").addEventListener("click", async ()=>{ closeModal("modalAfterSave"); resetForms(); await refreshPFSelectors(); show("screen2"); $("formSusp").style.display=""; });
-  $("goBAL").addEventListener("click", async ()=>{ closeModal("modalAfterSave"); resetForms(); await refreshPFSelectors(); show("screenBaldio"); if($("formBaldio")) $("formBaldio").style.display=""; });
+  onSafe("afterYes","click",()=>{ $("afterSaveQ").style.display="none"; $("afterBtns").style.display="flex"; });
+  onSafe("afterNo","click",()=>{ closeModal("modalAfterSave"); resetForms(); show("screen1"); });
+  onSafe("goBackQ","click",()=>{ $("afterBtns").style.display="none"; $("afterSaveQ").style.display="flex"; });
+  onSafe("goUNC","click",async ()=>{ closeModal("modalAfterSave"); resetForms(); await refreshPFSelectors(); show("screen2"); $("formUNC").style.display=""; });
+  onSafe("goCLI","click",async ()=>{ closeModal("modalAfterSave"); resetForms(); await refreshPFSelectors(); show("screen2"); $("formCliente").style.display=""; });
+  onSafe("goSUS","click",async ()=>{ closeModal("modalAfterSave"); resetForms(); await refreshPFSelectors(); show("screen2"); $("formSusp").style.display=""; });
+  onSafe("goBAL","click",async ()=>{ closeModal("modalAfterSave"); resetForms(); await refreshPFSelectors(); show("screenBaldio"); if($("formBaldio")) $("formBaldio").style.display=""; });
 
   // Actualizar
-  $("btnActualizar").addEventListener("click", ()=>{ openModal("modalUpdate"); $("updPick").style.display="flex"; $("updListWrap").style.display="none"; });
-  $("updClose").addEventListener("click", ()=>closeModal("modalUpdate"));
-  $("updBack").addEventListener("click", ()=>{ $("updPick").style.display="flex"; $("updListWrap").style.display="none"; });
+  onSafe("btnActualizar","click",()=>{ openModal("modalUpdate"); $("updPick").style.display="flex"; $("updListWrap").style.display="none"; });
+  onSafe("updClose","click",()=>closeModal("modalUpdate"));
+  onSafe("updBack","click",()=>{ $("updPick").style.display="flex"; $("updListWrap").style.display="none"; });
   let updStore=null;
   async function loadUpdList(store){
     updStore=store;
@@ -1203,9 +1203,9 @@ document.querySelectorAll('input[name="modoCd"]').forEach(r=>r.addEventListener(
     $("updHint").textContent = filtered.length ? "Selecciona un registro para editar" : "No hay registros en este CD";
     $("updPick").style.display="none"; $("updListWrap").style.display="block";
   }
-  $("updUNC").addEventListener("click", ()=>loadUpdList("unc"));
-  $("updCLI").addEventListener("click", ()=>loadUpdList("clientes"));
-  $("updLoad").addEventListener("click", async ()=>{
+  onSafe("updUNC","click",()=>loadUpdList("unc"));
+  onSafe("updCLI","click",()=>loadUpdList("clientes"));
+  onSafe("updLoad","click",async ()=>{
     const id=Number($("updSelect").value||0); if(!id) return toast("Selecciona un registro");
     const rec=await getById(updStore,id); if(!rec) return toast("No encontrado");
     editCtx={store:updStore,id};
@@ -1238,7 +1238,7 @@ document.querySelectorAll('input[name="modoCd"]').forEach(r=>r.addEventListener(
     toast("Modo edición ✅");
   });
 
-  $("btnConteos").addEventListener("click", async ()=>{ const a=await count("estructuras"),b=await count("unc"),c=await count("clientes"),d=await count("susp"),e=await count("baldios"); toast(`Estructuras: ${a} | UNC: ${b} | Clientes: ${c} | Susp: ${d} | Baldíos: ${e}`); });
+  onSafe("btnConteos","click",async ()=>{ const a=await count("estructuras"),b=await count("unc"),c=await count("clientes"),d=await count("susp"),e=await count("baldios"); toast(`Estructuras: ${a} | UNC: ${b} | Clientes: ${c} | Susp: ${d} | Baldíos: ${e}`); });
 }
 
 (async function init(){
