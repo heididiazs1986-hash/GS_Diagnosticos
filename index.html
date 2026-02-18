@@ -418,15 +418,20 @@
         <div><label>Luminarias (AP)</label><input id="est2_luminarias" inputmode="numeric" placeholder="0"></div>
       </div>
       <div class="grid three">
-        <div><label>Latitud (Y)</label><input id="est2_lat" readonly placeholder="GPS"></div>
-        <div><label>Longitud (X)</label><input id="est2_lon" readonly placeholder="GPS"></div>
-        <div><label>Fotos</label><input id="est2_fotos" type="file" accept="image/*" multiple></div>
-      </div>
+  <div><label>Latitud (Y)</label><input id="est2_lat" readonly placeholder="GPS"></div>
+  <div><label>Longitud (X)</label><input id="est2_lon" readonly placeholder="GPS"></div>
+  <div><label>Precisión (m)</label><input id="est2_acc" readonly placeholder="GPS"></div>
+</div>
+<div class="btnrow">
+  <button class="secondary" id="est2_btnGPS" type="button">📍 Coordenadas</button>
+</div>
+<div class="grid">
+  <div><label>Fotos</label><input id="est2_fotos" type="file" accept="image/*" multiple data-max="7"></div>
+</div>
       <div class="btnrow">
-        <button class="secondary" id="est2_btnGPS" type="button">📍 Coordenadas</button>
-        <button class="ok" id="btnGuardarEst2" type="button">Guardar</button>
-        <button class="secondary" id="btnCancelEst2" type="button">Cancelar</button>
-      </div>
+  <button class="ok" id="btnGuardarEst2" type="button">Guardar</button>
+  <button class="secondary" id="btnCancelEst2" type="button">Cancelar</button>
+</div>
     </div>
   </section>
 
@@ -534,7 +539,9 @@ function startDictation(targetId){
   const ta = $(targetId);
   if(!ta) return;
   if(!SpeechRecognition){
-    toast("Dictado no disponible en este navegador");
+    // iPhone/iPad (Safari/PWA) suele no soportar Web Speech. Fallback: enfoca el campo.
+    ta.focus();
+    toast("Dictado: usa el micrófono del teclado (iPhone) o dictado del sistema");
     return;
   }
   if(_rec){ try{_rec.stop();}catch(e){} _rec=null; }
@@ -644,6 +651,8 @@ function enforceUpper(el){
 }
 
 function captureGPS(latEl, lonEl, accEl){
+  if(!latEl || !lonEl){ toast("Campos GPS no disponibles"); return; }
+
   setBadge("GPS… 📡");
   if(!navigator.geolocation){ setBadge("Listo ✅"); toast("Sin GPS"); return; }
 
