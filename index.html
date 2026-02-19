@@ -6,6 +6,9 @@
   <title>GS Diagnósticos</title>
   <meta name="theme-color" content="#d40000" />
   <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="icon-180.png">
   <style>
     :root{--rojo:#d40000;--gris:#f5f5f5;--borde:#dedede;--texto:#1f1f1f;--muted:#6a6a6a;--card:#fff;--shadow:0 10px 26px rgba(0,0,0,.08);--radius:18px;}
     *{box-sizing:border-box;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;}
@@ -120,7 +123,7 @@
       <div class="grid four">
         <div><label>Latitud (Y)</label><input id="est_lat" readonly placeholder="GPS"></div>
         <div><label>Longitud (X)</label><input id="est_lon" readonly placeholder="GPS"></div>
-        <div><label>Precisión (m)</label><input id="est_acc" readonly placeholder="GPS"></div><div><label>Fotos</label><input id="est_fotos" type="file" accept="image/*" multiple data-max="5">
+        <div><label>Precisión (m)</label><input id="est_acc" readonly placeholder="GPS"></div><div><label>Fotos</label><input id="est_fotos" type="file" accept="image/*" multiple data-max="7">
       <div style="margin-top:10px;">
         <label>Observaciones (opcional)</label>
         <div class="dictWrap">
@@ -210,7 +213,7 @@
       </div>
 </div>
       <div class="grid">
-        <div><label>Fotos</label><input id="unc_fotos" type="file" accept="image/*" multiple data-max="5"></div>
+        <div><label>Fotos</label><input id="unc_fotos" type="file" accept="image/*" multiple data-max="7"></div>
       </div>
 
       <div class="sep"></div>
@@ -296,7 +299,7 @@
       </div>
 
       <div class="grid">
-        <div><label>Fotos</label><input id="cli_fotos" type="file" accept="image/*" multiple data-max="5">
+        <div><label>Fotos</label><input id="cli_fotos" type="file" accept="image/*" multiple data-max="7">
       <div style="margin-top:10px;">
         <label>Observaciones (opcional)</label>
         <div class="dictWrap">
@@ -342,7 +345,7 @@
       </div>
 
       <div class="grid">
-        <div><label>Fotos</label><input id="sus_fotos" type="file" accept="image/*" multiple data-max="5">
+        <div><label>Fotos</label><input id="sus_fotos" type="file" accept="image/*" multiple data-max="7">
       <div style="margin-top:10px;">
         <label>Observaciones (opcional)</label>
         <div class="dictWrap">
@@ -380,7 +383,7 @@
       </div>
 
       <div class="grid">
-        <div><label>Fotos</label><input id="bal_fotos" accept="image/*" type="file" data-max="5" multiple>
+        <div><label>Fotos</label><input id="bal_fotos" accept="image/*" type="file" data-max="7" multiple>
       <div style="margin-top:10px;">
         <label>Observaciones (opcional)</label>
         <div class="dictWrap">
@@ -607,20 +610,36 @@ function enforceUpper(el){
   });
 }
 
-function captureGPS(latEl, lonEl){
+function captureGPS(latEl, lonEl, accEl){
   setBadge("GPS… 📡");
   if(!navigator.geolocation){ setBadge("Listo ✅"); toast("Sin GPS"); return; }
 
   const opts={enableHighAccuracy:true,timeout:20000,maximumAge:0};
   let done=false;
+  let watchId=null;
+
+  const stamp = ()=> new Date().toISOString();
 
   const success=(pos)=>{
     if(done) return; done=true;
-    latEl.value=pos.coords.latitude.toFixed(7);
-    lonEl.value=pos.coords.longitude.toFixed(7);
+    const lat = Number(pos.coords.latitude);
+    const lon = Number(pos.coords.longitude);
+    const acc = Number(pos.coords.accuracy);
+
+    if(latEl) latEl.value = (isFinite(lat)? lat.toFixed(7):"");
+    if(lonEl) lonEl.value = (isFinite(lon)? lon.toFixed(7):"");
+    if(accEl) accEl.value = (isFinite(acc)? Math.round(acc):"");
+
+    // Guardamos la marca de tiempo del GPS en el input (data-gpsis o hidden), para export
+    const iso = stamp();
+    if(latEl) latEl.dataset.gpsISO = iso;
+    if(lonEl) lonEl.dataset.gpsISO = iso;
+    if(accEl) accEl.dataset.gpsISO = iso;
+
     setBadge("Listo ✅"); toast("Coordenadas ✅");
     if(watchId!=null) navigator.geolocation.clearWatch(watchId);
   };
+
   const fail=(err)=>{
     if(done) return;
     setBadge("Listo ✅");
@@ -629,13 +648,11 @@ function captureGPS(latEl, lonEl){
     if(watchId!=null) navigator.geolocation.clearWatch(watchId);
   };
 
-  let watchId=null;
   // 1) intento normal
   navigator.geolocation.getCurrentPosition(success, (err)=>{
     // 2) fallback: watchPosition por 1 lectura
     watchId = navigator.geolocation.watchPosition(success, fail, opts);
-    // 3) si ni con watch, falla:
-    setTimeout(()=>{ if(!done) fail(err); }, 21000);
+    setTimeout(()=>{ if(!done) fail(err); }, 22000);
   }, opts);
 }
 
@@ -726,8 +743,10 @@ async function buildEstructura(fromScreen2){
   const lum = onlyDigits(fromScreen2 ? $("est2_luminarias").value : $("est_luminarias").value);
   const lat = fromScreen2 ? $("est2_lat").value : $("est_lat").value;
   const lon = fromScreen2 ? $("est2_lon").value : $("est_lon").value;
+  const acc = fromScreen2 ? $("est2_acc").value : $("est_acc").value;
+  const gpsISO = ((fromScreen2 ? $("est2_lat") : $("est_lat")).dataset.gpsISO)||"";
 
-  const obj={fechaISO:new Date().toISOString(),Transformador:cd,Capacidad_kVA:cap,TipoNodo:t,MaterialNodo:m,CaracteristicasNodo:c,PuntoFisico:pf,TipoRedBT:tr,Luminarias:lum,Latitud:lat,Longitud:lon,Fotos:[]};
+  const obj={fechaISO:new Date().toISOString(),Transformador:cd,Capacidad_kVA:cap,TipoNodo:t,MaterialNodo:m,CaracteristicasNodo:c,PuntoFisico:pf,TipoRedBT:tr,Luminarias:lum,Latitud:lat,Longitud:lon,Precision:acc||"",gpsISO:gpsISO,gpsISO:gpsISO,gpsISO:gpsISO,gpsISO:gpsISO,gpsISO:gpsISO,Fotos:[]};
   if(!obj.TipoNodo){toast("Falta Tipo Nodo"); return null;}
   if(!obj.MaterialNodo){toast("Falta Material Nodo"); return null;}
   if(!obj.CaracteristicasNodo){toast("Falta Características"); return null;}
@@ -953,7 +972,7 @@ async function afterSaveAskNext(){
   openModal("modalAfterSave");
 }
 
-async async function exportAll(){
+async function exportAll(){
   try{
     setBadge("Exportando… 📦");
     const estr=await getAll("estructuras");
@@ -1064,7 +1083,7 @@ function wireEvents(){
   $("cli_btnGPS").addEventListener("click", ()=>captureGPS($("cli_lat"),$("cli_lon"),$("cli_acc")));
   $("sus_btnGPS").addEventListener("click", ()=>captureGPS($("sus_lat"),$("sus_lon"),$("sus_acc")));
   $("bal_btnGPS").addEventListener("click", ()=>captureGPS($("bal_lat"),$("bal_lon"),$("bal_acc")));
-  $("est2_btnGPS").addEventListener("click", ()=>captureGPS($("est2_lat"),$("est2_lon")));
+  $("est2_btnGPS").addEventListener("click", ()=>captureGPS($("est2_lat"),$("est2_lon"),$("est2_acc")));
 
   $("btnGuardarEstructura").addEventListener("click", async ()=>{
     if(!validateSection("screen1")) return;
