@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>GS Diagnósticos</title>
   <meta name="theme-color" content="#d40000" />
+  <link rel="manifest" href="manifest.json">
   <style>
     :root{--rojo:#d40000;--gris:#f5f5f5;--borde:#dedede;--texto:#1f1f1f;--muted:#6a6a6a;--card:#fff;--shadow:0 10px 26px rgba(0,0,0,.08);--radius:18px;}
     *{box-sizing:border-box;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;}
@@ -57,28 +58,14 @@
     .vBtns{display:flex;flex-direction:column;gap:10px;margin-top:12px;}
     .vBtns button{width:100%;padding:14px 12px;border-radius:14px;font-size:16px;}
 
-    .dictWrap{position:relative;}
-    .dictWrap textarea{padding-right:54px;}
-    .dictWrap .mic{position:absolute;right:8px;bottom:8px;padding:10px 12px;border-radius:12px;}
-
-    .chk{font-size:18px;}
-    .chk input[type="checkbox"]{width:22px;height:22px;}
-
-    #cdInput{text-transform:uppercase;}
-    #activeCdTxt{text-transform:uppercase;}
-  </style>
-  <link rel="manifest" href="manifest.json">
-  <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
-  <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="icon-180.png">
+</style>
 </head>
 <body>
 <header>
   <div class="row">
-    <img src="LOGO.jpg" alt="GSOCIAL DX" style="height:38px;border-radius:8px;object-fit:contain" />
-    <h1 style="margin:0;flex:1;">GS Diagnósticos</h1>
-    <div class="badge" id="hdrBadge">INMEL INGENIERÍA SAS</div>
-</div>
+    <h1>GS Diagnósticos</h1>
+    <div class="badge" id="hdrBadge">INMEL ingeniría SAS</div>
+  </div>
 </header>
 
 <main>
@@ -133,7 +120,7 @@
       <div class="grid four">
         <div><label>Latitud (Y)</label><input id="est_lat" readonly placeholder="GPS"></div>
         <div><label>Longitud (X)</label><input id="est_lon" readonly placeholder="GPS"></div>
-        <div><label>Precisión (m)</label><input id="est_acc" readonly placeholder="GPS"></div><div><label>Fotos</label><input id="est_fotos" type="file" accept="image/*" multiple data-max="7">
+        <div><label>Precisión (m)</label><input id="est_acc" readonly placeholder="GPS"></div><div><label>Fotos</label><input id="est_fotos" type="file" accept="image/*" multiple data-max="5">
       <div style="margin-top:10px;">
         <label>Observaciones (opcional)</label>
         <div class="dictWrap">
@@ -215,16 +202,15 @@
         </div>
       </div>
 
-      <div class="grid three">
+      <div class="grid four">
         <div><label>Latitud (Y)</label><input id="unc_lat" readonly placeholder="GPS"></div>
         <div><label>Longitud (X)</label><input id="unc_lon" readonly placeholder="GPS"></div>
-        <div><label>Precisión (m)</label><input id="unc_acc" readonly placeholder="GPS"></div>
-      </div>
-      <div class="btnrow">
+      <div><label>Precisión (m)</label><input id="unc_acc" readonly placeholder="GPS"></div><div class="btnrow">
         <button class="secondary" id="unc_btnGPS" type="button">📍 Coordenadas</button>
       </div>
+</div>
       <div class="grid">
-        <div><label>Fotos</label><input id="unc_fotos" type="file" accept="image/*" multiple data-max="7"></div>
+        <div><label>Fotos</label><input id="unc_fotos" type="file" accept="image/*" multiple data-max="5"></div>
       </div>
 
       <div class="sep"></div>
@@ -276,12 +262,10 @@
       <div class="grid">
         <div><label>Observaciones</label><div class="dictWrap"><textarea id="unc_obs"></textarea><button class="secondary mic" type="button" data-target="unc_obs" title="Dictar">🎤</button></div></div>
       </div>
-      <div class="btnrow">
-    <button class="ok" id="btnGuardarUNC" type="button">Guardar</button>
-    <button class="secondary" id="btnCancelUNC" type="button">Cancelar</button>
-  </div>
-</div>
-<div id="formCliente" style="display:none;">
+    </div>
+
+    
+    <div id="formCliente" style="display:none;">
       <h3 class="section">CLIENTES</h3>
       <div class="sep"></div>
 
@@ -296,10 +280,10 @@
         <div><label>No. Fases</label><select id="cli_fases"><option value="">Selecciona…</option><option>Monofásico</option><option>Bifásico</option><option>Trifásico</option></select></div>
       </div>
 
-      <div class="grid three">
+      <div class="grid four">
         <div><label>Latitud (Y)</label><input id="cli_lat" readonly placeholder="GPS"></div>
         <div><label>Longitud (X)</label><input id="cli_lon" readonly placeholder="GPS"></div>
-        <div><label>Precisión (m)</label><input id="cli_acc" readonly placeholder="GPS"></div>
+        <div><label>Precisión (m)</label><input id="cli_acc" readonly placeholder="GPS"></div><div></div>
       </div>
       <div class="btnrow">
         <button class="secondary" id="cli_btnGPS" type="button">📍 Coordenadas</button>
@@ -312,7 +296,7 @@
       </div>
 
       <div class="grid">
-        <div><label>Fotos</label><input id="cli_fotos" type="file" accept="image/*" multiple data-max="7">
+        <div><label>Fotos</label><input id="cli_fotos" type="file" accept="image/*" multiple data-max="5">
       <div style="margin-top:10px;">
         <label>Observaciones (opcional)</label>
         <div class="dictWrap">
@@ -338,10 +322,10 @@
         <div></div>
       </div>
 
-      <div class="grid three">
+      <div class="grid four">
         <div><label>Latitud (Y)</label><input id="sus_lat" readonly placeholder="GPS"></div>
         <div><label>Longitud (X)</label><input id="sus_lon" readonly placeholder="GPS"></div>
-        <div><label>Precisión (m)</label><input id="sus_acc" readonly placeholder="GPS"></div>
+        <div><label>Precisión (m)</label><input id="sus_acc" readonly placeholder="GPS"></div><div></div>
       </div>
       <div class="btnrow">
         <button class="secondary" id="sus_btnGPS" type="button">📍 Coordenadas</button>
@@ -358,7 +342,7 @@
       </div>
 
       <div class="grid">
-        <div><label>Fotos</label><input id="sus_fotos" type="file" accept="image/*" multiple data-max="7">
+        <div><label>Fotos</label><input id="sus_fotos" type="file" accept="image/*" multiple data-max="5">
       <div style="margin-top:10px;">
         <label>Observaciones (opcional)</label>
         <div class="dictWrap">
@@ -375,12 +359,7 @@
       </div>
     </div>
 
-
-    <div id="formBaldio" style="display:none;">
-      <h3 class="section">BALDÍOS</h3>
-      <div class="sep"></div>
-
-      <div class="grid two">
+    <div class="grid two">
         <div><label>Punto Físico</label><select id="bal_pf"></select></div>
         <div><label>Estado</label>
           <select id="bal_estado">
@@ -392,17 +371,16 @@
         </div>
       </div>
 
-      <div class="grid three">
+      <div class="grid two">
         <div><label>Latitud (Y)</label><input id="bal_lat" readonly placeholder="GPS"></div>
         <div><label>Longitud (X)</label><input id="bal_lon" readonly placeholder="GPS"></div>
-        <div><label>Precisión (m)</label><input id="bal_acc" readonly placeholder="GPS"></div>
-      </div>
+      <div><label>Precisión (m)</label><input id="bal_acc" readonly placeholder="GPS"></div></div>
       <div class="btnrow">
         <button class="secondary" id="bal_btnGPS" type="button">📍 Coordenadas</button>
       </div>
 
       <div class="grid">
-        <div><label>Fotos</label><input id="bal_fotos" accept="image/*" type="file" data-max="7" multiple>
+        <div><label>Fotos</label><input id="bal_fotos" accept="image/*" type="file" data-max="5" multiple>
       <div style="margin-top:10px;">
         <label>Observaciones (opcional)</label>
         <div class="dictWrap">
@@ -417,9 +395,7 @@
         <button class="ok" id="btnGuardarBaldio" type="button">Guardar</button>
         <button class="secondary" id="btnCancelBaldio" type="button">Cancelar</button>
       </div>
-    
     </div>
-</div>
 <div id="formEstructura" style="display:none;">
       <div class="sep"></div>
       <div class="grid three">
@@ -432,10 +408,9 @@
         <div><label>Tipo de Redes BT</label><select id="est2_tipo_red_bt"><option value="">Selecciona…</option><option>Abierta</option><option>Trenzada</option></select></div>
         <div><label>Luminarias (AP)</label><input id="est2_luminarias" inputmode="numeric" placeholder="0"></div>
       </div>
-      <div class="grid four">
+      <div class="grid three">
         <div><label>Latitud (Y)</label><input id="est2_lat" readonly placeholder="GPS"></div>
         <div><label>Longitud (X)</label><input id="est2_lon" readonly placeholder="GPS"></div>
-        <div><label>Precisión (m)</label><input id="est2_acc" readonly placeholder="GPS"></div>
         <div><label>Fotos</label><input id="est2_fotos" type="file" accept="image/*" multiple></div>
       </div>
       <div class="btnrow">
@@ -542,43 +517,10 @@ class TinyZip{
 const HDR_U = ["Ítem", "Transformador (CD)", "Capacidad transformador kVA", "Nombres", "Identificación", "Contacto", "Sede", "Municipio", "Dirección", "Localidad (Barrio/Vereda)", "Tipo Zona", "Latitud (Y)", "Longitud (X)", "Tipo material", "¿Predio habitable?", "¿Requiere construir muro?","Para servicio requiere ampliación de redes", "Documento de propiedad", "Cédula propietario", "Formato E1 Solicitud", "Aceptación de requisitos", "Declaración Juramentada", "Formato E6 RT", "EC Particular", "Documentos electricista", "Declaración RETIE", "EC Inmel", "Estado", "Acometida", "Ducto 1\" Galv.", "Celda", "Interruptor", "SPT (Tierra)", "Instalación interna", "Observaciones"];
 
 const $ = (id)=>document.getElementById(id);
-
-
-function onSafe(id, evt, fn){
-  const el = $(id);
-  if(!el) return;
-  el.addEventListener(evt, fn);
-}
-/* Dictado (Web Speech API) */
-const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-let _rec=null;
-function startDictation(targetId){
-  const ta = $(targetId);
-  if(!ta) return;
-  if(!SpeechRecognition){
-    toast("Dictado no disponible en este navegador");
-    return;
-  }
-  if(_rec){ try{_rec.stop();}catch(e){} _rec=null; }
-  _rec = new SpeechRecognition();
-  _rec.lang = "es-CO";
-  _rec.interimResults = false;
-  _rec.maxAlternatives = 1;
-  setBadge("Dictando… 🎙️");
-  _rec.onresult = (e)=>{
-    const txt = (e.results && e.results[0] && e.results[0][0]) ? e.results[0][0].transcript : "";
-    const cur = ta.value || "";
-    ta.value = (cur ? (cur + " ") : "") + (txt||"").toUpperCase();
-    ta.dispatchEvent(new Event("input",{bubbles:true}));
-  };
-  _rec.onerror = ()=>{ toast("No se pudo dictar"); };
-  _rec.onend = ()=>{ setBadge("Listo ✅"); _rec=null; };
-  _rec.start();
-}
 const toastEl=$("toast");
 function toast(msg){toastEl.textContent=msg;toastEl.classList.add("show");setTimeout(()=>toastEl.classList.remove("show"),2200);}
 function setBadge(msg){$("hdrBadge").textContent=msg;}
-function upperAlnum(s){return (s||"").toString().toUpperCase().replace(/[^A-Z0-9]/g,"").trim();}
+function upperAlnum(s){return (s||"").toString().toUpperCase().trim();}
 function toTitleCase(s){s=(s||"").toString().trim().toLowerCase();return s.replace(/\b([a-záéíóúñü])/g,m=>m.toUpperCase());}
 function onlyDigits(s){return (s||"").toString().replace(/\D+/g,"");}
 
@@ -596,23 +538,15 @@ const caracteristicas = {
 function fillCaracteristicas(tSel,mSel,cSel){
   const key = `${tSel.value}|${mSel.value}`;
   const opts = caracteristicas[key] || [];
-  const prev = cSel.value || "";
-  cSel.innerHTML = `<option value="">Selecciona…</option>` + opts.map(x=>`<option value="${x}">${x}</option>`).join("");
-  // mantener selección si aplica
-  if(prev && opts.includes(prev)) cSel.value = prev;
+  cSel.innerHTML = `<option value="">Selecciona…</option>` + opts.map(x=>`<option>${x}</option>`).join("");
 }
 function wireCarDep(tipoId, matId, carId){
   const t=$(tipoId), m=$(matId), c=$(carId);
   if(!(t&&m&&c)) return;
-  const run=()=>fillCaracteristicas(t,m,c);
-  ["change","input"].forEach(ev=>{
-    t.addEventListener(ev, run);
-    m.addEventListener(ev, run);
-  });
-  // Android a veces dispara tarde
-  setTimeout(run, 50);
-  setTimeout(run, 300);
-  run();
+  t.addEventListener("change", ()=>fillCaracteristicas(t,m,c));
+  m.addEventListener("change", ()=>fillCaracteristicas(t,m,c));
+  // inicializa
+  fillCaracteristicas(t,m,c);
 }
 
 /* Sede -> Municipio (dependiente) */
@@ -620,9 +554,9 @@ const sedeMunicipios = {
   "Girardot":["Agua De Dios","Apulo","Beltrán","Coello","Flandes","Girardot","Guataquí","Jerusalén","Mesitas Del Colegio","Nariño","Nilo","Pulí","Ricaurte","Tocaima","Viotá"],
   "Cáqueza":["Cabuyaro","Cáqueza","Chipaque","Choachi","El Calvario","Fomeque","Fosca","Guayabetal","Gutiérrez","Medina","Paratebueno","Quetame","San Juanito","Ubaque","Une"],
   "La Mesa":["Anapoima","Anolaima","Cachipay","La Mesa","Quipile","San Antonio Del Tequendama","Tena"],
-  "Facatativá":[],
+  "Facatativá":["Facatativá","Madrid","Mosquera","Funza","Bojacá","El Rosal","Subachoque","Zipacón"],
   "Fusagasugá":["Arbeláez","Bogotá","Cabrera","Fusagasugá","Granada","Icononzo","Pandi","Pasca","San Bernardo","Sibaté","Silvania","Soacha","Tibacuy","Venecia"],
-  "Zipaquirá":[]
+  "Zipaquirá":["Zipaquirá","Cajicá","Chía","Cogua","Gachancipá","Nemocón","Sesquilé","Sopó","Tocancipá","Guatavita","Guasca","Suesca"]
 };
 function fillSedeMunicipio(){
   const sedeSel=$("unc_sede"), munSel=$("unc_municipio");
@@ -673,7 +607,7 @@ function enforceUpper(el){
   });
 }
 
-function captureGPS(latEl, lonEl, accEl){
+function captureGPS(latEl, lonEl){
   setBadge("GPS… 📡");
   if(!navigator.geolocation){ setBadge("Listo ✅"); toast("Sin GPS"); return; }
 
@@ -684,9 +618,7 @@ function captureGPS(latEl, lonEl, accEl){
     if(done) return; done=true;
     latEl.value=pos.coords.latitude.toFixed(7);
     lonEl.value=pos.coords.longitude.toFixed(7);
-    
-    if(accEl) accEl.value = Math.round(pos.coords.accuracy);
-setBadge("Listo ✅"); toast("Coordenadas ✅");
+    setBadge("Listo ✅"); toast("Coordenadas ✅");
     if(watchId!=null) navigator.geolocation.clearWatch(watchId);
   };
   const fail=(err)=>{
@@ -772,11 +704,8 @@ function validateSection(containerId){
   return true;
 }
 
-function resetForms(){
-  ["formUNC","formCliente","formSusp","formBaldio","formEstructura"].forEach(id=>{
-    const el=$(id); if(el) el.style.display="none";
-  });
-}
+function resetForms(){ ["formUNC","formCliente","formSusp","formEstructura"].forEach(id=>$(id).style.display="none"); }
+
 /* Builders */
 async function buildEstructura(fromScreen2){
   const modo=document.querySelector('input[name="modoCd"]:checked').value;
@@ -786,8 +715,6 @@ async function buildEstructura(fromScreen2){
     cd=upperAlnum($("cdInput").value); cap=$("capSelect").value||"";
     if(!cd){toast("Falta CD"); return null;}
     if(!cap){toast("Falta kVA"); return null;}
-    const dirty=await getMeta("dirty");
-    if(dirty){toast("Debes exportar antes de crear un CD nuevo"); return null;}
   } else {
     if(!(cd&&cap)){toast("Sin CD activo"); return null;}
   }
@@ -819,19 +746,16 @@ async function buildUNC(){
     Nombres:nombres,
     Identificacion:onlyDigits($("unc_identificacion").value),
     Contacto:onlyDigits($("unc_contacto").value),
-    Sede:$("unc_sede").value||"",
-    Municipio:$("unc_municipio").value||"",
+    Sede:($("unc_sede").value||"").toUpperCase(),
+    Municipio:($("unc_municipio").value||"").toUpperCase(),
     Direccion:upperAlnum($("unc_direccion").value)||"",
-    Localidad:$("unc_localidad").value||"",
+    Localidad:($("unc_localidad").value||"").toUpperCase(),
     TipoZona:$("unc_tipo_zona").value||"",
     Latitud:$("unc_lat").value||"",
     Longitud:$("unc_lon").value||"",
-    Precision:$("unc_acc").value||"",
-    gpsISO:($("unc_lat").dataset.gpsISO||""),
     TipoMaterial:$("unc_tipo_material").value||"",
     PredioHabitable:$("unc_predio_habitable").checked?"Sí":"No",
     RequiereMuro:$("unc_requiere_muro").checked?"Sí":"No",
-    RequiereArriostre:$("unc_arriostre").checked?"Sí":"No",
     AmpliacionRedes:$("unc_ampliacion_redes").checked?"Sí":"No",
     DocPropiedad:$("unc_doc_propiedad").value||"",
     CedulaProp:$("unc_cedula_prop").checked?"Sí":"No",
@@ -856,9 +780,9 @@ async function buildUNC(){
   if(!obj.Nombres){toast("Falta Nombres");return null;}
   if(!obj.Sede){toast("Falta Sede");return null;}
   if(!obj.Municipio){toast("Falta Municipio");return null;}
-  if(!obj.Latitud||!obj.Longitud||!obj.Precision){toast("Falta capturar coordenadas");return null;}
   return obj;
 }
+
 
 async function buildCliente(){
   const obj={
@@ -870,8 +794,6 @@ async function buildCliente(){
     Fases:$("cli_fases").value||"",
     Latitud:$("cli_lat").value||"",
     Longitud:$("cli_lon").value||"",
-    Precision:$("cli_acc").value||"",
-    gpsISO:($("cli_lat").dataset.gpsISO||""),
     EstadoMedidor:$("cli_estado_medidor").value||"",
     EstadoVisor:$("cli_estado_visor").value||"",
     ReqInspeccion:$("cli_req_inspeccion").checked?"Sí":"No",
@@ -881,9 +803,9 @@ async function buildCliente(){
   if(!obj.SerieMedidor){toast("Falta Serie");return null;}
   if(!obj.MarcaMedidor){toast("Falta Marca");return null;}
   if(!obj.Fases){toast("Falta Fases");return null;}
-  if(!obj.Latitud||!obj.Longitud||!obj.Precision){toast("Falta capturar coordenadas");return null;}
   return obj;
 }
+
 
 async function buildSusp(){
   const obj={
@@ -892,14 +814,11 @@ async function buildSusp(){
     PuntoFisico:$("sus_pf")?($("sus_pf").value||""):"",
     Latitud:$("sus_lat").value||"",
     Longitud:$("sus_lon").value||"",
-    Precision:$("sus_acc").value||"",
-    gpsISO:($("sus_lat").dataset.gpsISO||""),
     Motivo:$("sus_motivo").value||"",
     Fotos:[]
   };
   if(!obj.PuntoFisico){toast("Falta Punto Físico");return null;}
   if(!obj.Motivo){toast("Falta Motivo");return null;}
-  if(!obj.Latitud||!obj.Longitud||!obj.Precision){toast("Falta capturar coordenadas");return null;}
   return obj;
 }
 
@@ -911,14 +830,11 @@ async function buildBaldio(){
     Estado:$("bal_estado").value||"",
     Latitud:$("bal_lat").value||"",
     Longitud:$("bal_lon").value||"",
-    Precision:$("bal_acc").value||"",
-    gpsISO:($("bal_lat").dataset.gpsISO||""),
     Fotos:[]
   };
   if(!validateSection("formBaldio")) return null;
   if(!obj.PuntoFisico){toast("Selecciona Punto Físico");return null;}
   if(!obj.Latitud||!obj.Longitud){toast("Captura coordenadas");return null;}
-  if(!obj.Latitud||!obj.Longitud||!obj.Precision){toast("Falta capturar coordenadas");return null;}
   return obj;
 }
 
@@ -935,61 +851,70 @@ function makeWorksheet(name,headers,rows){
   return `<Worksheet ss:Name="${xmlEscape(name)}"><Table>${headerRow}${body}</Table></Worksheet>`;
 }
 function buildExcel(estr,unc,cli,sus,bal){
-  const hdrE=["Ítem","Transformador (CD)","Capacidad transformador kVA","Tipo Nodo","Material Nodo","Características Nodo","Punto Físico","Tipo de Redes BT","Luminarias (AP)","Latitud (Y)","Longitud (X)"];
-  const hdrU=HDR_U;
-  const hdrC=["Ítem","Transformador (CD)","Capacidad transformador kVA","Serie de medidor","Marca de medidor","No. Fases","Latitud (Y)","Longitud (X)","Estado de medidor","Estado de visor","¿Medidor requiere inspección/Cambio?"];
-  const hdrS=["Ítem","Transformador (CD)","Capacidad transformador kVA","Punto Físico","Latitud (Y)","Longitud (X)","Motivo de suspensión"];
-  const hdrB=["Ítem","Transformador (CD)","Capacidad transformador kVA","Punto Físico","Latitud (Y)","Longitud (X)","Estado"];
+  // Export HTML-as-Excel (simple y robusto para móvil)
+  const esc = (v)=> (v==null?"":String(v)).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  const toISO=(v)=>v||"";
+  const mkTable=(title, headers, rows)=>{
+    const thead = "<tr>"+headers.map(h=>`<th>${esc(h)}</th>`).join("")+"</tr>";
+    const tbody = rows.map(r=>"<tr>"+headers.map(h=>`<td>${esc(r[h])}</td>`).join("")+"</tr>").join("");
+    return `<table border="1"><tr><th colspan="${headers.length}" style="background:#d40000;color:#fff;">${esc(title)}</th></tr>${thead}${tbody}</table><br/>`;
+  };
+
+  // Headers (SIN capacidad; CON punto físico; CON precisión; CON fechas)
+  const hdrE=["Ítem","Transformador (CD)","Tipo Nodo","Material Nodo","Características Nodo","Punto Físico","Tipo de Redes BT","Luminarias (AP)","Latitud (Y)","Longitud (X)","Precisión (m)","FECHA_HORA","GPS_HORA"];
+  const hdrU=["Ítem","Transformador (CD)","Punto Físico","Nombres","Identificación","Contacto","Sede","Municipio","Dirección","Localidad","Tipo Zona","Latitud (Y)","Longitud (X)","Precisión (m)","FECHA_HORA","GPS_HORA","Tipo Material","¿Requiere muro?","¿Requiere arriostre?"];
+  const hdrC=["Ítem","Transformador (CD)","Punto Físico","Serie de medidor","Marca de medidor","No. Fases","Estado de medidor","Estado de visor","¿Medidor requiere inspección/Cambio?","Latitud (Y)","Longitud (X)","Precisión (m)","FECHA_HORA","GPS_HORA"];
+  const hdrS=["Ítem","Transformador (CD)","Punto Físico","Motivo de suspensión","Latitud (Y)","Longitud (X)","Precisión (m)","FECHA_HORA","GPS_HORA"];
+  const hdrB=["Ítem","Transformador (CD)","Punto Físico","Estado","Latitud (Y)","Longitud (X)","Precisión (m)","FECHA_HORA","GPS_HORA"];
 
   const rowsE=estr.map(x=>({
-    "Ítem":x.item,"Transformador (CD)":x.Transformador,"Capacidad transformador kVA":x.Capacidad_kVA,
+    "Ítem":x.item,"Transformador (CD)":x.Transformador,
     "Tipo Nodo":x.TipoNodo,"Material Nodo":x.MaterialNodo,"Características Nodo":x.CaracteristicasNodo,
     "Punto Físico":x.PuntoFisico,"Tipo de Redes BT":x.TipoRedBT,"Luminarias (AP)":x.Luminarias,
-    "Latitud (Y)":x.Latitud,"Longitud (X)":x.Longitud
+    "Latitud (Y)":x.Latitud,"Longitud (X)":x.Longitud,"Precisión (m)":x.Precision||"",
+    "FECHA_HORA":toISO(x.fechaISO),"GPS_HORA":toISO(x.gpsISO)
   }));
   const rowsU=unc.map(x=>({
-    "Ítem":x.item,"Transformador (CD)":x.Transformador,"Capacidad transformador kVA":x.Capacidad_kVA,
+    "Ítem":x.item,"Transformador (CD)":x.Transformador,"Punto Físico":x.PuntoFisico||"",
     "Nombres":x.Nombres,"Identificación":x.Identificacion,"Contacto":x.Contacto,
-    "Sede":x.Sede,"Municipio":x.Municipio,"Dirección":x.Direccion,"Localidad (Barrio/Vereda)":x.Localidad,"Tipo Zona":x.TipoZona,
-    "Latitud (Y)":x.Latitud,"Longitud (X)":x.Longitud,"Tipo material":x.TipoMaterial,
-    "¿Predio habitable?":x.PredioHabitable,"¿Requiere construir muro?":x.RequiereMuro,"Para servicio requiere ampliación de redes":x.AmpliacionRedes,
-    "Documento de propiedad":x.DocPropiedad,"Cédula propietario":x.CedulaProp,
-    "Formato E1 Solicitud":x.E1,"Aceptación de requisitos":x.AR,"Declaración Juramentada":x.DJ,"Formato E6 RT":x.E6,
-    "EC Particular":x.ECPart,"Documentos electricista":x.DocElectricista,"Declaración RETIE":x.RETIE,"EC Inmel":x.ECInmel,
-    "Estado":x.Estado,"Acometida":x.Acometida,"Ducto 1\" Galv.":x.Ducto,"Celda":x.Celda,"Interruptor":x.Interruptor,
-    "SPT (Tierra)":x.SPT,"Instalación interna":x.InstalacionInterna,"Observaciones":x.Observaciones
+    "Sede":x.Sede,"Municipio":x.Municipio,"Dirección":x.Direccion,"Localidad":x.Localidad,"Tipo Zona":x.TipoZona,
+    "Latitud (Y)":x.Latitud,"Longitud (X)":x.Longitud,"Precisión (m)":x.Precision||"",
+    "FECHA_HORA":toISO(x.fechaISO),"GPS_HORA":toISO(x.gpsISO),
+    "Tipo Material":x.TipoMaterial||"",
+    "¿Requiere muro?":x.RequiereMuro||"",
+    "¿Requiere arriostre?":x.RequiereArriostre||""
   }));
   const rowsC=cli.map(x=>({
-    "Ítem":x.item,"Transformador (CD)":x.Transformador,"Capacidad transformador kVA":x.Capacidad_kVA,
+    "Ítem":x.item,"Transformador (CD)":x.Transformador,"Punto Físico":x.PuntoFisico||"",
     "Serie de medidor":x.SerieMedidor,"Marca de medidor":x.MarcaMedidor,"No. Fases":x.Fases,
-    "Latitud (Y)":x.Latitud,"Longitud (X)":x.Longitud,"Estado de medidor":x.EstadoMedidor,"Estado de visor":x.EstadoVisor,
-    "¿Medidor requiere inspección/Cambio?":x.ReqInspeccion
+    "Estado de medidor":x.EstadoMedidor,"Estado de visor":x.EstadoVisor,"¿Medidor requiere inspección/Cambio?":x.RequiereCambio,
+    "Latitud (Y)":x.Latitud,"Longitud (X)":x.Longitud,"Precisión (m)":x.Precision||"",
+    "FECHA_HORA":toISO(x.fechaISO),"GPS_HORA":toISO(x.gpsISO)
+  }));
+  const rowsS=sus.map(x=>({
+    "Ítem":x.item,"Transformador (CD)":x.Transformador,"Punto Físico":x.PuntoFisico||"",
+    "Motivo de suspensión":x.Motivo,
+    "Latitud (Y)":x.Latitud,"Longitud (X)":x.Longitud,"Precisión (m)":x.Precision||"",
+    "FECHA_HORA":toISO(x.fechaISO),"GPS_HORA":toISO(x.gpsISO)
   }));
   const rowsB=bal.map(x=>({
-    "Ítem":x.item,"Transformador (CD)":x.Transformador,"Capacidad transformador kVA":x.Capacidad_kVA,
-    "Punto Físico":x.PuntoFisico,"Latitud (Y)":x.Latitud,"Longitud (X)":x.Longitud,"Estado":x.Estado
+    "Ítem":x.item,"Transformador (CD)":x.Transformador,"Punto Físico":x.PuntoFisico||"",
+    "Estado":x.Estado,
+    "Latitud (Y)":x.Latitud,"Longitud (X)":x.Longitud,"Precisión (m)":x.Precision||"",
+    "FECHA_HORA":toISO(x.fechaISO),"GPS_HORA":toISO(x.gpsISO)
   }));
 
-  const rowsS=sus.map(x=>({
-    "Ítem":x.item,"Transformador (CD)":x.Transformador,"Capacidad transformador kVA":x.Capacidad_kVA,
-    "Punto Físico":x.PuntoFisico,"Latitud (Y)":x.Latitud,"Longitud (X)":x.Longitud,"Motivo de suspensión":x.Motivo
-  }));
-
-  const xml=`<?xml version="1.0"?><?mso-application progid="Excel.Sheet"?>
-<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
- xmlns:o="urn:schemas-microsoft-com:office:office"
- xmlns:x="urn:schemas-microsoft-com:office:excel"
- xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"
- xmlns:html="http://www.w3.org/TR/REC-html40">
-<DocumentProperties xmlns="urn:schemas-microsoft-com:office:office"><Author>GS</Author><Created>${new Date().toISOString()}</Created></DocumentProperties>
-${makeWorksheet("Registro_estructuras",hdrE,rowsE)}
-${makeWorksheet("Registro_UNC",hdrU,rowsU)}
-${makeWorksheet("Registro_clientes",hdrC,rowsC)}
-${makeWorksheet("Registro_SUSP_ESPT",hdrS,rowsS)}
-${makeWorksheet("Baldíos",hdrB,rowsB)}
-</Workbook>`;
-  return new TextEncoder().encode(xml);
+  const htmlXls = `
+  <html><head><meta charset="UTF-8"></head><body>
+    ${mkTable("ESTRUCTURAS",hdrE,rowsE)}
+    ${mkTable("UNC",hdrU,rowsU)}
+    ${mkTable("CLIENTES",hdrC,rowsC)}
+    ${mkTable("SUSPENSIONES",hdrS,rowsS)}
+    ${mkTable("BALDIOS",hdrB,rowsB)}
+  </body></html>`;
+  return new TextEncoder().encode(htmlXls);
 }
+
 
 /* Export ZIP */
 function downloadBlob(filename,mime,u8){
@@ -1010,8 +935,8 @@ function openExportGate(nextCD){
   pendingCD = nextCD;
   openModal("modalExportGate");
 }
-onSafe("gateCancel","click",()=>{ pendingCD=null; closeModal("modalExportGate"); });
-onSafe("gateExport","click",async ()=>{
+$("gateCancel").addEventListener("click",()=>{ pendingCD=null; closeModal("modalExportGate"); });
+$("gateExport").addEventListener("click", async ()=>{
   closeModal("modalExportGate");
   await exportAll();
   localStorage.setItem("exported_"+activeCD,"1");
@@ -1028,44 +953,76 @@ async function afterSaveAskNext(){
   openModal("modalAfterSave");
 }
 
-async function exportAll(){
-  setBadge("Exportando… 📦");
-  const estr=await getAll("estructuras"), unc=await getAll("unc"), cli=await getAll("clientes"), sus=await getAll("susp"), bal=await getAll("baldios");
-  const now=new Date();
-  const stamp = new Date().toISOString().slice(0,10);
-  const cdSafe = (cd+"").replace(/[^A-Z0-9_\-]/gi,"_");
-  const excelName = `GS_Diagnosticos_${cdSafe}_${stamp}.xls`;
-  const excelU8=buildExcel(estr,unc,cli,sus,bal);
+async async function exportAll(){
+  try{
+    setBadge("Exportando… 📦");
+    const estr=await getAll("estructuras");
+    const unc=await getAll("unc");
+    const cli=await getAll("clientes");
+    const sus=await getAll("susp");
+    const bal=await getAll("baldios");
 
-  const zip=new TinyZip();
-  zip.add(excelName, excelU8);
+    const cdAct = (activeCD||"").toString();
+    if(!cdAct){ toast("No hay CD activo"); setBadge("Listo ✅"); return; }
 
-  for(const r of estr){
-    const folder=safeName(`${r.Transformador}_${r.PuntoFisico||("ITEM_"+r.item)}`);
-    (r.Fotos||[]).forEach((f,i)=>zip.add(`${folder}/foto_${i+1}.jpg`, dataURLtoU8(f.dataURL)));
-  }
-  for(const r of unc){
-    const folder=safeName(`${r.Transformador}_${r.Nombres||("ITEM_"+r.item)}`);
-    (r.Fotos||[]).forEach((f,i)=>zip.add(`${folder}/foto_${i+1}.jpg`, dataURLtoU8(f.dataURL)));
-  }
-  for(const r of cli){
-    const folder=safeName(`${r.Transformador}_${r.SerieMedidor||("ITEM_"+r.item)}`);
-    (r.Fotos||[]).forEach((f,i)=>zip.add(`${folder}/foto_${i+1}.jpg`, dataURLtoU8(f.dataURL)));
-  }
-  for(const r of bal){
-    const folder=safeName(`${r.Transformador}_${r.PuntoFisico||""}_BALDIO_${r.item}`);
-    (r.Fotos||[]).forEach((f,i)=>zip.add(`${folder}/foto_${i+1}.jpg`, dataURLtoU8(f.dataURL)));
-  }
+    // Filtrar SOLO CD activo
+    const f = (arr)=>arr.filter(r=> (r.Transformador||"").toString()===cdAct);
+    const estrF=f(estr), uncF=f(unc), cliF=f(cli), susF=f(sus), balF=f(bal);
 
-  for(const r of sus){
-    const folder=safeName(`${r.Transformador}_${r.item}`);
-    (r.Fotos||[]).forEach((f,i)=>zip.add(`${folder}/foto_${i+1}.jpg`, dataURLtoU8(f.dataURL)));
-  }
+    const d=new Date();
+    const stamp = d.toISOString().slice(0,10).replace(/-/g,"");
+    const hm = d.toTimeString().slice(0,5).replace(":","");
+    const cdSafe = (cdAct+"").replace(/[^A-Z0-9_\-]/gi,"_");
+    const baseName = `GS_Diagnostico_${cdSafe}_${stamp}_${hm}`;
 
-  downloadBlob(`GS_Diagnosticos_${stamp}.zip`,"application/zip",zip.finalize());
-  setBadge("Listo ✅");
-  toast("Exportado ✅");
+    const excelName = `${baseName}.xls`;
+    const excelU8=buildExcel(estrF,uncF,cliF,susF,balF);
+
+    const zip=new TinyZip();
+    zip.add(excelName, excelU8);
+
+    const addFotos=(grupo, r, folderBase)=>{
+      const folder=safeName(folderBase);
+      (r.Fotos||[]).forEach((f,i)=>{
+        try{
+          zip.add(`FOTOS/${grupo}/${folder}/foto_${i+1}.jpg`, dataURLtoU8(f.dataURL));
+        }catch(e){}
+      });
+    };
+
+    for(const r of estrF) addFotos("ESTRUCTURAS", r, `${r.Transformador}_${r.PuntoFisico||("ITEM_"+r.item)}`);
+    for(const r of uncF)  addFotos("UNC", r, `${r.Transformador}_${r.Nombres||("ITEM_"+r.item)}`);
+    for(const r of cliF)  addFotos("CLIENTES", r, `${r.Transformador}_${r.SerieMedidor||("ITEM_"+r.item)}`);
+    for(const r of susF)  addFotos("SUSPENSIONES", r, `${r.Transformador}_${r.PuntoFisico||("ITEM_"+r.item)}`);
+    for(const r of balF)  addFotos("BALDIOS", r, `${r.Transformador}_${r.PuntoFisico||""}_BALDIO_${r.item}`);
+
+    const zipU8 = zip.finalize();
+    const zipName = `${baseName}.zip`;
+
+    // Intento descarga directa
+    const blob=new Blob([zipU8],{type:"application/zip"});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement("a");
+    a.href=url; a.download=zipName;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+
+    // Respaldo: modal con link si Android bloquea
+    const link=$("dlLink");
+    if(link){ link.href=url; link.download=zipName; }
+    if($("dlModal")) $("dlModal").style.display="flex";
+
+    await setMeta("dirty",false);
+    setBadge("Listo ✅");
+    toast("Exportado ✅");
+  }catch(e){
+    console.error(e);
+    setBadge("Listo ✅");
+    toast("Error exportando ❌");
+  }
 }
+
 
 /* Service Worker: solo si NO es file:// */
 async function registerSW(){
@@ -1089,15 +1046,7 @@ async function refreshPFSelectors(){
 }
 
 function wireEvents(){
-  
-  // Dictado: botones 🎤
-  document.querySelectorAll('button.mic[data-target]').forEach(btn=>{
-    btn.addEventListener("click", ()=>{
-      const target = btn.getAttribute("data-target");
-      startDictation(target);
-    });
-  });
-document.querySelectorAll('input[name="modoCd"]').forEach(r=>r.addEventListener("change",refreshModoCd));
+  document.querySelectorAll('input[name="modoCd"]').forEach(r=>r.addEventListener("change",refreshModoCd));
   refreshModoCd();
   document.querySelectorAll('input[type="file"][data-max]').forEach(enforceMaxFiles);
 
@@ -1105,19 +1054,19 @@ document.querySelectorAll('input[name="modoCd"]').forEach(r=>r.addEventListener(
   document.querySelectorAll('input[type="text"], input[type="tel"], input[type="search"], textarea').forEach(enforceUpper);
 
 
-  onSafe("cdInput","input",e=>e.target.value=upperAlnum(e.target.value));
-  onSafe("est_punto_fisico","input",e=>e.target.value=upperAlnum(e.target.value));
-  onSafe("est2_punto_fisico","input",e=>e.target.value=upperAlnum(e.target.value));
-  onSafe("cli_marca","input",e=>e.target.value=upperAlnum(e.target.value));
+  $("cdInput").addEventListener("input", e=>e.target.value=upperAlnum(e.target.value));
+  $("est_punto_fisico").addEventListener("input", e=>e.target.value=upperAlnum(e.target.value));
+  $("est2_punto_fisico").addEventListener("input", e=>e.target.value=upperAlnum(e.target.value));
+  $("cli_marca").addEventListener("input", e=>e.target.value=upperAlnum(e.target.value));
 
-  onSafe("est_btnGPS","click",()=>captureGPS($("est_lat"),$("est_lon"),$("est_acc")));
-  onSafe("unc_btnGPS","click",()=>captureGPS($("unc_lat"),$("unc_lon"),$("unc_acc")));
-  onSafe("cli_btnGPS","click",()=>captureGPS($("cli_lat"),$("cli_lon"),$("cli_acc")));
-  onSafe("sus_btnGPS","click",()=>captureGPS($("sus_lat"),$("sus_lon"),$("sus_acc")));
-  onSafe("bal_btnGPS","click",()=>captureGPS($("bal_lat"),$("bal_lon"),$("bal_acc")));
-  onSafe("est2_btnGPS","click",()=>captureGPS($("est2_lat"),$("est2_lon"),$("est2_acc")));
+  $("est_btnGPS").addEventListener("click", ()=>captureGPS($("est_lat"),$("est_lon"),$("est_acc")));
+  $("unc_btnGPS").addEventListener("click", ()=>captureGPS($("unc_lat"),$("unc_lon"),$("unc_acc")));
+  $("cli_btnGPS").addEventListener("click", ()=>captureGPS($("cli_lat"),$("cli_lon"),$("cli_acc")));
+  $("sus_btnGPS").addEventListener("click", ()=>captureGPS($("sus_lat"),$("sus_lon"),$("sus_acc")));
+  $("bal_btnGPS").addEventListener("click", ()=>captureGPS($("bal_lat"),$("bal_lon"),$("bal_acc")));
+  $("est2_btnGPS").addEventListener("click", ()=>captureGPS($("est2_lat"),$("est2_lon")));
 
-  onSafe("btnGuardarEstructura","click",async ()=>{
+  $("btnGuardarEstructura").addEventListener("click", async ()=>{
     if(!validateSection("screen1")) return;
 
     const built=await buildEstructura(false); if(!built) return;
@@ -1131,7 +1080,6 @@ document.querySelectorAll('input[name="modoCd"]').forEach(r=>r.addEventListener(
     }
     updateActiveUI();
     toast("Guardado ✅");
-    await setMeta("dirty",true);
     $("est_tipo_nodo").value=""; $("est_material_nodo").value=""; fillCaracteristicas($("est_tipo_nodo"),$("est_material_nodo"),$("est_caracteristicas"));
     $("est_punto_fisico").value=""; $("est_tipo_red_bt").value=""; $("est_luminarias").value="";
     $("est_lat").value=""; $("est_lon").value="";
@@ -1139,21 +1087,21 @@ document.querySelectorAll('input[name="modoCd"]').forEach(r=>r.addEventListener(
       $("est_obs").value=""; $("est_fotos").value="";
   });
 
-  onSafe("btnIrARegistro","click",()=>{ if(!(activeCD&&activeCAP)) return toast("Registra CD primero"); resetForms(); show("screen2"); });
-  onSafe("btnBack1","click",()=>{ resetForms(); show("screen1"); });
+  $("btnIrARegistro").addEventListener("click", ()=>{ if(!(activeCD&&activeCAP)) return toast("Registra CD primero"); resetForms(); show("screen2"); });
+  $("btnBack1").addEventListener("click", ()=>{ resetForms(); show("screen1"); });
 
-  onSafe("btnUNC","click",async ()=>{ resetForms(); await refreshPFSelectors(); $("formUNC").style.display=""; });
-  onSafe("btnCliente","click",async ()=>{ resetForms(); await refreshPFSelectors(); $("formCliente").style.display=""; });
-  onSafe("btnSusp","click",async ()=>{ resetForms(); await refreshPFSelectors(); $("formSusp").style.display=""; });
-  onSafe("btnBaldio","click",async ()=>{ resetForms(); await refreshPFSelectors(); if($("formBaldio")) $("formBaldio").style.display=""; });
+  $("btnUNC").addEventListener("click", async ()=>{ resetForms(); await refreshPFSelectors(); $("formUNC").style.display=""; });
+  $("btnCliente").addEventListener("click", async ()=>{ resetForms(); await refreshPFSelectors(); $("formCliente").style.display=""; });
+  $("btnSusp").addEventListener("click", async ()=>{ resetForms(); await refreshPFSelectors(); $("formSusp").style.display=""; });
+  $("btnBaldio").addEventListener("click", async ()=>{ resetForms(); await refreshPFSelectors(); show("screenBaldio"); $("formBaldio").style.display=""; });
 
-  onSafe("btnCancelUNC","click",()=>resetForms());
-  onSafe("btnCancelCli","click",()=>resetForms());
-  onSafe("btnCancelSus","click",()=>resetForms());
-  onSafe("btnCancelBaldio","click",()=>resetForms());
-  onSafe("btnCancelEst2","click",()=>resetForms());
+  $("btnCancelUNC").addEventListener("click", ()=>resetForms());
+  $("btnCancelCli").addEventListener("click", ()=>resetForms());
+  $("btnCancelSus").addEventListener("click", ()=>resetForms());
+  $("btnCancelBaldio").addEventListener("click", ()=>resetForms());
+  $("btnCancelEst2").addEventListener("click", ()=>resetForms());
 
-  onSafe("btnGuardarUNC","click",async ()=>{
+  $("btnGuardarUNC").addEventListener("click", async ()=>{
     if(!validateSection("formUNC")) return;
 
     if(!(activeCD&&activeCAP)) return toast("Sin CD activo");
@@ -1161,10 +1109,9 @@ document.querySelectorAll('input[name="modoCd"]').forEach(r=>r.addEventListener(
     obj.Fotos=await readFiles($("unc_fotos"));
     const item=await nextItem("unc");
     if(editCtx && editCtx.store==="unc"){ await putRec("unc",{...obj,id:editCtx.id,item}); editCtx=null; } else { await addRec("unc",{...obj,item}); }
-    toast("Guardado ✅");
-    await setMeta("dirty",true); resetForms(); await afterSaveAskNext();
+    toast("Guardado ✅"); resetForms(); await afterSaveAskNext();
   });
-  onSafe("btnGuardarCli","click",async ()=>{
+  $("btnGuardarCli").addEventListener("click", async ()=>{
     if(!validateSection("formCliente")) return;
 
     if(!(activeCD&&activeCAP)) return toast("Sin CD activo");
@@ -1172,23 +1119,20 @@ document.querySelectorAll('input[name="modoCd"]').forEach(r=>r.addEventListener(
     obj.Fotos=await readFiles($("cli_fotos"));
     const item=await nextItem("clientes");
     if(editCtx && editCtx.store==="clientes"){ await putRec("clientes",{...obj,id:editCtx.id,item}); editCtx=null; } else { await addRec("clientes",{...obj,item}); }
-    toast("Guardado ✅");
-    await setMeta("dirty",true); resetForms(); await afterSaveAskNext();
+    toast("Guardado ✅"); resetForms(); await afterSaveAskNext();
   });
-  if($("btnGuardarBaldio")) onSafe("btnGuardarBaldio","click",async ()=>{
+  if($("btnGuardarBaldio")) $("btnGuardarBaldio").addEventListener("click", async ()=>{
     if(!validateSection("formBaldio")) return;
 
     if(!(activeCD&&activeCAP)) return toast("Sin CD activo");
     const obj=await buildBaldio(); if(!obj) return;
     obj.Fotos=await readFiles($("bal_fotos"));
-    if(!(obj.Fotos&&obj.Fotos.length)) return toast("Adjunta fotos");
-    const item=await nextItem("baldios");
+        const item=await nextItem("baldios");
     await addRec("baldios",{...obj,item});
-    toast("Guardado ✅");
-    await setMeta("dirty",true); resetForms(); await afterSaveAskNext(); await updateKPIs();
+    toast("Guardado ✅"); resetForms(); await afterSaveAskNext(); await updateKPIs();
   });
 
-  onSafe("btnGuardarSus","click",async ()=>{
+  $("btnGuardarSus").addEventListener("click", async ()=>{
     if(!validateSection("formSusp")) return;
 
     if(!(activeCD&&activeCAP)) return toast("Sin CD activo");
@@ -1196,35 +1140,32 @@ document.querySelectorAll('input[name="modoCd"]').forEach(r=>r.addEventListener(
     obj.Fotos=await readFiles($("sus_fotos"));
     const item=await nextItem("susp");
     await addRec("susp",{...obj,item});
-    toast("Guardado ✅");
-    await setMeta("dirty",true); resetForms(); await afterSaveAskNext();
+    toast("Guardado ✅"); resetForms(); await afterSaveAskNext();
   });
-  onSafe("btnGuardarEst2","click",async ()=>{
+  $("btnGuardarEst2").addEventListener("click", async ()=>{
     if(!(activeCD&&activeCAP)) return toast("Sin CD activo");
     const built=await buildEstructura(true); if(!built) return;
     const {obj}=built;
     obj.Fotos=await readFiles($("est2_fotos"));
     const item=await nextItem("estructuras");
     await addRec("estructuras",{...obj,item});
-    toast("Guardado ✅");
-    await setMeta("dirty",true); resetForms(); await afterSaveAskNext();
+    toast("Guardado ✅"); resetForms(); await afterSaveAskNext();
   });
 
-  onSafe("btnExportar","click",exportAll);
-  onSafe("dlClose","click",()=>{$("dlModal").style.display="none";});
+  $("btnExportar").addEventListener("click", exportAll);
   // After-save modal
-  onSafe("afterYes","click",()=>{ $("afterSaveQ").style.display="none"; $("afterBtns").style.display="flex"; });
-  onSafe("afterNo","click",()=>{ closeModal("modalAfterSave"); resetForms(); show("screen1"); });
-  onSafe("goBackQ","click",()=>{ $("afterBtns").style.display="none"; $("afterSaveQ").style.display="flex"; });
-  onSafe("goUNC","click",async ()=>{ closeModal("modalAfterSave"); resetForms(); await refreshPFSelectors(); show("screen2"); $("formUNC").style.display=""; });
-  onSafe("goCLI","click",async ()=>{ closeModal("modalAfterSave"); resetForms(); await refreshPFSelectors(); show("screen2"); $("formCliente").style.display=""; });
-  onSafe("goSUS","click",async ()=>{ closeModal("modalAfterSave"); resetForms(); await refreshPFSelectors(); show("screen2"); $("formSusp").style.display=""; });
-  onSafe("goBAL","click",async ()=>{ closeModal("modalAfterSave"); resetForms(); await refreshPFSelectors(); show("screenBaldio"); if($("formBaldio")) $("formBaldio").style.display=""; });
+  $("afterYes").addEventListener("click", ()=>{ $("afterSaveQ").style.display="none"; $("afterBtns").style.display="flex"; });
+  $("afterNo").addEventListener("click", ()=>{ closeModal("modalAfterSave"); resetForms(); show("screen1"); });
+  $("goBackQ").addEventListener("click", ()=>{ $("afterBtns").style.display="none"; $("afterSaveQ").style.display="flex"; });
+  $("goUNC").addEventListener("click", async ()=>{ closeModal("modalAfterSave"); resetForms(); await refreshPFSelectors(); show("screen2"); $("formUNC").style.display=""; });
+  $("goCLI").addEventListener("click", async ()=>{ closeModal("modalAfterSave"); resetForms(); await refreshPFSelectors(); show("screen2"); $("formCliente").style.display=""; });
+  $("goSUS").addEventListener("click", async ()=>{ closeModal("modalAfterSave"); resetForms(); await refreshPFSelectors(); show("screen2"); $("formSusp").style.display=""; });
+  $("goBAL").addEventListener("click", async ()=>{ closeModal("modalAfterSave"); resetForms(); await refreshPFSelectors(); show("screenBaldio"); $("formBaldio").style.display=""; });
 
   // Actualizar
-  onSafe("btnActualizar","click",()=>{ openModal("modalUpdate"); $("updPick").style.display="flex"; $("updListWrap").style.display="none"; });
-  onSafe("updClose","click",()=>closeModal("modalUpdate"));
-  onSafe("updBack","click",()=>{ $("updPick").style.display="flex"; $("updListWrap").style.display="none"; });
+  $("btnActualizar").addEventListener("click", ()=>{ openModal("modalUpdate"); $("updPick").style.display="flex"; $("updListWrap").style.display="none"; });
+  $("updClose").addEventListener("click", ()=>closeModal("modalUpdate"));
+  $("updBack").addEventListener("click", ()=>{ $("updPick").style.display="flex"; $("updListWrap").style.display="none"; });
   let updStore=null;
   async function loadUpdList(store){
     updStore=store;
@@ -1239,9 +1180,9 @@ document.querySelectorAll('input[name="modoCd"]').forEach(r=>r.addEventListener(
     $("updHint").textContent = filtered.length ? "Selecciona un registro para editar" : "No hay registros en este CD";
     $("updPick").style.display="none"; $("updListWrap").style.display="block";
   }
-  onSafe("updUNC","click",()=>loadUpdList("unc"));
-  onSafe("updCLI","click",()=>loadUpdList("clientes"));
-  onSafe("updLoad","click",async ()=>{
+  $("updUNC").addEventListener("click", ()=>loadUpdList("unc"));
+  $("updCLI").addEventListener("click", ()=>loadUpdList("clientes"));
+  $("updLoad").addEventListener("click", async ()=>{
     const id=Number($("updSelect").value||0); if(!id) return toast("Selecciona un registro");
     const rec=await getById(updStore,id); if(!rec) return toast("No encontrado");
     editCtx={store:updStore,id};
@@ -1274,7 +1215,7 @@ document.querySelectorAll('input[name="modoCd"]').forEach(r=>r.addEventListener(
     toast("Modo edición ✅");
   });
 
-  onSafe("btnConteos","click",async ()=>{ const a=await count("estructuras"),b=await count("unc"),c=await count("clientes"),d=await count("susp"),e=await count("baldios"); toast(`Estructuras: ${a} | UNC: ${b} | Clientes: ${c} | Susp: ${d} | Baldíos: ${e}`); });
+  $("btnConteos").addEventListener("click", async ()=>{ const a=await count("estructuras"),b=await count("unc"),c=await count("clientes"),d=await count("susp"),e=await count("baldios"); toast(`Estructuras: ${a} | UNC: ${b} | Clientes: ${c} | Susp: ${d} | Baldíos: ${e}`); });
 }
 
 (async function init(){
@@ -1311,6 +1252,7 @@ document.querySelectorAll('input[name="modoCd"]').forEach(r=>r.addEventListener(
         <button class="secondary" id="goCLI" type="button">CLIENTE</button>
         <button class="secondary" id="goSUS" type="button">SUSPENSIÓN</button>
         <button class="secondary" id="goBAL" type="button">BALDÍO</button>
+        <button class="secondary" id="goNO" type="button">NO</button>
         <button class="secondary" id="goBackQ" style="display:none" type="button">Volver</button>
       </div>
     </div>
@@ -1348,16 +1290,5 @@ document.querySelectorAll('input[name="modoCd"]').forEach(r=>r.addEventListener(
     </div>
   </div>
 
-
-  <div class="modal" id="dlModal" style="display:none;">
-    <div class="modalCard">
-      <h3>Descarga lista</h3>
-      <p>Si no inició la descarga automática, toca el botón:</p>
-      <div class="btnrow">
-        <a id="dlLink" class="ok" href="#" download>Descargar ZIP</a>
-        <button class="secondary" id="dlClose" type="button">Cerrar</button>
-      </div>
-    </div>
-  </div>
 </body>
 </html>
