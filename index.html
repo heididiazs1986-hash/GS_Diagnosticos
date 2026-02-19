@@ -6,6 +6,9 @@
   <title>GS Diagnósticos</title>
   <meta name="theme-color" content="#d40000" />
   <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="icon-180.png">
   <style>
     :root{--rojo:#d40000;--gris:#f5f5f5;--borde:#dedede;--texto:#1f1f1f;--muted:#6a6a6a;--card:#fff;--shadow:0 10px 26px rgba(0,0,0,.08);--radius:18px;}
     *{box-sizing:border-box;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;}
@@ -40,7 +43,7 @@
     .chip.radioBig input{transform:scale(1.25);}
     .chip.radioBig:has(input:checked){box-shadow:0 0 0 4px rgba(255,255,255,.18) inset, 0 10px 22px rgba(0,0,0,.18);}
 
-    .chip input{width:auto;margin:0; transform:scale(1.35);} 
+    .chip input{width:auto;margin:0;}
   
     /* --- Overrides v2 --- */
     .chips{display:flex;flex-direction:column;gap:10px;flex-wrap:nowrap;margin-top:10px;}
@@ -86,41 +89,37 @@
       <div class="grid two" id="cdCapBlock">
         <div>
           <label for="cdInput">Transformador (CD)</label>
-          <input id="cdInput" placeholder="E21282TR1" autocomplete="off" / class="upper">
+          <input id="cdInput" placeholder="E21282TR1" autocomplete="off" / required>
         </div>
         <div>
           <label for="capSelect">Capacidad transformador kVA</label>
-          <select id="capSelect">
-            <option value="">Selecciona…</option>
-            <option>5 kVA</option><option>10 kVA</option><option>15 kVA</option><option>25 kVA</option>
-            <option>30 kVA</option><option>45 kVA</option><option>75 kVA</option><option>112.5 kVA</option>
-            <option>150 kVA</option><option>225 kVA</option>
-          </select>
+          <select id="capSelect" required>
+            <option value="">Selecciona…</option><option>5 kVA</option><option>10 kVA</option><option>15 kVA</option><option>25 kVA</option><option>30 kVA</option><option>45 kVA</option><option>75 kVA</option><option>112.5 kVA</option><option>150 kVA</option><option>225 kVA</option></select>
         </div>
       </div>
 
       <div class="grid three">
         <div><label>Tipo Nodo</label>
-          <select id="est_tipo_nodo"><option value="">Selecciona…</option><option>Nodo BT</option><option>Nodo MT</option></select>
+          <select id="est_tipo_nodo" required><option value="">Selecciona…</option><option>Nodo BT</option><option>Nodo MT</option></select>
         </div>
         <div><label>Material Nodo</label>
-          <select id="est_material_nodo"><option value="">Selecciona…</option><option>Fibra de vidrio</option><option>Hormigón</option><option>Madera</option><option>Metálico</option></select>
+          <select id="est_material_nodo" required><option value="">Selecciona…</option><option>Fibra de vidrio</option><option>Hormigón</option><option>Madera</option><option>Metálico</option></select>
         </div>
         <div><label>Características Nodo</label>
-          <select id="est_caracteristicas"><option value="">Selecciona…</option></select>
+          <select id="est_caracteristicas" required><option value="">Selecciona…</option></select>
         </div>
       </div>
 
       <div class="grid three">
-        <div><label>Punto Físico</label><input id="est_punto_fisico" autocomplete="off" class="upper"></div>
-        <div><label>Tipo de Redes BT</label><select id="est_tipo_red_bt"><option value="">Selecciona…</option><option>Abierta</option><option>Trenzada</option></select></div>
+        <div><label>Punto Físico</label><input id="est_punto_fisico" autocomplete="off" required></div>
+        <div><label>Tipo de Redes BT</label><select id="est_tipo_red_bt" required><option value="">Selecciona…</option><option>Abierta</option><option>Trenzada</option></select></div>
         <div><label>Luminarias (AP)</label><input id="est_luminarias" inputmode="numeric" placeholder="0"></div>
       </div>
 
       <div class="grid four">
         <div><label>Latitud (Y)</label><input id="est_lat" readonly placeholder="GPS"></div>
         <div><label>Longitud (X)</label><input id="est_lon" readonly placeholder="GPS"></div>
-        <div><label>Precisión (m)</label><input id="est_acc" readonly placeholder="GPS"></div><div><label>Fotos</label><input id="est_fotos" type="file" accept="image/*" multiple data-max="5">
+        <div><label>Precisión (m)</label><input id="est_acc" readonly placeholder="GPS"></div><div><label>Fotos</label><input id="est_fotos" type="file" accept="image/*" multiple data-max="7">
       <div style="margin-top:10px;">
         <label>Observaciones (opcional)</label>
         <div class="dictWrap">
@@ -170,22 +169,22 @@
       </div>
       <h3 class="section">CARACTERIZACIÓN DE PREDIO</h3>
       <div class="grid two">
-        <div><label>Punto Físico</label><select id="unc_pf"></select></div>
+        <div><label>Punto Físico</label><select id="unc_pf" required></select></div>
         <div></div>
       </div>
       <div class="grid three">
-        <div><label>Sede</label><select id="unc_sede"></select></div>
-        <div><label>Municipio</label><select id="unc_municipio"></select></div>
-        <div><label>Dirección</label><input id="unc_direccion" type="text" autocomplete="street-address" class="upper"></div>
+        <div><label>Sede</label><select id="unc_sede" required></select></div>
+        <div><label>Municipio</label><select id="unc_municipio" required></select></div>
+        <div><label>Dirección</label><input id="unc_direccion" type="text" autocomplete="street-address" required></div>
       </div>
       <div class="grid three">
-        <div><label>Localidad (Barrio/Vereda)</label><input id="unc_localidad" class="upper"></div>
-        <div><label>Tipo Zona</label><select id="unc_tipo_zona"><option value="">Selecciona…</option><option>Rural</option><option>Urbana</option></select></div>
-        <div><label>Tipo material</label><select id="unc_tipo_material"><option value="">Selecciona…</option><option>No perdurable</option><option>Perdurable</option></select></div>
+        <div><label>Localidad (Barrio/Vereda)</label><input id="unc_localidad" required></div>
+        <div><label>Tipo Zona</label><select id="unc_tipo_zona" required><option value="">Selecciona…</option><option>Rural</option><option>Urbana</option></select></div>
+        <div><label>Tipo material</label><select id="unc_tipo_material" required><option value="">Selecciona…</option><option>No perdurable</option><option>Perdurable</option></select></div>
       </div>
       <div class="grid two">
         <div><label>Estado</label>
-          <select id="unc_estado">
+          <select id="unc_estado" required>
             <option value="">Selecciona…</option>
             <option>Normalizado - requiere solo medidor</option>
             <option>Requiere obra externa completa</option>
@@ -210,14 +209,14 @@
       </div>
 </div>
       <div class="grid">
-        <div><label>Fotos</label><input id="unc_fotos" type="file" accept="image/*" multiple data-max="5"></div>
+        <div><label>Fotos</label><input id="unc_fotos" type="file" accept="image/*" multiple data-max="7"></div>
       </div>
 
       <div class="sep"></div>
       <h3 class="section">DOCUMENTOS ENTREGADOS POR USUARIO</h3>
       <div class="grid two">
         <div><label>Documento de propiedad</label>
-          <select id="unc_doc_propiedad">
+          <select id="unc_doc_propiedad" required>
             <option value="">Selecciona…</option>
             <option>Certificado de libertad y tradición</option>
             <option>Contrato de donación</option>
@@ -251,7 +250,7 @@
       <h3 class="section">PENDIENTES PARA CUMPLIMIENTO DE NORMA TÉCNICA</h3>
       <div class="chips">
         <label class="chip"><input type="checkbox" id="unc_requiere_muro"> ¿Requiere construir muro?</label>
-        <label class="chip"><input type="checkbox" id="unc_arriostre"> ¿Requiere uso de arriostre?</label>
+        <label class="chip"><input type="checkbox" id="unc_arriostre"> ¿Requiere Arriostre?</label>
         <label class="chip"><input type="checkbox" id="unc_acometida"> Acometida</label>
         <label class="chip"><input type="checkbox" id="unc_ducto"> Ducto 1&quot; Galv.</label>
         <label class="chip"><input type="checkbox" id="unc_celda"> Celda</label>
@@ -271,14 +270,14 @@
       <div class="sep"></div>
 
       <div class="grid two">
-        <div><label>Punto Físico</label><select id="cli_pf"></select></div>
+        <div><label>Punto Físico</label><select id="cli_pf" required></select></div>
         <div></div>
       </div>
 
       <div class="grid three">
-        <div><label>Serie de medidor</label><input id="cli_serie" inputmode="numeric" class="upper"></div>
-        <div><label>Marca de medidor</label><input id="cli_marca" class="upper"></div>
-        <div><label>No. Fases</label><select id="cli_fases"><option value="">Selecciona…</option><option>Monofásico</option><option>Bifásico</option><option>Trifásico</option></select></div>
+        <div><label>Serie de medidor</label><input id="cli_serie" inputmode="numeric" required></div>
+        <div><label>Marca de medidor</label><input id="cli_marca" required></div>
+        <div><label>No. Fases</label><select id="cli_fases" required><option value="">Selecciona…</option><option>Monofásico</option><option>Bifásico</option><option>Trifásico</option></select></div>
       </div>
 
       <div class="grid four">
@@ -291,13 +290,13 @@
       </div>
 
       <div class="grid three">
-        <div><label>Estado de medidor</label><select id="cli_estado_medidor"><option value="">Selecciona…</option><option>Bueno</option><option>Malo</option></select></div>
+        <div><label>Estado de medidor</label><select id="cli_estado_medidor" required><option value="">Selecciona…</option><option>Bueno</option><option>Malo</option></select></div>
         <div class="chips"><label class="chip"><input type="checkbox" id="cli_req_inspeccion"> ¿Requiere inspección/Cambio?</label></div>
-        <div><label>Estado de visor</label><select id="cli_estado_visor"><option value="">Selecciona…</option><option>Normal</option><option>Cambio</option></select></div>
+        <div><label>Estado de visor</label><select id="cli_estado_visor" required><option value="">Selecciona…</option><option>Normal</option><option>Cambio</option></select></div>
       </div>
 
       <div class="grid">
-        <div><label>Fotos</label><input id="cli_fotos" type="file" accept="image/*" multiple data-max="5">
+        <div><label>Fotos</label><input id="cli_fotos" type="file" accept="image/*" multiple data-max="7">
       <div style="margin-top:10px;">
         <label>Observaciones (opcional)</label>
         <div class="dictWrap">
@@ -319,7 +318,7 @@
       <div class="sep"></div>
 
       <div class="grid two">
-        <div><label>Punto Físico</label><select id="sus_pf"></select></div>
+        <div><label>Punto Físico</label><select id="sus_pf" required></select></div>
         <div></div>
       </div>
 
@@ -334,7 +333,7 @@
 
       <div class="grid">
         <div><label>Motivo de suspensión</label>
-          <select id="sus_motivo">
+          <select id="sus_motivo" required>
             <option value="">Selecciona…</option>
             <option>Riesgo eléctrico - No se halla quien atienda</option>
             <option>Usuario se niega a ser vinculado al proceso de legalización</option>
@@ -343,7 +342,7 @@
       </div>
 
       <div class="grid">
-        <div><label>Fotos</label><input id="sus_fotos" type="file" accept="image/*" multiple data-max="5">
+        <div><label>Fotos</label><input id="sus_fotos" type="file" accept="image/*" multiple data-max="7">
       <div style="margin-top:10px;">
         <label>Observaciones (opcional)</label>
         <div class="dictWrap">
@@ -361,9 +360,9 @@
     </div>
 
     <div class="grid two">
-        <div><label>Punto Físico</label><select id="bal_pf"></select></div>
+        <div><label>Punto Físico</label><select id="bal_pf" required></select></div>
         <div><label>Estado</label>
-          <select id="bal_estado">
+          <select id="bal_estado" required>
             <option value="">Selecciona…</option>
             <option>LOTE BALDÍO, SIN CONSTRUCCIÓN</option>
             <option>PREDIO EN CONSTRUCCIÓN, INHABITABLE – SIN SERVICIO DIRECTO</option>
@@ -381,7 +380,7 @@
       </div>
 
       <div class="grid">
-        <div><label>Fotos</label><input id="bal_fotos" accept="image/*" type="file" data-max="5" multiple>
+        <div><label>Fotos</label><input id="bal_fotos" accept="image/*" type="file" data-max="7" multiple>
       <div style="margin-top:10px;">
         <label>Observaciones (opcional)</label>
         <div class="dictWrap">
@@ -405,7 +404,7 @@
         <div><label>Características Nodo</label><select id="est2_caracteristicas"><option value="">Selecciona…</option></select></div>
       </div>
       <div class="grid three">
-        <div><label>Punto Físico</label><input id="est2_punto_fisico" class="upper"></div>
+        <div><label>Punto Físico</label><input id="est2_punto_fisico"></div>
         <div><label>Tipo de Redes BT</label><select id="est2_tipo_red_bt"><option value="">Selecciona…</option><option>Abierta</option><option>Trenzada</option></select></div>
         <div><label>Luminarias (AP)</label><input id="est2_luminarias" inputmode="numeric" placeholder="0"></div>
       </div>
@@ -522,13 +521,6 @@ const toastEl=$("toast");
 function toast(msg){toastEl.textContent=msg;toastEl.classList.add("show");setTimeout(()=>toastEl.classList.remove("show"),2200);}
 function setBadge(msg){$("hdrBadge").textContent=msg;}
 function upperAlnum(s){return (s||"").toString().toUpperCase().trim();}
-function wireUpper(){
-  document.querySelectorAll(".upper").forEach(el=>{
-    el.addEventListener("input",()=>{ el.value = upperAlnum(el.value); });
-    // set inicial
-    if(el.value) el.value = upperAlnum(el.value);
-  });
-}
 function toTitleCase(s){s=(s||"").toString().trim().toLowerCase();return s.replace(/\b([a-záéíóúñü])/g,m=>m.toUpperCase());}
 function onlyDigits(s){return (s||"").toString().replace(/\D+/g,"");}
 
@@ -537,7 +529,7 @@ const caracteristicas = {
   "Nodo BT|Fibra de vidrio":["8mx510kgf","10mx510kgf","10mx750kgf","10mx1050kgf"],
   "Nodo BT|Hormigón":["8mx510kgf","10mx510kgf","10mx750kgf","10mx1050kgf"],
   "Nodo BT|Madera":["10m"],
-  "Nodo BT|Metálico":["8mx510kgf","10mx510kgf","10mx750kgf","10mx1050kgf"],
+  "Nodo BT|Metálico":["10mx510kgf","10mx750kgf","10mx1050kgf","8mx510kgf"],
   "Nodo MT|Fibra de vidrio":["12mx510kgf","12mx750kgf","12mx1050kgf","14mx750kgf","14mx1050kgf","16mx750kgf","16mx1050kgf"],
   "Nodo MT|Hormigón":["12mx510kgf","12mx750kgf","12mx1050kgf","14mx750kgf","14mx1050kgf","14mx1350kgf","16mx750kgf","16mx1050kgf","16mx1350kgf"],
   "Nodo MT|Madera":["12m","14m"],
@@ -559,10 +551,10 @@ function wireCarDep(tipoId, matId, carId){
 
 /* Sede -> Municipio (dependiente) */
 const sedeMunicipios = {
-  "FUSAGASUGÁ":["CABUYARO", "CÁQUEZA", "CHIPAQUE", "CHOACHI", "EL CALVARIO", "FOMEQUE", "FOSCA", "GUAYABETAL", "GUTIÉRREZ", "MEDINA", "PARATEBUENO", "QUETAME", "SAN JUANITO", "UBAQUE", "UNE", "ARBELÁEZ", "BOGOTÁ", "CABRERA", "FUSAGASUGÁ", "GRANADA", "ICONONZO", "PANDI", "PASCA", "SAN BERNARDO", "SIBATÉ", "SILVANIA", "SOACHA", "TIBACUY", "VENECIA"],
-  "GIRARDOT":["AGUA DE DIOS", "APULO", "BELTRÁN", "COELLO", "FLANDES", "GIRARDOT", "GUATAQUÍ", "JERUSALÉN", "MESITAS DEL COLEGIO", "NARIÑO", "NILO", "PULÍ", "RICAURTE", "TOCAIMA", "VIOTÁ", "ANAPOIMA", "ANOLAIMA", "CACHIPAY", "LA MESA", "QUIPILE", "SAN ANTONIO DEL TEQUENDAMA", "TENA"],
-  "FACATATIVÁ":["EL PEÑON", "EL ROSAL", "FACATATIVA", "FUNZA", "GUAYABAL DE SÍQUIME", "LA VEGA", "MADRID", "MOSQUERA", "NIMAIMA", "NOCAIMA", "PUERTO SALGAR", "QUEBRADANEGRA", "TOPAIPÍ", "UTICA", "VERGARA", "VIANÍ", "VILLETA", "YACOPÍ", "ZIPACÓN"],
-  "ZIPAQUIRÁ":["BUENAVISTA", "CAJICÁ", "CALDAS", "CARMEN DE CARUPA", "CHIQUINQUIRÁ", "CHOCONTÁ", "CHOCONTA", "COGUA", "FÚQUENE", "GACHALA", "GACHETÁ", "GUACHETA", "GUASCA", "JUNÍN", "LA CALERA", "MANTA", "NEMOCÓN", "PACHO", "QUÍPAMA", "SAN CAYETANO", "SAN MIGUEL DE SEMA", "SESQUILÉ", "SIMIJACA", "SOPÓ", "SUSA", "SUTATAUSA", "TABIO", "TAUSA", "TENJO", "TIBIRITA", "TOCANCIPÁ", "VILLA DE SAN DIEGO DE UBATE", "VILLAGOMEZ", "VILLAPINZÓN", "ZIPAQUIRÁ"]
+  "FACATATIVÁ":["EL PEÑON","EL ROSAL","FACATATIVA","FUNZA","GUAYABAL DE SÍQUIME","LA VEGA","MADRID","MOSQUERA","NIMAIMA","NOCAIMA","PUERTO SALGAR","QUEBRADANEGRA","TOPAIPÍ","UTICA","VERGARA","VIANÍ","VILLETA","YACOPÍ","ZIPACÓN"],
+  "FUSAGASUGÁ":["ARBELÁEZ","BOGOTÁ","CABRERA","CABUYARO","CÁQUEZA","CHIPAQUE","CHOACHI","EL CALVARIO","FOMEQUE","FOSCA","FUSAGASUGÁ","GRANADA","GUAYABETAL","GUTIÉRREZ","ICONONZO","MEDINA","PANDI","PARATEBUENO","PASCA","QUETAME","SAN BERNARDO","SAN JUANITO","SIBATÉ","SILVANIA","SOACHA","TIBACUY","UBAQUE","UNE","VENECIA"],
+  "GIRARDOT":["AGUA DE DIOS","ANAPOIMA","ANOLAIMA","APULO","BELTRÁN","CACHIPAY","COELLO","FLANDES","GIRARDOT","GUATAQUÍ","JERUSALÉN","LA MESA","MESITAS DEL COLEGIO","NARIÑO","NILO","PULÍ","QUIPILE","RICAURTE","SAN ANTONIO DEL TEQUENDAMA","TENA","TOCAIMA","VIOTÁ"],
+  "ZIPAQUIRÁ":["BUENAVISTA","CAJICÁ","CALDAS","CARMEN DE CARUPA","CHIQUINQUIRÁ","CHOCONTÁ","CHOCONTA","COGUA","FÚQUENE","GACHALA","GACHETÁ","GUACHETA","GUASCA","JUNÍN","LA CALERA","MANTA","NEMOCÓN","PACHO","QUÍPAMA","SAN CAYETANO","SAN MIGUEL DE SEMA","SESQUILÉ","SIMIJACA","SOPÓ","SUSA","SUTATAUSA","TABIO","TAUSA","TENJO","TIBIRITA","TOCANCIPÁ","VILLA DE SAN DIEGO DE UBATE","VILLAGOMEZ","VILLAPINZÓN","ZIPAQUIRÁ"]
 };
 function fillSedeMunicipio(){
   const sedeSel=$("unc_sede"), munSel=$("unc_municipio");
@@ -613,20 +605,36 @@ function enforceUpper(el){
   });
 }
 
-function captureGPS(latEl, lonEl){
+function captureGPS(latEl, lonEl, accEl){
   setBadge("GPS… 📡");
   if(!navigator.geolocation){ setBadge("Listo ✅"); toast("Sin GPS"); return; }
 
   const opts={enableHighAccuracy:true,timeout:20000,maximumAge:0};
   let done=false;
+  let watchId=null;
+
+  const stamp = ()=> new Date().toISOString();
 
   const success=(pos)=>{
     if(done) return; done=true;
-    latEl.value=pos.coords.latitude.toFixed(7);
-    lonEl.value=pos.coords.longitude.toFixed(7);
+    const lat = Number(pos.coords.latitude);
+    const lon = Number(pos.coords.longitude);
+    const acc = Number(pos.coords.accuracy);
+
+    if(latEl) latEl.value = (isFinite(lat)? lat.toFixed(7):"");
+    if(lonEl) lonEl.value = (isFinite(lon)? lon.toFixed(7):"");
+    if(accEl) accEl.value = (isFinite(acc)? Math.round(acc):"");
+
+    // Guardamos la marca de tiempo del GPS en el input (data-gpsis o hidden), para export
+    const iso = stamp();
+    if(latEl) latEl.dataset.gpsISO = iso;
+    if(lonEl) lonEl.dataset.gpsISO = iso;
+    if(accEl) accEl.dataset.gpsISO = iso;
+
     setBadge("Listo ✅"); toast("Coordenadas ✅");
     if(watchId!=null) navigator.geolocation.clearWatch(watchId);
   };
+
   const fail=(err)=>{
     if(done) return;
     setBadge("Listo ✅");
@@ -635,13 +643,11 @@ function captureGPS(latEl, lonEl){
     if(watchId!=null) navigator.geolocation.clearWatch(watchId);
   };
 
-  let watchId=null;
   // 1) intento normal
   navigator.geolocation.getCurrentPosition(success, (err)=>{
     // 2) fallback: watchPosition por 1 lectura
     watchId = navigator.geolocation.watchPosition(success, fail, opts);
-    // 3) si ni con watch, falla:
-    setTimeout(()=>{ if(!done) fail(err); }, 21000);
+    setTimeout(()=>{ if(!done) fail(err); }, 22000);
   }, opts);
 }
 
@@ -732,8 +738,10 @@ async function buildEstructura(fromScreen2){
   const lum = onlyDigits(fromScreen2 ? $("est2_luminarias").value : $("est_luminarias").value);
   const lat = fromScreen2 ? $("est2_lat").value : $("est_lat").value;
   const lon = fromScreen2 ? $("est2_lon").value : $("est_lon").value;
+  const acc = fromScreen2 ? $("est2_acc").value : $("est_acc").value;
+  const gpsISO = ((fromScreen2 ? $("est2_lat") : $("est_lat")).dataset.gpsISO)||"";
 
-  const obj={fechaISO:new Date().toISOString(),Transformador:cd,Capacidad_kVA:cap,TipoNodo:t,MaterialNodo:m,CaracteristicasNodo:c,PuntoFisico:pf,TipoRedBT:tr,Luminarias:lum,Latitud:lat,Longitud:lon,Fotos:[]};
+  const obj={fechaISO:new Date().toISOString(),Transformador:cd,Capacidad_kVA:cap,TipoNodo:t,MaterialNodo:m,CaracteristicasNodo:c,PuntoFisico:pf,TipoRedBT:tr,Luminarias:lum,Latitud:lat,Longitud:lon,Precision:acc||"",gpsISO:gpsISO,gpsISO:gpsISO,gpsISO:gpsISO,gpsISO:gpsISO,gpsISO:gpsISO,Fotos:[]};
   if(!obj.TipoNodo){toast("Falta Tipo Nodo"); return null;}
   if(!obj.MaterialNodo){toast("Falta Material Nodo"); return null;}
   if(!obj.CaracteristicasNodo){toast("Falta Características"); return null;}
@@ -759,10 +767,12 @@ async function buildUNC(){
     TipoZona:$("unc_tipo_zona").value||"",
     Latitud:$("unc_lat").value||"",
     Longitud:$("unc_lon").value||"",
+    Precision:$("unc_acc").value||"",
+    gpsISO:(($("unc_lat").dataset.gpsISO)||""),
     TipoMaterial:$("unc_tipo_material").value||"",
     PredioHabitable:$("unc_predio_habitable").checked?"Sí":"No",
     RequiereMuro:$("unc_requiere_muro").checked?"Sí":"No",
-    RequiereArriostre:$("unc_arriostre").checked?"Sí":"No",
+    RequiereArriostre:$("unc_arriostre")?($("unc_arriostre").checked?"Sí":"No"):"No",
     AmpliacionRedes:$("unc_ampliacion_redes").checked?"Sí":"No",
     DocPropiedad:$("unc_doc_propiedad").value||"",
     CedulaProp:$("unc_cedula_prop").checked?"Sí":"No",
@@ -801,6 +811,8 @@ async function buildCliente(){
     Fases:$("cli_fases").value||"",
     Latitud:$("cli_lat").value||"",
     Longitud:$("cli_lon").value||"",
+    Precision:$("cli_acc").value||"",
+    gpsISO:(($("cli_lat").dataset.gpsISO)||""),
     EstadoMedidor:$("cli_estado_medidor").value||"",
     EstadoVisor:$("cli_estado_visor").value||"",
     ReqInspeccion:$("cli_req_inspeccion").checked?"Sí":"No",
@@ -821,6 +833,8 @@ async function buildSusp(){
     PuntoFisico:$("sus_pf")?($("sus_pf").value||""):"",
     Latitud:$("sus_lat").value||"",
     Longitud:$("sus_lon").value||"",
+    Precision:$("sus_acc").value||"",
+    gpsISO:(($("sus_lat").dataset.gpsISO)||""),
     Motivo:$("sus_motivo").value||"",
     Fotos:[]
   };
@@ -837,6 +851,8 @@ async function buildBaldio(){
     Estado:$("bal_estado").value||"",
     Latitud:$("bal_lat").value||"",
     Longitud:$("bal_lon").value||"",
+    Precision:$("bal_acc").value||"",
+    gpsISO:(($("bal_lat").dataset.gpsISO)||""),
     Fotos:[]
   };
   if(!validateSection("formBaldio")) return null;
@@ -869,7 +885,7 @@ function buildExcel(estr,unc,cli,sus,bal){
 
   // Headers (SIN capacidad; CON punto físico; CON precisión; CON fechas)
   const hdrE=["Ítem","Transformador (CD)","Tipo Nodo","Material Nodo","Características Nodo","Punto Físico","Tipo de Redes BT","Luminarias (AP)","Latitud (Y)","Longitud (X)","Precisión (m)","FECHA_HORA","GPS_HORA"];
-  const hdrU=["Ítem","Transformador (CD)","Punto Físico","Nombres","Identificación","Contacto","Sede","Municipio","Dirección","Localidad","Tipo Zona","Latitud (Y)","Longitud (X)","Precisión (m)","FECHA_HORA","GPS_HORA","Tipo Material","¿Requiere muro?","¿Requiere arriostre?"];
+  const hdrU=["Ítem", "Transformador (CD)", "Punto Físico", "Nombres", "Identificación", "Contacto", "Sede", "Municipio", "Dirección", "Localidad", "Tipo Zona", "Tipo Material", "¿Predio habitable?", "Documento de propiedad", "Cédula propietario", "Formato E1 Solicitud", "Aceptación de requisitos", "Declaración Juramentada", "Formato E6 RT", "EC Particular", "Documentos electricista", "Declaración RETIE", "EC Inmel", "Estado", "¿Requiere muro?", "¿Requiere Arriostre?", "Acometida", "Ducto 1\" Galv.", "Celda", "Interruptor", "SPT (Tierra)", "Instalación interna", "Latitud (Y)", "Longitud (X)", "Precisión (m)", "FECHA_HORA", "GPS_HORA", "Observaciones"];
   const hdrC=["Ítem","Transformador (CD)","Punto Físico","Serie de medidor","Marca de medidor","No. Fases","Estado de medidor","Estado de visor","¿Medidor requiere inspección/Cambio?","Latitud (Y)","Longitud (X)","Precisión (m)","FECHA_HORA","GPS_HORA"];
   const hdrS=["Ítem","Transformador (CD)","Punto Físico","Motivo de suspensión","Latitud (Y)","Longitud (X)","Precisión (m)","FECHA_HORA","GPS_HORA"];
   const hdrB=["Ítem","Transformador (CD)","Punto Físico","Estado","Latitud (Y)","Longitud (X)","Precisión (m)","FECHA_HORA","GPS_HORA"];
@@ -881,16 +897,37 @@ function buildExcel(estr,unc,cli,sus,bal){
     "Latitud (Y)":x.Latitud,"Longitud (X)":x.Longitud,"Precisión (m)":x.Precision||"",
     "FECHA_HORA":toISO(x.fechaISO),"GPS_HORA":toISO(x.gpsISO)
   }));
+  
   const rowsU=unc.map(x=>({
     "Ítem":x.item,"Transformador (CD)":x.Transformador,"Punto Físico":x.PuntoFisico||"",
     "Nombres":x.Nombres,"Identificación":x.Identificacion,"Contacto":x.Contacto,
     "Sede":x.Sede,"Municipio":x.Municipio,"Dirección":x.Direccion,"Localidad":x.Localidad,"Tipo Zona":x.TipoZona,
+    "Tipo Material":x.TipoMaterial||"",
+    "¿Predio habitable?":x.PredioHabitable||"",
+    "Documento de propiedad":x.DocPropiedad||"",
+    "Cédula propietario":x.CedulaProp||"",
+    "Formato E1 Solicitud":x.E1||"",
+    "Aceptación de requisitos":x.AR||"",
+    "Declaración Juramentada":x.DJ||"",
+    "Formato E6 RT":x.E6||"",
+    "EC Particular":x.ECPart||"",
+    "Documentos electricista":x.DocElectricista||"",
+    "Declaración RETIE":x.RETIE||"",
+    "EC Inmel":x.ECInmel||"",
+    "Estado":x.Estado||"",
+    "¿Requiere muro?":x.RequiereMuro||"",
+    "¿Requiere Arriostre?":x.RequiereArriostre||"",
+    "Acometida":x.Acometida||"",
+    "Ducto 1\" Galv.":x.Ducto||"",
+    "Celda":x.Celda||"",
+    "Interruptor":x.Interruptor||"",
+    "SPT (Tierra)":x.SPT||"",
+    "Instalación interna":x.InstalacionInterna||"",
     "Latitud (Y)":x.Latitud,"Longitud (X)":x.Longitud,"Precisión (m)":x.Precision||"",
     "FECHA_HORA":toISO(x.fechaISO),"GPS_HORA":toISO(x.gpsISO),
-    "Tipo Material":x.TipoMaterial||"",
-    "¿Requiere muro?":x.RequiereMuro||"",
-    "¿Requiere arriostre?":x.RequiereArriostre||""
+    "Observaciones":x.Observaciones||""
   }));
+
   const rowsC=cli.map(x=>({
     "Ítem":x.item,"Transformador (CD)":x.Transformador,"Punto Físico":x.PuntoFisico||"",
     "Serie de medidor":x.SerieMedidor,"Marca de medidor":x.MarcaMedidor,"No. Fases":x.Fases,
@@ -960,7 +997,7 @@ async function afterSaveAskNext(){
   openModal("modalAfterSave");
 }
 
-async async function exportAll(){
+async function exportAll(){
   try{
     setBadge("Exportando… 📦");
     const estr=await getAll("estructuras");
@@ -1071,7 +1108,7 @@ function wireEvents(){
   $("cli_btnGPS").addEventListener("click", ()=>captureGPS($("cli_lat"),$("cli_lon"),$("cli_acc")));
   $("sus_btnGPS").addEventListener("click", ()=>captureGPS($("sus_lat"),$("sus_lon"),$("sus_acc")));
   $("bal_btnGPS").addEventListener("click", ()=>captureGPS($("bal_lat"),$("bal_lon"),$("bal_acc")));
-  $("est2_btnGPS").addEventListener("click", ()=>captureGPS($("est2_lat"),$("est2_lon")));
+  $("est2_btnGPS").addEventListener("click", ()=>captureGPS($("est2_lat"),$("est2_lon"),$("est2_acc")));
 
   $("btnGuardarEstructura").addEventListener("click", async ()=>{
     if(!validateSection("screen1")) return;
@@ -1207,7 +1244,6 @@ function wireEvents(){
       if($("unc_predio_habitable")) $("unc_predio_habitable").checked = (rec.PredioHabitable==="Sí");
       if($("unc_ampliacion_redes")) $("unc_ampliacion_redes").checked = (rec.AmpliacionRedes==="Sí");
       if($("unc_requiere_muro")) $("unc_requiere_muro").checked = (rec.RequiereMuro==="Sí");
-      if($("unc_arriostre")) $("unc_arriostre").checked = (rec.RequiereArriostre==="Sí");
     } else {
       show("screen2"); $("formCliente").style.display="";
       if($("cli_pf")) $("cli_pf").value = rec.PuntoFisico||"";
@@ -1230,7 +1266,6 @@ function wireEvents(){
   try{
     await openDB();
     fillSedeMunicipio();
-    wireUpper();
 
     // ✅ aquí estaba el fallo: no se estaba "enganchando" el desplegable
     wireCarDep("est_tipo_nodo","est_material_nodo","est_caracteristicas");
