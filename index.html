@@ -1071,7 +1071,7 @@ async function exportAll(){
 /* Service Worker: solo si NO es file:// */
 async function registerSW(){
   if(location.protocol==="file:") return;
-  if("serviceWorker" in navigator){ try{ await navigator.serviceWorker.register("./sw.js"); }catch(e){ console.warn(e); } }
+  if("serviceWorker" in navigator){ try{ await navigator.serviceWorker.register("/sw.js"); }catch(e){ console.warn(e); } }
 }
 
 
