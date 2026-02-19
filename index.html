@@ -1071,8 +1071,20 @@ async function exportAll(){
 /* Service Worker: solo si NO es file:// */
 async function registerSW(){
   if(location.protocol==="file:") return;
-  if("serviceWorker" in navigator){ try{ await navigator.serviceWorker.register("/sw.js"); }catch(e){ console.warn(e); } }
+ if ("serviceWorker" in navigator) {
+  window.addEventListener("load", async () => {
+    const reg = await navigator.serviceWorker.register("/sw.js", { updateViaCache: "none" });
+    await reg.update();
+
+    let reloaded = false;
+    navigator.serviceWorker.addEventListener("controllerchange", () => {
+      if (reloaded) return;
+      reloaded = true;
+      window.location.reload();
+    });
+  });
 }
+
 
 
 async function refreshPFSelectors(){
