@@ -60,6 +60,9 @@
     .dictWrap{position:relative;}
     .dictWrap textarea{padding-right:54px;}
     .dictWrap .mic{position:absolute;right:8px;bottom:8px;padding:10px 12px;border-radius:12px;}
+
+    .chk{font-size:18px;}
+    .chk input[type="checkbox"]{width:22px;height:22px;}
 </style>
   <link rel="manifest" href="manifest.json">
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
@@ -164,7 +167,7 @@
       <button id="btnUNC" type="button">UNC</button>
       <button id="btnCliente" type="button">Cliente</button>
       <button id="btnSusp" type="button">Suspensión</button>
-      <button id="btnBaldio" type="button">Baldíos</button>
+      <button id="btnBaldio">Baldíos</button>
       <button class="secondary" id="btnBack1" type="button">Volver</button>
     </div>
 
@@ -270,14 +273,11 @@
       <div class="grid">
         <div><label>Observaciones</label><div class="dictWrap"><textarea id="unc_obs"></textarea><button class="secondary mic" type="button" data-target="unc_obs" title="Dictar">🎤</button></div></div>
       </div>
-    </div>
-
-    
-    
       <div class="btnrow">
-        <button class="ok" id="btnGuardarUNC" type="button">Guardar</button>
-        <button class="secondary" id="btnCancelUNC" type="button">Cancelar</button>
-      </div>
+    <button class="ok" id="btnGuardarUNC" type="button">Guardar</button>
+    <button class="secondary" id="btnCancelUNC" type="button">Cancelar</button>
+  </div>
+</div>
 <div id="formCliente" style="display:none;">
       <h3 class="section">CLIENTES</h3>
       <div class="sep"></div>
@@ -761,7 +761,11 @@ function validateSection(containerId){
   return true;
 }
 
-function resetForms(){ ["formUNC","formCliente","formSusp","formBaldio","formEstructura"].forEach(id=>{const el=$(id); if(el) el.style.display="none";}); }
+function resetForms(){
+  ["formUNC","formCliente","formSusp","formBaldio","formEstructura"].forEach(id=>{
+    const el=$(id); if(el) el.style.display="none";
+  });
+}
 /* Builders */
 async function buildEstructura(fromScreen2){
   const modo=document.querySelector('input[name="modoCd"]:checked').value;
@@ -771,6 +775,8 @@ async function buildEstructura(fromScreen2){
     cd=upperAlnum($("cdInput").value); cap=$("capSelect").value||"";
     if(!cd){toast("Falta CD"); return null;}
     if(!cap){toast("Falta kVA"); return null;}
+    const dirty=await getMeta("dirty");
+    if(dirty){toast("Debes exportar antes de crear un CD nuevo"); return null;}
   } else {
     if(!(cd&&cap)){toast("Sin CD activo"); return null;}
   }
@@ -809,9 +815,12 @@ async function buildUNC(){
     TipoZona:$("unc_tipo_zona").value||"",
     Latitud:$("unc_lat").value||"",
     Longitud:$("unc_lon").value||"",
+    Precision:$("unc_acc").value||"",
+    gpsISO:($("unc_lat").dataset.gpsISO||"")
     TipoMaterial:$("unc_tipo_material").value||"",
     PredioHabitable:$("unc_predio_habitable").checked?"Sí":"No",
     RequiereMuro:$("unc_requiere_muro").checked?"Sí":"No",
+    RequiereArriostre:$("unc_arriostre").checked?"Sí":"No",
     AmpliacionRedes:$("unc_ampliacion_redes").checked?"Sí":"No",
     DocPropiedad:$("unc_doc_propiedad").value||"",
     CedulaProp:$("unc_cedula_prop").checked?"Sí":"No",
@@ -836,6 +845,7 @@ async function buildUNC(){
   if(!obj.Nombres){toast("Falta Nombres");return null;}
   if(!obj.Sede){toast("Falta Sede");return null;}
   if(!obj.Municipio){toast("Falta Municipio");return null;}
+  if(!obj.Latitud||!obj.Longitud||!obj.Precision){toast("Falta capturar coordenadas");return null;}
   return obj;
 }
 
@@ -849,6 +859,8 @@ async function buildCliente(){
     Fases:$("cli_fases").value||"",
     Latitud:$("cli_lat").value||"",
     Longitud:$("cli_lon").value||"",
+    Precision:$("cli_acc").value||"",
+    gpsISO:($("cli_lat").dataset.gpsISO||"")
     EstadoMedidor:$("cli_estado_medidor").value||"",
     EstadoVisor:$("cli_estado_visor").value||"",
     ReqInspeccion:$("cli_req_inspeccion").checked?"Sí":"No",
@@ -858,6 +870,7 @@ async function buildCliente(){
   if(!obj.SerieMedidor){toast("Falta Serie");return null;}
   if(!obj.MarcaMedidor){toast("Falta Marca");return null;}
   if(!obj.Fases){toast("Falta Fases");return null;}
+  if(!obj.Latitud||!obj.Longitud||!obj.Precision){toast("Falta capturar coordenadas");return null;}
   return obj;
 }
 
@@ -868,11 +881,14 @@ async function buildSusp(){
     PuntoFisico:$("sus_pf")?($("sus_pf").value||""):"",
     Latitud:$("sus_lat").value||"",
     Longitud:$("sus_lon").value||"",
+    Precision:$("sus_acc").value||"",
+    gpsISO:($("sus_lat").dataset.gpsISO||"")
     Motivo:$("sus_motivo").value||"",
     Fotos:[]
   };
   if(!obj.PuntoFisico){toast("Falta Punto Físico");return null;}
   if(!obj.Motivo){toast("Falta Motivo");return null;}
+  if(!obj.Latitud||!obj.Longitud||!obj.Precision){toast("Falta capturar coordenadas");return null;}
   return obj;
 }
 
@@ -884,11 +900,14 @@ async function buildBaldio(){
     Estado:$("bal_estado").value||"",
     Latitud:$("bal_lat").value||"",
     Longitud:$("bal_lon").value||"",
+    Precision:$("bal_acc").value||"",
+    gpsISO:($("bal_lat").dataset.gpsISO||"")
     Fotos:[]
   };
   if(!validateSection("formBaldio")) return null;
   if(!obj.PuntoFisico){toast("Selecciona Punto Físico");return null;}
   if(!obj.Latitud||!obj.Longitud){toast("Captura coordenadas");return null;}
+  if(!obj.Latitud||!obj.Longitud||!obj.Precision){toast("Falta capturar coordenadas");return null;}
   return obj;
 }
 
@@ -912,13 +931,13 @@ function buildExcel(estr,unc,cli,sus,bal){
   const hdrB=["Ítem","Transformador (CD)","Capacidad transformador kVA","Punto Físico","Latitud (Y)","Longitud (X)","Estado"];
 
   const rowsE=estr.map(x=>({
-    "Ítem":x.item,"Transformador (CD)":x.Transformador,"Capacidad transformador kVA":x.Capacidad_kVA,
+    "Ítem":x.item,"Transformador (CD)":x.Transformador,"Capacidad transformador kVA":x.,
     "Tipo Nodo":x.TipoNodo,"Material Nodo":x.MaterialNodo,"Características Nodo":x.CaracteristicasNodo,
     "Punto Físico":x.PuntoFisico,"Tipo de Redes BT":x.TipoRedBT,"Luminarias (AP)":x.Luminarias,
     "Latitud (Y)":x.Latitud,"Longitud (X)":x.Longitud
   }));
   const rowsU=unc.map(x=>({
-    "Ítem":x.item,"Transformador (CD)":x.Transformador,"Capacidad transformador kVA":x.Capacidad_kVA,
+    "Ítem":x.item,"Transformador (CD)":x.Transformador,"Capacidad transformador kVA":x.,
     "Nombres":x.Nombres,"Identificación":x.Identificacion,"Contacto":x.Contacto,
     "Sede":x.Sede,"Municipio":x.Municipio,"Dirección":x.Direccion,"Localidad (Barrio/Vereda)":x.Localidad,"Tipo Zona":x.TipoZona,
     "Latitud (Y)":x.Latitud,"Longitud (X)":x.Longitud,"Tipo material":x.TipoMaterial,
@@ -930,18 +949,18 @@ function buildExcel(estr,unc,cli,sus,bal){
     "SPT (Tierra)":x.SPT,"Instalación interna":x.InstalacionInterna,"Observaciones":x.Observaciones
   }));
   const rowsC=cli.map(x=>({
-    "Ítem":x.item,"Transformador (CD)":x.Transformador,"Capacidad transformador kVA":x.Capacidad_kVA,
+    "Ítem":x.item,"Transformador (CD)":x.Transformador,"Capacidad transformador kVA":x.,
     "Serie de medidor":x.SerieMedidor,"Marca de medidor":x.MarcaMedidor,"No. Fases":x.Fases,
     "Latitud (Y)":x.Latitud,"Longitud (X)":x.Longitud,"Estado de medidor":x.EstadoMedidor,"Estado de visor":x.EstadoVisor,
     "¿Medidor requiere inspección/Cambio?":x.ReqInspeccion
   }));
   const rowsB=bal.map(x=>({
-    "Ítem":x.item,"Transformador (CD)":x.Transformador,"Capacidad transformador kVA":x.Capacidad_kVA,
+    "Ítem":x.item,"Transformador (CD)":x.Transformador,"Capacidad transformador kVA":x.,
     "Punto Físico":x.PuntoFisico,"Latitud (Y)":x.Latitud,"Longitud (X)":x.Longitud,"Estado":x.Estado
   }));
 
   const rowsS=sus.map(x=>({
-    "Ítem":x.item,"Transformador (CD)":x.Transformador,"Capacidad transformador kVA":x.Capacidad_kVA,
+    "Ítem":x.item,"Transformador (CD)":x.Transformador,"Capacidad transformador kVA":x.,
     "Punto Físico":x.PuntoFisico,"Latitud (Y)":x.Latitud,"Longitud (X)":x.Longitud,"Motivo de suspensión":x.Motivo
   }));
 
@@ -999,42 +1018,74 @@ async function afterSaveAskNext(){
 }
 
 async function exportAll(){
-  setBadge("Exportando… 📦");
-  const estr=await getAll("estructuras"), unc=await getAll("unc"), cli=await getAll("clientes"), sus=await getAll("susp"), bal=await getAll("baldios");
-  const now=new Date();
-  const stamp = new Date().toISOString().slice(0,10);
-  const cdSafe = (cd+"").replace(/[^A-Z0-9_\-]/gi,"_");
-  const excelName = `GS_Diagnosticos_${cdSafe}_${stamp}.xls`;
-  const excelU8=buildExcel(estr,unc,cli,sus,bal);
+  try{
+    setBadge("Exportando… 📦");
+    const estr=await getAll("estructuras"), unc=await getAll("unc"), cli=await getAll("clientes"), sus=await getAll("susp"), bal=await getAll("baldios");
+    const cdAct = (activeCD||"").toString();
+    if(!cdAct){ toast("No hay CD activo"); setBadge("Listo ✅"); return; }
 
-  const zip=new TinyZip();
-  zip.add(excelName, excelU8);
+    // Filtrar SOLO CD activo
+    const f = (arr)=>arr.filter(r=> (r.Transformador||"").toString()===cdAct);
+    const estrF=f(estr), uncF=f(unc), cliF=f(cli), susF=f(sus), balF=f(bal);
 
-  for(const r of estr){
-    const folder=safeName(`${r.Transformador}_${r.PuntoFisico||("ITEM_"+r.item)}`);
-    (r.Fotos||[]).forEach((f,i)=>zip.add(`${folder}/foto_${i+1}.jpg`, dataURLtoU8(f.dataURL)));
-  }
-  for(const r of unc){
-    const folder=safeName(`${r.Transformador}_${r.Nombres||("ITEM_"+r.item)}`);
-    (r.Fotos||[]).forEach((f,i)=>zip.add(`${folder}/foto_${i+1}.jpg`, dataURLtoU8(f.dataURL)));
-  }
-  for(const r of cli){
-    const folder=safeName(`${r.Transformador}_${r.SerieMedidor||("ITEM_"+r.item)}`);
-    (r.Fotos||[]).forEach((f,i)=>zip.add(`${folder}/foto_${i+1}.jpg`, dataURLtoU8(f.dataURL)));
-  }
-  for(const r of bal){
-    const folder=safeName(`${r.Transformador}_${r.PuntoFisico||""}_BALDIO_${r.item}`);
-    (r.Fotos||[]).forEach((f,i)=>zip.add(`${folder}/foto_${i+1}.jpg`, dataURLtoU8(f.dataURL)));
-  }
+    const d=new Date();
+    const stamp = d.toISOString().slice(0,10).replace(/-/g,"");
+    const hm = d.toTimeString().slice(0,5).replace(":","");
+    const cdSafe = (cdAct+"").replace(/[^A-Z0-9_\-]/gi,"_");
+    const baseName = `GS_Diagnostico_${cdSafe}_${stamp}_${hm}`;
 
-  for(const r of sus){
-    const folder=safeName(`${r.Transformador}_${r.item}`);
-    (r.Fotos||[]).forEach((f,i)=>zip.add(`${folder}/foto_${i+1}.jpg`, dataURLtoU8(f.dataURL)));
-  }
+    const excelName = `${baseName}.xls`;
+    const excelU8=buildExcel(estrF,uncF,cliF,susF,balF);
 
-  downloadBlob(`GS_Diagnosticos_${stamp}.zip`,"application/zip",zip.finalize());
-  setBadge("Listo ✅");
-  toast("Exportado ✅");
+    const zip=new TinyZip();
+    zip.add(excelName, excelU8);
+
+    const addFotos=(grupo, r, folderBase)=>{
+      const folder=safeName(folderBase);
+      (r.Fotos||[]).forEach((f,i)=>{
+        try{
+          zip.add(`FOTOS/${grupo}/${folder}/foto_${i+1}.jpg`, dataURLtoU8(f.dataURL));
+        }catch(e){}
+      });
+    };
+
+    for(const r of estrF){
+      addFotos("ESTRUCTURAS", r, `${r.Transformador}_${r.PuntoFisico||("ITEM_"+r.item)}`);
+    }
+    for(const r of uncF){
+      addFotos("UNC", r, `${r.Transformador}_${r.Nombres||("ITEM_"+r.item)}`);
+    }
+    for(const r of cliF){
+      addFotos("CLIENTES", r, `${r.Transformador}_${r.SerieMedidor||("ITEM_"+r.item)}`);
+    }
+    for(const r of susF){
+      addFotos("SUSPENSIONES", r, `${r.Transformador}_${r.item}`);
+    }
+    for(const r of balF){
+      addFotos("BALDIOS", r, `${r.Transformador}_${r.PuntoFisico||""}_BALDIO_${r.item}`);
+    }
+
+    const zipU8 = zip.finalize();
+    const zipName = `${baseName}.zip`;
+
+    // Intento automático (a veces Android bloquea si hay awaits)
+    try{ downloadBlob(zipName,"application/zip",zipU8); }catch(e){}
+
+    // Respaldo: botón visible
+    const blob=new Blob([zipU8],{type:"application/zip"});
+    const url=URL.createObjectURL(blob);
+    const a=$("dlLink"); 
+    if(a){ a.href=url; a.download=zipName; }
+    if($("dlModal")) $("dlModal").style.display="flex";
+
+    await setMeta("dirty",false);
+    setBadge("Listo ✅");
+    toast("Exportado ✅");
+  }catch(e){
+    console.error(e);
+    setBadge("Listo ✅");
+    toast("Error exportando ❌");
+  }
 }
 
 /* Service Worker: solo si NO es file:// */
@@ -1101,6 +1152,7 @@ document.querySelectorAll('input[name="modoCd"]').forEach(r=>r.addEventListener(
     }
     updateActiveUI();
     toast("Guardado ✅");
+    await setMeta("dirty",true);
     $("est_tipo_nodo").value=""; $("est_material_nodo").value=""; fillCaracteristicas($("est_tipo_nodo"),$("est_material_nodo"),$("est_caracteristicas"));
     $("est_punto_fisico").value=""; $("est_tipo_red_bt").value=""; $("est_luminarias").value="";
     $("est_lat").value=""; $("est_lon").value="";
@@ -1130,7 +1182,8 @@ document.querySelectorAll('input[name="modoCd"]').forEach(r=>r.addEventListener(
     obj.Fotos=await readFiles($("unc_fotos"));
     const item=await nextItem("unc");
     if(editCtx && editCtx.store==="unc"){ await putRec("unc",{...obj,id:editCtx.id,item}); editCtx=null; } else { await addRec("unc",{...obj,item}); }
-    toast("Guardado ✅"); resetForms(); await afterSaveAskNext();
+    toast("Guardado ✅");
+    await setMeta("dirty",true); resetForms(); await afterSaveAskNext();
   });
   onSafe("btnGuardarCli","click",async ()=>{
     if(!validateSection("formCliente")) return;
@@ -1140,7 +1193,8 @@ document.querySelectorAll('input[name="modoCd"]').forEach(r=>r.addEventListener(
     obj.Fotos=await readFiles($("cli_fotos"));
     const item=await nextItem("clientes");
     if(editCtx && editCtx.store==="clientes"){ await putRec("clientes",{...obj,id:editCtx.id,item}); editCtx=null; } else { await addRec("clientes",{...obj,item}); }
-    toast("Guardado ✅"); resetForms(); await afterSaveAskNext();
+    toast("Guardado ✅");
+    await setMeta("dirty",true); resetForms(); await afterSaveAskNext();
   });
   if($("btnGuardarBaldio")) onSafe("btnGuardarBaldio","click",async ()=>{
     if(!validateSection("formBaldio")) return;
@@ -1151,7 +1205,8 @@ document.querySelectorAll('input[name="modoCd"]').forEach(r=>r.addEventListener(
     if(!(obj.Fotos&&obj.Fotos.length)) return toast("Adjunta fotos");
     const item=await nextItem("baldios");
     await addRec("baldios",{...obj,item});
-    toast("Guardado ✅"); resetForms(); await afterSaveAskNext(); await updateKPIs();
+    toast("Guardado ✅");
+    await setMeta("dirty",true); resetForms(); await afterSaveAskNext(); await updateKPIs();
   });
 
   onSafe("btnGuardarSus","click",async ()=>{
@@ -1162,7 +1217,8 @@ document.querySelectorAll('input[name="modoCd"]').forEach(r=>r.addEventListener(
     obj.Fotos=await readFiles($("sus_fotos"));
     const item=await nextItem("susp");
     await addRec("susp",{...obj,item});
-    toast("Guardado ✅"); resetForms(); await afterSaveAskNext();
+    toast("Guardado ✅");
+    await setMeta("dirty",true); resetForms(); await afterSaveAskNext();
   });
   onSafe("btnGuardarEst2","click",async ()=>{
     if(!(activeCD&&activeCAP)) return toast("Sin CD activo");
@@ -1171,10 +1227,12 @@ document.querySelectorAll('input[name="modoCd"]').forEach(r=>r.addEventListener(
     obj.Fotos=await readFiles($("est2_fotos"));
     const item=await nextItem("estructuras");
     await addRec("estructuras",{...obj,item});
-    toast("Guardado ✅"); resetForms(); await afterSaveAskNext();
+    toast("Guardado ✅");
+    await setMeta("dirty",true); resetForms(); await afterSaveAskNext();
   });
 
   onSafe("btnExportar","click",exportAll);
+  onSafe("dlClose","click",()=>{$("dlModal").style.display="none";});
   // After-save modal
   onSafe("afterYes","click",()=>{ $("afterSaveQ").style.display="none"; $("afterBtns").style.display="flex"; });
   onSafe("afterNo","click",()=>{ closeModal("modalAfterSave"); resetForms(); show("screen1"); });
@@ -1311,5 +1369,16 @@ document.querySelectorAll('input[name="modoCd"]').forEach(r=>r.addEventListener(
     </div>
   </div>
 
+
+  <div class="modal" id="dlModal" style="display:none;">
+    <div class="modalCard">
+      <h3>Descarga lista</h3>
+      <p>Si no inició la descarga automática, toca el botón:</p>
+      <div class="btnrow">
+        <a id="dlLink" class="ok" href="#" download>Descargar ZIP</a>
+        <button class="secondary" id="dlClose" type="button">Cerrar</button>
+      </div>
+    </div>
+  </div>
 </body>
 </html>
