@@ -575,7 +575,7 @@ function startDictation(targetId){
 const toastEl=$("toast");
 function toast(msg){toastEl.textContent=msg;toastEl.classList.add("show");setTimeout(()=>toastEl.classList.remove("show"),2200);}
 function setBadge(msg){$("hdrBadge").textContent=msg;}
-function upperAlnum(s){return (s||"").toString().toUpperCase().trim();}
+function upperAlnum(s){return (s||"").toString().toUpperCase().replace(/[^A-Z0-9]/g,"").trim();}
 function toTitleCase(s){s=(s||"").toString().trim().toLowerCase();return s.replace(/\b([a-záéíóúñü])/g,m=>m.toUpperCase());}
 function onlyDigits(s){return (s||"").toString().replace(/\D+/g,"");}
 
@@ -593,15 +593,23 @@ const caracteristicas = {
 function fillCaracteristicas(tSel,mSel,cSel){
   const key = `${tSel.value}|${mSel.value}`;
   const opts = caracteristicas[key] || [];
-  cSel.innerHTML = `<option value="">Selecciona…</option>` + opts.map(x=>`<option>${x}</option>`).join("");
+  const prev = cSel.value || "";
+  cSel.innerHTML = `<option value="">Selecciona…</option>` + opts.map(x=>`<option value="${x}">${x}</option>`).join("");
+  // mantener selección si aplica
+  if(prev && opts.includes(prev)) cSel.value = prev;
 }
 function wireCarDep(tipoId, matId, carId){
   const t=$(tipoId), m=$(matId), c=$(carId);
   if(!(t&&m&&c)) return;
-  t.addEventListener("change", ()=>fillCaracteristicas(t,m,c));
-  m.addEventListener("change", ()=>fillCaracteristicas(t,m,c));
-  // inicializa
-  fillCaracteristicas(t,m,c);
+  const run=()=>fillCaracteristicas(t,m,c);
+  ["change","input"].forEach(ev=>{
+    t.addEventListener(ev, run);
+    m.addEventListener(ev, run);
+  });
+  // Android a veces dispara tarde
+  setTimeout(run, 50);
+  setTimeout(run, 300);
+  run();
 }
 
 /* Sede -> Municipio (dependiente) */
