@@ -1,4 +1,4 @@
-const CACHE_NAME = "gsdx-cache-v10"; // sube el número cada vez que cambies algo
+const CACHE_NAME = "gsdx-cache-v11"; // <-- SUBE ESTE NUMERO CADA VEZ
 const ASSETS = [
   "/",
   "/index.html",
@@ -11,9 +11,7 @@ const ASSETS = [
 ];
 
 self.addEventListener("install", (e) => {
-  e.waitUntil(
-    caches.open(CACHE_NAME).then((c) => c.addAll(ASSETS))
-  );
+  e.waitUntil(caches.open(CACHE_NAME).then((c) => c.addAll(ASSETS)));
   self.skipWaiting();
 });
 
@@ -26,18 +24,36 @@ self.addEventListener("activate", (e) => {
   self.clients.claim();
 });
 
+// Network-first SOLO para navegación (index), cache-first para lo demás
 self.addEventListener("fetch", (e) => {
+  const req = e.request;
+
+  // Cuando es navegación (abrir la app / cambiar de pantalla), intenta RED primero
+  if (req.mode === "navigate") {
+    e.respondWith(
+      fetch(req)
+        .then((res) => {
+          const copy = res.clone();
+          caches.open(CACHE_NAME).then((c) => c.put("/index.html", copy));
+          return res;
+        })
+        .catch(() => caches.match("/index.html"))
+    );
+    return;
+  }
+
+  // Assets: cache-first con actualización en segundo plano
   e.respondWith(
-    caches.match(e.request).then((cached) => {
-      const fetchPromise = fetch(e.request)
+    caches.match(req).then((cached) => {
+      const fetchPromise = fetch(req)
         .then((netRes) => {
           if (netRes && netRes.status === 200) {
             const copy = netRes.clone();
-            caches.open(CACHE_NAME).then((c) => c.put(e.request, copy));
+            caches.open(CACHE_NAME).then((c) => c.put(req, copy));
           }
           return netRes;
         })
-        .catch(() => cached || caches.match("/index.html"));
+        .catch(() => cached);
 
       return cached || fetchPromise;
     })
