@@ -63,11 +63,14 @@
 
     .chk{font-size:18px;}
     .chk input[type="checkbox"]{width:22px;height:22px;}
-</style>
+
+    #cdInput{text-transform:uppercase;}
+    #activeCdTxt{text-transform:uppercase;}
+  </style>
   <link rel="manifest" href="manifest.json">
-  <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
-  <link rel="icon" type="image/png" sizes="512x512" href="icons/icon-512.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="icons/icon-180.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="icon-180.png">
 </head>
 <body>
 <header>
@@ -824,7 +827,7 @@ async function buildUNC(){
     Latitud:$("unc_lat").value||"",
     Longitud:$("unc_lon").value||"",
     Precision:$("unc_acc").value||"",
-    gpsISO:($("unc_lat").dataset.gpsISO||"")
+    gpsISO:($("unc_lat").dataset.gpsISO||""),
     TipoMaterial:$("unc_tipo_material").value||"",
     PredioHabitable:$("unc_predio_habitable").checked?"Sí":"No",
     RequiereMuro:$("unc_requiere_muro").checked?"Sí":"No",
@@ -868,7 +871,7 @@ async function buildCliente(){
     Latitud:$("cli_lat").value||"",
     Longitud:$("cli_lon").value||"",
     Precision:$("cli_acc").value||"",
-    gpsISO:($("cli_lat").dataset.gpsISO||"")
+    gpsISO:($("cli_lat").dataset.gpsISO||""),
     EstadoMedidor:$("cli_estado_medidor").value||"",
     EstadoVisor:$("cli_estado_visor").value||"",
     ReqInspeccion:$("cli_req_inspeccion").checked?"Sí":"No",
@@ -890,7 +893,7 @@ async function buildSusp(){
     Latitud:$("sus_lat").value||"",
     Longitud:$("sus_lon").value||"",
     Precision:$("sus_acc").value||"",
-    gpsISO:($("sus_lat").dataset.gpsISO||"")
+    gpsISO:($("sus_lat").dataset.gpsISO||""),
     Motivo:$("sus_motivo").value||"",
     Fotos:[]
   };
@@ -909,7 +912,7 @@ async function buildBaldio(){
     Latitud:$("bal_lat").value||"",
     Longitud:$("bal_lon").value||"",
     Precision:$("bal_acc").value||"",
-    gpsISO:($("bal_lat").dataset.gpsISO||"")
+    gpsISO:($("bal_lat").dataset.gpsISO||""),
     Fotos:[]
   };
   if(!validateSection("formBaldio")) return null;
@@ -939,13 +942,13 @@ function buildExcel(estr,unc,cli,sus,bal){
   const hdrB=["Ítem","Transformador (CD)","Capacidad transformador kVA","Punto Físico","Latitud (Y)","Longitud (X)","Estado"];
 
   const rowsE=estr.map(x=>({
-    "Ítem":x.item,"Transformador (CD)":x.Transformador,"Capacidad transformador kVA":x.,
+    "Ítem":x.item,"Transformador (CD)":x.Transformador,"Capacidad transformador kVA":x.Capacidad_kVA,
     "Tipo Nodo":x.TipoNodo,"Material Nodo":x.MaterialNodo,"Características Nodo":x.CaracteristicasNodo,
     "Punto Físico":x.PuntoFisico,"Tipo de Redes BT":x.TipoRedBT,"Luminarias (AP)":x.Luminarias,
     "Latitud (Y)":x.Latitud,"Longitud (X)":x.Longitud
   }));
   const rowsU=unc.map(x=>({
-    "Ítem":x.item,"Transformador (CD)":x.Transformador,"Capacidad transformador kVA":x.,
+    "Ítem":x.item,"Transformador (CD)":x.Transformador,"Capacidad transformador kVA":x.Capacidad_kVA,
     "Nombres":x.Nombres,"Identificación":x.Identificacion,"Contacto":x.Contacto,
     "Sede":x.Sede,"Municipio":x.Municipio,"Dirección":x.Direccion,"Localidad (Barrio/Vereda)":x.Localidad,"Tipo Zona":x.TipoZona,
     "Latitud (Y)":x.Latitud,"Longitud (X)":x.Longitud,"Tipo material":x.TipoMaterial,
@@ -957,18 +960,18 @@ function buildExcel(estr,unc,cli,sus,bal){
     "SPT (Tierra)":x.SPT,"Instalación interna":x.InstalacionInterna,"Observaciones":x.Observaciones
   }));
   const rowsC=cli.map(x=>({
-    "Ítem":x.item,"Transformador (CD)":x.Transformador,"Capacidad transformador kVA":x.,
+    "Ítem":x.item,"Transformador (CD)":x.Transformador,"Capacidad transformador kVA":x.Capacidad_kVA,
     "Serie de medidor":x.SerieMedidor,"Marca de medidor":x.MarcaMedidor,"No. Fases":x.Fases,
     "Latitud (Y)":x.Latitud,"Longitud (X)":x.Longitud,"Estado de medidor":x.EstadoMedidor,"Estado de visor":x.EstadoVisor,
     "¿Medidor requiere inspección/Cambio?":x.ReqInspeccion
   }));
   const rowsB=bal.map(x=>({
-    "Ítem":x.item,"Transformador (CD)":x.Transformador,"Capacidad transformador kVA":x.,
+    "Ítem":x.item,"Transformador (CD)":x.Transformador,"Capacidad transformador kVA":x.Capacidad_kVA,
     "Punto Físico":x.PuntoFisico,"Latitud (Y)":x.Latitud,"Longitud (X)":x.Longitud,"Estado":x.Estado
   }));
 
   const rowsS=sus.map(x=>({
-    "Ítem":x.item,"Transformador (CD)":x.Transformador,"Capacidad transformador kVA":x.,
+    "Ítem":x.item,"Transformador (CD)":x.Transformador,"Capacidad transformador kVA":x.Capacidad_kVA,
     "Punto Físico":x.PuntoFisico,"Latitud (Y)":x.Latitud,"Longitud (X)":x.Longitud,"Motivo de suspensión":x.Motivo
   }));
 
@@ -1026,74 +1029,42 @@ async function afterSaveAskNext(){
 }
 
 async function exportAll(){
-  try{
-    setBadge("Exportando… 📦");
-    const estr=await getAll("estructuras"), unc=await getAll("unc"), cli=await getAll("clientes"), sus=await getAll("susp"), bal=await getAll("baldios");
-    const cdAct = (activeCD||"").toString();
-    if(!cdAct){ toast("No hay CD activo"); setBadge("Listo ✅"); return; }
+  setBadge("Exportando… 📦");
+  const estr=await getAll("estructuras"), unc=await getAll("unc"), cli=await getAll("clientes"), sus=await getAll("susp"), bal=await getAll("baldios");
+  const now=new Date();
+  const stamp = new Date().toISOString().slice(0,10);
+  const cdSafe = (cd+"").replace(/[^A-Z0-9_\-]/gi,"_");
+  const excelName = `GS_Diagnosticos_${cdSafe}_${stamp}.xls`;
+  const excelU8=buildExcel(estr,unc,cli,sus,bal);
 
-    // Filtrar SOLO CD activo
-    const f = (arr)=>arr.filter(r=> (r.Transformador||"").toString()===cdAct);
-    const estrF=f(estr), uncF=f(unc), cliF=f(cli), susF=f(sus), balF=f(bal);
+  const zip=new TinyZip();
+  zip.add(excelName, excelU8);
 
-    const d=new Date();
-    const stamp = d.toISOString().slice(0,10).replace(/-/g,"");
-    const hm = d.toTimeString().slice(0,5).replace(":","");
-    const cdSafe = (cdAct+"").replace(/[^A-Z0-9_\-]/gi,"_");
-    const baseName = `GS_Diagnostico_${cdSafe}_${stamp}_${hm}`;
-
-    const excelName = `${baseName}.xls`;
-    const excelU8=buildExcel(estrF,uncF,cliF,susF,balF);
-
-    const zip=new TinyZip();
-    zip.add(excelName, excelU8);
-
-    const addFotos=(grupo, r, folderBase)=>{
-      const folder=safeName(folderBase);
-      (r.Fotos||[]).forEach((f,i)=>{
-        try{
-          zip.add(`FOTOS/${grupo}/${folder}/foto_${i+1}.jpg`, dataURLtoU8(f.dataURL));
-        }catch(e){}
-      });
-    };
-
-    for(const r of estrF){
-      addFotos("ESTRUCTURAS", r, `${r.Transformador}_${r.PuntoFisico||("ITEM_"+r.item)}`);
-    }
-    for(const r of uncF){
-      addFotos("UNC", r, `${r.Transformador}_${r.Nombres||("ITEM_"+r.item)}`);
-    }
-    for(const r of cliF){
-      addFotos("CLIENTES", r, `${r.Transformador}_${r.SerieMedidor||("ITEM_"+r.item)}`);
-    }
-    for(const r of susF){
-      addFotos("SUSPENSIONES", r, `${r.Transformador}_${r.item}`);
-    }
-    for(const r of balF){
-      addFotos("BALDIOS", r, `${r.Transformador}_${r.PuntoFisico||""}_BALDIO_${r.item}`);
-    }
-
-    const zipU8 = zip.finalize();
-    const zipName = `${baseName}.zip`;
-
-    // Intento automático (a veces Android bloquea si hay awaits)
-    try{ downloadBlob(zipName,"application/zip",zipU8); }catch(e){}
-
-    // Respaldo: botón visible
-    const blob=new Blob([zipU8],{type:"application/zip"});
-    const url=URL.createObjectURL(blob);
-    const a=$("dlLink"); 
-    if(a){ a.href=url; a.download=zipName; }
-    if($("dlModal")) $("dlModal").style.display="flex";
-
-    await setMeta("dirty",false);
-    setBadge("Listo ✅");
-    toast("Exportado ✅");
-  }catch(e){
-    console.error(e);
-    setBadge("Listo ✅");
-    toast("Error exportando ❌");
+  for(const r of estr){
+    const folder=safeName(`${r.Transformador}_${r.PuntoFisico||("ITEM_"+r.item)}`);
+    (r.Fotos||[]).forEach((f,i)=>zip.add(`${folder}/foto_${i+1}.jpg`, dataURLtoU8(f.dataURL)));
   }
+  for(const r of unc){
+    const folder=safeName(`${r.Transformador}_${r.Nombres||("ITEM_"+r.item)}`);
+    (r.Fotos||[]).forEach((f,i)=>zip.add(`${folder}/foto_${i+1}.jpg`, dataURLtoU8(f.dataURL)));
+  }
+  for(const r of cli){
+    const folder=safeName(`${r.Transformador}_${r.SerieMedidor||("ITEM_"+r.item)}`);
+    (r.Fotos||[]).forEach((f,i)=>zip.add(`${folder}/foto_${i+1}.jpg`, dataURLtoU8(f.dataURL)));
+  }
+  for(const r of bal){
+    const folder=safeName(`${r.Transformador}_${r.PuntoFisico||""}_BALDIO_${r.item}`);
+    (r.Fotos||[]).forEach((f,i)=>zip.add(`${folder}/foto_${i+1}.jpg`, dataURLtoU8(f.dataURL)));
+  }
+
+  for(const r of sus){
+    const folder=safeName(`${r.Transformador}_${r.item}`);
+    (r.Fotos||[]).forEach((f,i)=>zip.add(`${folder}/foto_${i+1}.jpg`, dataURLtoU8(f.dataURL)));
+  }
+
+  downloadBlob(`GS_Diagnosticos_${stamp}.zip`,"application/zip",zip.finalize());
+  setBadge("Listo ✅");
+  toast("Exportado ✅");
 }
 
 /* Service Worker: solo si NO es file:// */
