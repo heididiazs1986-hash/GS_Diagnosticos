@@ -1117,7 +1117,7 @@ function wireEvents(){
     const {obj,isNew}=built;
     obj.Fotos=await readFiles($("est_fotos"));
     const item=await nextItem("estructuras");
-    await addRec("estructuras",{...obj,item});
+    await addRec("estructuras", { ...obj, item });
     if(isNew){
       activeCD=obj.Transformador; activeCAP=obj.Capacidad_kVA;
       await setMeta("activeCD",activeCD); await setMeta("activeCAP",activeCAP);
