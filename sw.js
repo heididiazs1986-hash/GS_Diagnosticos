@@ -1,4 +1,4 @@
-const CACHE_NAME = "gsdx-cache-v13"; // SUBE ESTE NUMERO CADA VEZ
+const CACHE_NAME = "gsdx-cache-v14";
 
 const ASSETS = [
   "/",
@@ -11,49 +11,54 @@ const ASSETS = [
   "/icon-180.png"
 ];
 
-self.addEventListener("install", (e) => {
-  e.waitUntil(
-    caches.open(CACHE_NAME).then((c) => c.addAll(ASSETS))
+self.addEventListener("install", (event) => {
+  event.waitUntil(
+    caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS))
   );
   self.skipWaiting();
 });
 
-self.addEventListener("activate", (e) => {
-  e.waitUntil(
+self.addEventListener("activate", (event) => {
+  event.waitUntil(
     caches.keys().then((keys) =>
       Promise.all(
-        keys.map((k) => (k !== CACHE_NAME ? caches.delete(k) : Promise.resolve()))
+        keys.map((key) => {
+          if (key !== CACHE_NAME) {
+            return caches.delete(key);
+          }
+          return Promise.resolve();
+        })
       )
     )
   );
   self.clients.claim();
 });
 
-self.addEventListener("fetch", (e) => {
-  const req = e.request;
+self.addEventListener("fetch", (event) => {
+  const req = event.request;
 
   if (req.mode === "navigate") {
-    e.respondWith(
+    event.respondWith(
       fetch(req)
-        .then((res) => {
-          const copy = res.clone();
-          caches.open(CACHE_NAME).then((c) => c.put("/index.html", copy));
-          return res;
+        .then((response) => {
+          const copy = response.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put("/index.html", copy));
+          return response;
         })
         .catch(() => caches.match("/index.html"))
     );
     return;
   }
 
-  e.respondWith(
+  event.respondWith(
     caches.match(req).then((cached) => {
       const fetchPromise = fetch(req)
-        .then((netRes) => {
-          if (netRes && netRes.status === 200) {
-            const copy = netRes.clone();
-            caches.open(CACHE_NAME).then((c) => c.put(req, copy));
+        .then((networkResponse) => {
+          if (networkResponse && networkResponse.status === 200) {
+            const copy = networkResponse.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(req, copy));
           }
-          return netRes;
+          return networkResponse;
         })
         .catch(() => cached);
 
