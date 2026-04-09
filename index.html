@@ -1561,9 +1561,20 @@ function openModExcelRecord(index){
 
   const groupDocs = ["Formato E1 Solicitud","Aceptación de requisitos","Declaración Juramentada","Formato E6 RT","EC Particular","Documentos electricista","Declaración RETIE","EC Inmel"];
   const groupNorma = ["Predio habitable","Requiere construir muro","Requiere ampliación/remodelación de redes","Acometida","Ducto 1 Pulgada Galv.","Celda","Interruptor","SPT (Tierra)","Instalación interna"];
+  const coordLatHeader = modExcelHeaders.find(h=>normHeader(h)==="LATITUD (Y)") || "Latitud (Y)";
+  const coordLonHeader = modExcelHeaders.find(h=>normHeader(h)==="LONGITUD (X)") || "Longitud (X)";
+  let coordAccHeader = modExcelHeaders.find(h=>["PRECISIÓN (M)","PRECISION (M)","PRECISIÓN","PRECISION"].includes(normHeader(h)));
+  if(!coordAccHeader){
+    coordAccHeader = "Precisión (m)";
+    if(!modExcelHeaders.includes(coordAccHeader)){
+      modExcelHeaders.push(coordAccHeader);
+      modExcelRows.forEach(r=>{ if(typeof r[coordAccHeader] === "undefined") r[coordAccHeader] = ""; });
+    }
+  }
+  if(typeof row[coordAccHeader] === "undefined") row[coordAccHeader] = "";
+
   const renderField = (header)=>{
     const value = row[header] ?? "";
-    const id = `modf_${Math.random().toString(36).slice(2,9)}`;
     if(modIsLocked(header)){
       return `<div class="modField"><label>${modEsc(header)}</label><input type="text" data-header="${modEsc(header)}" value="${modEsc(value)}" disabled></div>`;
     }
@@ -1580,10 +1591,17 @@ function openModExcelRecord(index){
     return `<div class="modField"><label>${modEsc(header)}</label><input type="text" data-header="${modEsc(header)}" value="${modEsc(value)}"></div>`;
   };
 
-  const firstHeaders = modExcelHeaders.filter(h=>!groupDocs.includes(h) && !groupNorma.includes(h));
+  const coordHeaders = [coordLatHeader, coordLonHeader, coordAccHeader];
+  const firstHeaders = modExcelHeaders.filter(h=>!groupDocs.includes(h) && !groupNorma.includes(h) && !coordHeaders.includes(h));
   const html = `
     <div class="modGrid two">
       ${firstHeaders.map(renderField).join("")}
+    </div>
+    <div class="modGrid four">
+      <div class="modField"><label>${modEsc(coordLatHeader)}</label><input type="text" data-header="${modEsc(coordLatHeader)}" value="${modEsc(row[coordLatHeader] ?? "")}"></div>
+      <div class="modField"><label>${modEsc(coordLonHeader)}</label><input type="text" data-header="${modEsc(coordLonHeader)}" value="${modEsc(row[coordLonHeader] ?? "")}"></div>
+      <div class="modField"><label>${modEsc(coordAccHeader)}</label><input type="text" data-header="${modEsc(coordAccHeader)}" value="${modEsc(row[coordAccHeader] ?? "")}"></div>
+      <div class="btnrow" style="margin:0;align-items:end;"><button class="secondary" type="button" id="mod_btnGPS">📍 Coordenadas</button></div>
     </div>
     <div class="modSectionTitle">Documentos requeridos</div>
     <div class="checklist">
@@ -1602,6 +1620,17 @@ function openModExcelRecord(index){
     ecPart.addEventListener("change", ()=>{ if(ecPart.checked) ecInmel.checked = false; });
     ecInmel.addEventListener("change", ()=>{ if(ecInmel.checked) ecPart.checked = false; });
   }
+
+  const modLatInput = $("modExcelFormWrap").querySelector(`[data-header="${coordLatHeader.replace(/"/g,'\\"')}"]`);
+  const modLonInput = $("modExcelFormWrap").querySelector(`[data-header="${coordLonHeader.replace(/"/g,'\\"')}"]`);
+  const modAccInput = $("modExcelFormWrap").querySelector(`[data-header="${coordAccHeader.replace(/"/g,'\\"')}"]`);
+  const modGPSBtn = $("mod_btnGPS");
+  if(modGPSBtn){
+    modGPSBtn.addEventListener("click", ()=>{
+      captureGPS(modLatInput, modLonInput, modAccInput);
+    });
+  }
+
   const locInput = $("modExcelFormWrap").querySelector('[data-header="Localidad (Barrio_Vereda)"]');
   if(locInput){
     locInput.addEventListener("input", (e)=>{ e.target.value = upperText(e.target.value); rememberLastLocalidad(e.target.value); });
