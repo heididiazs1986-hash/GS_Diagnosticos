@@ -37,6 +37,7 @@
     .sep{height:1px;background:var(--borde);margin:14px 0;}
     .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:14px;background:#111;color:#fff;padding:10px 12px;border-radius:12px;font-size:14px;box-shadow:0 10px 30px rgba(0,0,0,.22);max-width:92vw;opacity:0;pointer-events:none;transition:.18s ease;}
     .toast.show{opacity:1;}
+    .inputError{border-color:#d40000 !important;box-shadow:0 0 0 4px rgba(212,0,0,.12) !important;background:#fff5f5;}
     .chips{display:flex;flex-direction:column;gap:10px;flex-wrap:nowrap;margin-top:10px;}
     .chip{border:0;background:transparent;padding:0;border-radius:0;display:flex;gap:10px;align-items:center;}
     .chip.radioBig{background:var(--rojo);border:1px solid rgba(255,255,255,.22);color:#fff;padding:16px 18px;font-size:16px;border-radius:18px;min-height:54px;}
@@ -208,6 +209,7 @@
             <option>Requiere obra interna parcial</option>
             <option>Requiere obras interna/externa completas</option>
             <option>Requiere obras interna/externa parciales</option>
+            <option>Pendiente por inspección</option>
           </select>
         </div>
         <div class="chips">
@@ -229,6 +231,20 @@
 
       <div class="sep"></div>
       <div class="grid two">
+        <div><label>Tipo de población</label>
+          <select id="unc_tipo_poblacion">
+            <option value="">Selecciona…</option>
+            <option>Discapacidad auditiva</option>
+            <option>Discapacidad auditiva/Mudez</option>
+            <option>Discapacidad sensorial (Mudez)</option>
+            <option>Habitante regular</option>
+            <option>Persona con diabetes</option>
+            <option>Persona oxigeno-dependiente</option>
+            <option>Persona tecnodependiente</option>
+            <option>Tercera edad con asistencia de adulto</option>
+            <option>Tercera edad sin asistencia de adulto</option>
+          </select>
+        </div>
         <div><label>Documento de propiedad</label>
           <select id="unc_doc_propiedad" required>
             <option value="">Selecciona…</option>
@@ -240,6 +256,7 @@
             <option>Declaración con fines extraprocesales</option>
             <option>Declaración extrajuicio</option>
             <option>Declaración juramentada</option>
+            <option>Declaración juramentada extraprocesal</option>
             <option>Escritura pública</option>
             <option>Matrícula inmobiliaria</option>
             <option>No entrega documento</option>
@@ -472,6 +489,7 @@
   </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
 <script>
 /* =================== util ZIP (TinyZip) =================== */
 function crc32(buf){
@@ -847,6 +865,9 @@ async function buildEstructura(){
     toast("Faltan campos en ESTRUCTURAS");
     return null;
   }
+  if(!obj.Latitud || !obj.Longitud){ toast("Captura coordenadas (ESTRUCTURAS)"); return null; }
+  const valPrecision = validarPrecisionMaxima(obj.Precision, $("est_acc"));
+  if(!valPrecision.ok){ toast(valPrecision.msg); return null; }
   return {obj, isNew: (modo==="crear")};
 }
 
@@ -864,6 +885,7 @@ async function buildUNC(){
     Localidad:upperAlnum($("unc_localidad").value),
     TipoZona:$("unc_tipo_zona").value||"",
     TipoMaterial:$("unc_tipo_material").value||"",
+    TipoPoblacion:$("unc_tipo_poblacion").value||"",
     Latitud:$("unc_lat").value||"",
     Longitud:$("unc_lon").value||"",
     Precision:$("unc_acc").value||"",
@@ -897,6 +919,8 @@ async function buildUNC(){
     return null;
   }
   if(!obj.Latitud || !obj.Longitud){ toast("Captura coordenadas (UNC)"); return null; }
+  const valPrecision = validarPrecisionMaxima(obj.Precision, $("unc_acc"));
+  if(!valPrecision.ok){ toast(valPrecision.msg); return null; }
   return obj;
 }
 
@@ -923,6 +947,8 @@ async function buildCliente(){
     return null;
   }
   if(!obj.Latitud || !obj.Longitud){ toast("Captura coordenadas (CLIENTE)"); return null; }
+  const valPrecision = validarPrecisionMaxima(obj.Precision, $("cli_acc"));
+  if(!valPrecision.ok){ toast(valPrecision.msg); return null; }
   return obj;
 }
 
@@ -944,6 +970,8 @@ async function buildSusp(){
     return null;
   }
   if(!obj.Latitud || !obj.Longitud){ toast("Captura coordenadas (SUSPENSIÓN)"); return null; }
+  const valPrecision = validarPrecisionMaxima(obj.Precision, $("sus_acc"));
+  if(!valPrecision.ok){ toast(valPrecision.msg); return null; }
   return obj;
 }
 
@@ -965,77 +993,74 @@ async function buildBaldio(){
     return null;
   }
   if(!obj.Latitud || !obj.Longitud){ toast("Captura coordenadas (BALDÍOS)"); return null; }
+  const valPrecision = validarPrecisionMaxima(obj.Precision, $("bal_acc"));
+  if(!valPrecision.ok){ toast(valPrecision.msg); return null; }
   return obj;
 }
 
-/* =================== Excel (HTML) =================== */
-function buildExcel(estr,unc,cli,sus,bal){
-  const esc=(v)=> (v==null?"":String(v)).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
-  const mkTable=(title, headers, rows)=>{
-    const thead="<tr>"+headers.map(h=>`<th>${esc(h)}</th>`).join("")+"</tr>";
-    const tbody=rows.map(r=>"<tr>"+headers.map(h=>`<td>${esc(r[h])}</td>`).join("")+"</tr>").join("");
-    return `<table border="1"><tr><th colspan="${headers.length}" style="background:#d40000;color:#fff;">${esc(title)}</th></tr>${thead}${tbody}</table><br/>`;
+
+/* =================== Excel (XLSX multihoja) =================== */
+const PLANTILLA_SHEETS = {
+  "Estructuras": ["Ítem","Transformador (CD)","Capacidad transformador kVA","Punto Físico","Tipo Nodo","Material Nodo","Características Nodo","Punto Físico","Tipo de Redes BT","Luminarias (AP)","Latitud (Y)","Longitud (X)","Precisión (m)","Fecha y hora"],
+  "UNC": ["Ítem","Transformador (CD)","Punto Físico","Nombres","Identificación","Contacto","Sede","Municipio","Dirección","Localidad (Barrio/Vereda)","Tipo Zona","Latitud (Y)","Longitud (X)","Precisión (m)","Tipo material","Predio habitable","Requiere construir muro","Requiere ampliación/remodelación de redes","Tipo de población","Documentación","Documento de propiedad","Formato E1 Solicitud","Aceptación de requisitos","Declaración Juramentada","Formato E6 RT","EC Particular","Documentos electricista","Declaración RETIE","EC Inmel","Estado","Acometida","Ducto 1\" Galv.","Celda","Interruptor","SPT (Tierra)","Instalación interna","Observaciones","Fecha y hora"],
+  "Clientes": ["Ítem","Transformador (CD)","Punto Físico","Serie de medidor","Marca de medidor","No. Fases","Latitud (Y)","Longitud (X)","Precisión (m)","Estado de medidor","Estado de visor","¿Medidor requiere inspección/Cambio?","","Fecha y hora"],
+  "Suspensiones": ["Ítem","Transformador (CD)","Punto Físico","Punto Físico","Latitud (Y)","Longitud (X)","Precisión (m)","Motivo de suspensión","Fecha y hora"],
+  "Baldios": ["Ítem","Transformador (CD)","Punto Físico","Punto Físico","Latitud (Y)","Longitud (X)","Precisión (m)","Estado","Fecha y hora"]
+};
+
+function isoLocal(iso){
+  if(!iso) return "";
+  const d = new Date(iso);
+  if(isNaN(d)) return String(iso);
+  const pad=n=>String(n).padStart(2,"0");
+  return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+}
+
+function buildWorkbookBlob(estr,unc,cli,sus,bal){
+  const wb = XLSX.utils.book_new();
+
+  const rowsE = estr.map(x=>[
+    x.item||"", x.Transformador||"", x.Capacidad_kVA||"", x.PuntoFisico||"", x.TipoNodo||"", x.MaterialNodo||"", x.CaracteristicasNodo||"", x.PuntoFisico||"", x.TipoRedBT||"", x.Luminarias||"", x.Latitud||"", x.Longitud||"", x.Precision||"", isoLocal(x.fechaISO)
+  ]);
+
+  const docU = (x)=> [x.CedulaProp,x.E1,x.AR,x.DJ,x.E6,x.ECPart,x.DocElectricista,x.RETIE,x.ECInmel].some(v=>v==="Sí") ? "Sí" : "No";
+  const rowsU = unc.map(x=>[
+    x.item||"", x.Transformador||"", x.PuntoFisico||"", x.Nombres||"", x.Identificacion||"", x.Contacto||"", x.Sede||"", x.Municipio||"", x.Direccion||"", x.Localidad||"", x.TipoZona||"", x.Latitud||"", x.Longitud||"", x.Precision||"", x.TipoMaterial||"", x.PredioHabitable||"", x.RequiereMuro||"", x.AmpliacionRedes||"", x.TipoPoblacion||"", docU(x), x.DocPropiedad||"", x.E1||"", x.AR||"", x.DJ||"", x.E6||"", x.ECPart||"", x.DocElectricista||"", x.RETIE||"", x.ECInmel||"", x.Estado||"", x.Acometida||"", x.Ducto||"", x.Celda||"", x.Interruptor||"", x.SPT||"", x.InstalacionInterna||"", x.Observaciones||"", isoLocal(x.fechaISO)
+  ]);
+
+  const rowsC = cli.map(x=>[
+    x.item||"", x.Transformador||"", x.PuntoFisico||"", x.SerieMedidor||"", x.MarcaMedidor||"", x.Fases||"", x.Latitud||"", x.Longitud||"", x.Precision||"", x.EstadoMedidor||"", x.EstadoVisor||"", x.ReqInspeccion||"", "", isoLocal(x.fechaISO)
+  ]);
+
+  const rowsS = sus.map(x=>[
+    x.item||"", x.Transformador||"", x.PuntoFisico||"", x.PuntoFisico||"", x.Latitud||"", x.Longitud||"", x.Precision||"", x.Motivo||"", isoLocal(x.fechaISO)
+  ]);
+
+  const rowsB = bal.map(x=>[
+    x.item||"", x.Transformador||"", x.PuntoFisico||"", x.PuntoFisico||"", x.Latitud||"", x.Longitud||"", x.Precision||"", x.Estado||"", isoLocal(x.fechaISO)
+  ]);
+
+  const sheetsData = {
+    "Estructuras": rowsE,
+    "UNC": rowsU,
+    "Clientes": rowsC,
+    "Suspensiones": rowsS,
+    "Baldios": rowsB
   };
 
-  const hdrE=["Ítem","Transformador (CD)","Tipo Nodo","Material Nodo","Características Nodo","Punto Físico","Tipo de Redes BT","Luminarias (AP)","Latitud (Y)","Longitud (X)","Precisión (m)","FECHA_HORA","GPS_HORA","Observaciones"];
-  const hdrU=["Ítem","Transformador (CD)","Punto Físico","Nombres","Identificación","Contacto","Sede","Municipio","Dirección","Localidad","Tipo Zona","Tipo material","¿Predio habitable?","Para servicio requiere ampliación de redes","Documento de propiedad","Cédula propietario","Formato E1","AR","DJ","E6","EC Particular","Doc. electricista","RETIE","EC Inmel","Estado","¿Requiere muro?","¿Requiere uso de arriostre?","Acometida","Ducto 1\" Galv.","Celda","Interruptor","SPT (Tierra)","Instalación interna","Latitud (Y)","Longitud (X)","Precisión (m)","FECHA_HORA","GPS_HORA","Observaciones"];
-  const hdrC=["Ítem","Transformador (CD)","Punto Físico","Serie de medidor","Marca de medidor","No. Fases","Estado de medidor","Estado de visor","¿Requiere inspección/Cambio?","Latitud (Y)","Longitud (X)","Precisión (m)","FECHA_HORA","GPS_HORA","Observaciones"];
-  const hdrS=["Ítem","Transformador (CD)","Punto Físico","Motivo de suspensión","Latitud (Y)","Longitud (X)","Precisión (m)","FECHA_HORA","GPS_HORA","Observaciones"];
-  const hdrB=["Ítem","Transformador (CD)","Punto Físico","Estado","Latitud (Y)","Longitud (X)","Precisión (m)","FECHA_HORA","GPS_HORA","Observaciones"];
+  Object.keys(PLANTILLA_SHEETS).forEach(sheetName => {
+    const aoa = [PLANTILLA_SHEETS[sheetName], ...(sheetsData[sheetName] || [])];
+    const ws = XLSX.utils.aoa_to_sheet(aoa);
+    ws['!cols'] = PLANTILLA_SHEETS[sheetName].map(h => ({ wch: Math.max(14, String(h||"").length + 2) }));
+    XLSX.utils.book_append_sheet(wb, ws, sheetName);
+  });
 
-  const rowsE=estr.map(x=>({
-    "Ítem":x.item,"Transformador (CD)":x.Transformador,
-    "Tipo Nodo":x.TipoNodo,"Material Nodo":x.MaterialNodo,"Características Nodo":x.CaracteristicasNodo,
-    "Punto Físico":x.PuntoFisico,"Tipo de Redes BT":x.TipoRedBT,"Luminarias (AP)":x.Luminarias,
-    "Latitud (Y)":x.Latitud,"Longitud (X)":x.Longitud,"Precisión (m)":x.Precision||"",
-    "FECHA_HORA":x.fechaISO||"","GPS_HORA":x.gpsISO||"","Observaciones":x.Observaciones||""
-  }));
-  const rowsU=unc.map(x=>({
-    "Ítem":x.item,"Transformador (CD)":x.Transformador,"Punto Físico":x.PuntoFisico||"",
-    "Nombres":x.Nombres,"Identificación":x.Identificacion,"Contacto":x.Contacto,
-    "Sede":x.Sede,"Municipio":x.Municipio,"Dirección":x.Direccion,"Localidad":x.Localidad,
-    "Tipo Zona":x.TipoZona,"Tipo material":x.TipoMaterial,
-    "¿Predio habitable?":x.PredioHabitable,"Para servicio requiere ampliación de redes":x.AmpliacionRedes,
-    "Documento de propiedad":x.DocPropiedad,"Cédula propietario":x.CedulaProp,
-    "Formato E1":x.E1,"AR":x.AR,"DJ":x.DJ,"E6":x.E6,
-    "EC Particular":x.ECPart,"Doc. electricista":x.DocElectricista,"RETIE":x.RETIE,"EC Inmel":x.ECInmel,
-    "Estado":x.Estado,"¿Requiere muro?":x.RequiereMuro,"¿Requiere uso de arriostre?":x.RequiereArriostre,
-    "Acometida":x.Acometida,"Ducto 1\" Galv.":x.Ducto,"Celda":x.Celda,"Interruptor":x.Interruptor,"SPT (Tierra)":x.SPT,"Instalación interna":x.InstalacionInterna,
-    "Latitud (Y)":x.Latitud,"Longitud (X)":x.Longitud,"Precisión (m)":x.Precision||"",
-    "FECHA_HORA":x.fechaISO||"","GPS_HORA":x.gpsISO||"","Observaciones":x.Observaciones||""
-  }));
-  const rowsC=cli.map(x=>({
-    "Ítem":x.item,"Transformador (CD)":x.Transformador,"Punto Físico":x.PuntoFisico||"",
-    "Serie de medidor":x.SerieMedidor,"Marca de medidor":x.MarcaMedidor,"No. Fases":x.Fases,
-    "Estado de medidor":x.EstadoMedidor,"Estado de visor":x.EstadoVisor,"¿Requiere inspección/Cambio?":x.ReqInspeccion,
-    "Latitud (Y)":x.Latitud,"Longitud (X)":x.Longitud,"Precisión (m)":x.Precision||"",
-    "FECHA_HORA":x.fechaISO||"","GPS_HORA":x.gpsISO||"","Observaciones":x.Observaciones||""
-  }));
-  const rowsS=sus.map(x=>({
-    "Ítem":x.item,"Transformador (CD)":x.Transformador,"Punto Físico":x.PuntoFisico||"",
-    "Motivo de suspensión":x.Motivo,
-    "Latitud (Y)":x.Latitud,"Longitud (X)":x.Longitud,"Precisión (m)":x.Precision||"",
-    "FECHA_HORA":x.fechaISO||"","GPS_HORA":x.gpsISO||"","Observaciones":x.Observaciones||""
-  }));
-  const rowsB=bal.map(x=>({
-    "Ítem":x.item,"Transformador (CD)":x.Transformador,"Punto Físico":x.PuntoFisico||"",
-    "Estado":x.Estado,
-    "Latitud (Y)":x.Latitud,"Longitud (X)":x.Longitud,"Precisión (m)":x.Precision||"",
-    "FECHA_HORA":x.fechaISO||"","GPS_HORA":x.gpsISO||"","Observaciones":x.Observaciones||""
-  }));
-
-  const htmlXls = `
-  <html><head><meta charset="UTF-8"></head><body>
-    ${mkTable("ESTRUCTURAS",hdrE,rowsE)}
-    ${mkTable("UNC",hdrU,rowsU)}
-    ${mkTable("CLIENTES",hdrC,rowsC)}
-    ${mkTable("SUSPENSIONES",hdrS,rowsS)}
-    ${mkTable("BALDIOS",hdrB,rowsB)}
-  </body></html>`;
-  return new TextEncoder().encode(htmlXls);
+  const wbout = XLSX.write(wb, { bookType:"xlsx", type:"array" });
+  return new Uint8Array(wbout);
 }
 
 /* =================== Export ZIP =================== */
+
 function safeName(s){return (s||"").toString().trim().replace(/[\\/:*?\\"<>|]+/g," ").replace(/\\s+/g," ").trim();}
 async function exportAll(){
   try{
@@ -1058,8 +1083,8 @@ async function exportAll(){
     const cdSafe = cdAct.replace(/[^A-Z0-9_\\-]/g,"_");
     const baseName = `GS_Diagnostico_${cdSafe}_${stamp}_${hm}`;
 
-    const excelName = `${baseName}.xls`;
-    const excelU8=buildExcel(estrF,uncF,cliF,susF,balF);
+    const excelName = `${baseName}.xlsx`;
+    const excelU8 = buildWorkbookBlob(estrF,uncF,cliF,susF,balF);
 
     const zip=new TinyZip();
     zip.add(excelName, excelU8);
@@ -1140,6 +1165,18 @@ function wireEvents(){
   $("cli_btnGPS").addEventListener("click", ()=>captureGPS($("cli_lat"),$("cli_lon"),$("cli_acc")));
   $("sus_btnGPS").addEventListener("click", ()=>captureGPS($("sus_lat"),$("sus_lon"),$("sus_acc")));
   $("bal_btnGPS").addEventListener("click", ()=>captureGPS($("bal_lat"),$("bal_lon"),$("bal_acc")));
+
+  const syncEcExclusive = (changed) => {
+    const part = $("unc_ec_part"), inmel = $("unc_ec_inmel");
+    if(!part || !inmel) return;
+    if(changed === "part" && part.checked){ inmel.checked = false; }
+    if(changed === "inmel" && inmel.checked){ part.checked = false; }
+    inmel.disabled = part.checked;
+    part.disabled = inmel.checked;
+  };
+  $("unc_ec_part").addEventListener("change", ()=>syncEcExclusive("part"));
+  $("unc_ec_inmel").addEventListener("change", ()=>syncEcExclusive("inmel"));
+  syncEcExclusive();
 
   // Dictation buttons
   document.querySelectorAll("button.mic").forEach(btn=>{
@@ -1312,6 +1349,7 @@ function wireEvents(){
       $("unc_localidad").value = rec.Localidad||"";
       $("unc_tipo_zona").value = rec.TipoZona||"";
       $("unc_tipo_material").value = rec.TipoMaterial||"";
+      $("unc_tipo_poblacion").value = rec.TipoPoblacion||"";
       $("unc_estado").value = rec.Estado||"";
       $("unc_lat").value = rec.Latitud||""; $("unc_lon").value = rec.Longitud||""; $("unc_acc").value = rec.Precision||"";
       $("unc_doc_propiedad").value = rec.DocPropiedad||"";
@@ -1319,6 +1357,10 @@ function wireEvents(){
       $("unc_ampliacion_redes").checked = (rec.AmpliacionRedes==="Sí");
       $("unc_requiere_muro").checked = (rec.RequiereMuro==="Sí");
       $("unc_arriostre").checked = (rec.RequiereArriostre==="Sí");
+      $("unc_ec_part").checked = (rec.ECPart==="Sí");
+      $("unc_ec_inmel").checked = (rec.ECInmel==="Sí");
+      $("unc_ec_inmel").disabled = $("unc_ec_part").checked;
+      $("unc_ec_part").disabled = $("unc_ec_inmel").checked;
       $("unc_obs").value = rec.Observaciones||"";
     } else {
       $("formCliente").style.display="";
