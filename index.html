@@ -37,13 +37,17 @@
     .sep{height:1px;background:var(--borde);margin:14px 0;}
     .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:14px;background:#111;color:#fff;padding:10px 12px;border-radius:12px;font-size:14px;box-shadow:0 10px 30px rgba(0,0,0,.22);max-width:92vw;opacity:0;pointer-events:none;transition:.18s ease;}
     .toast.show{opacity:1;}
-    .inputError{border-color:#d40000 !important;box-shadow:0 0 0 4px rgba(212,0,0,.12) !important;background:#fff5f5;}
     .chips{display:flex;flex-direction:column;gap:10px;flex-wrap:nowrap;margin-top:10px;}
     .chip{border:0;background:transparent;padding:0;border-radius:0;display:flex;gap:10px;align-items:center;}
     .chip.radioBig{background:var(--rojo);border:1px solid rgba(255,255,255,.22);color:#fff;padding:16px 18px;font-size:16px;border-radius:18px;min-height:54px;}
     .chip.radioBig input{transform:scale(1.25);}
     .chip.radioBig:has(input:checked){box-shadow:0 0 0 4px rgba(255,255,255,.18) inset, 0 10px 22px rgba(0,0,0,.18);}
-    .chip input[type="checkbox"]{transform:scale(1.45);} /* más grande */
+    .chip input[type="checkbox"]{transform:scale(1.25);} /* más grande */
+    input[type="checkbox"], input[type="radio"]{width:auto;padding:0;flex:0 0 auto;}
+    .checklist{display:flex;flex-direction:column;gap:10px;align-items:flex-start;margin-top:8px;}
+    .checkItem{display:flex;align-items:flex-start;justify-content:flex-start;gap:12px;width:100%;font-size:15px;color:#444;line-height:1.2;text-align:left;}
+    .checkItem input[type="checkbox"]{margin-top:2px;transform:scale(1.25);}
+    .sectionLabel{margin:18px 0 8px;font-size:14px;font-weight:800;color:var(--rojo);text-transform:uppercase;letter-spacing:.3px;border-top:3px solid #12b347;padding-top:10px;}
     /* MAYÚSCULAS visual */
     input[type="text"], input[type="tel"], input[type="search"], textarea{ text-transform: uppercase; }
 
@@ -199,6 +203,24 @@
       </div>
 
       <div class="grid two">
+        <div><label>Tipo de población</label>
+          <select id="unc_tipo_poblacion">
+            <option value="">Selecciona…</option>
+            <option>Discapacidad auditiva</option>
+            <option>Discapacidad auditiva/Mudez</option>
+            <option>Discapacidad sensorial (Mudez)</option>
+            <option>Habitante regular</option>
+            <option>Persona con diabetes</option>
+            <option>Persona oxigeno-dependiente</option>
+            <option>Persona tecnodependiente</option>
+            <option>Tercera edad con asistencia de adulto</option>
+            <option>Tercera edad sin asistencia de adulto</option>
+          </select>
+        </div>
+        <div></div>
+      </div>
+
+      <div class="grid two">
         <div><label>Estado</label>
           <select id="unc_estado" required>
             <option value="">Selecciona…</option>
@@ -231,20 +253,6 @@
 
       <div class="sep"></div>
       <div class="grid two">
-        <div><label>Tipo de población</label>
-          <select id="unc_tipo_poblacion">
-            <option value="">Selecciona…</option>
-            <option>Discapacidad auditiva</option>
-            <option>Discapacidad auditiva/Mudez</option>
-            <option>Discapacidad sensorial (Mudez)</option>
-            <option>Habitante regular</option>
-            <option>Persona con diabetes</option>
-            <option>Persona oxigeno-dependiente</option>
-            <option>Persona tecnodependiente</option>
-            <option>Tercera edad con asistencia de adulto</option>
-            <option>Tercera edad sin asistencia de adulto</option>
-          </select>
-        </div>
         <div><label>Documento de propiedad</label>
           <select id="unc_doc_propiedad" required>
             <option value="">Selecciona…</option>
@@ -265,28 +273,28 @@
         </div>
       </div>
 
-      <div class="chips">
-        <label class="chip"><input type="checkbox" id="unc_cedula_prop"> CÉDULA PROPIETARIO</label>
-        <label class="chip"><input type="checkbox" id="unc_e1"> FORMATO E1</label>
-        <label class="chip"><input type="checkbox" id="unc_ar"> AR</label>
-        <label class="chip"><input type="checkbox" id="unc_dj"> DJ</label>
-        <label class="chip"><input type="checkbox" id="unc_e6"> E6</label>
-        <label class="chip"><input type="checkbox" id="unc_ec_part"> EC PARTICULAR</label>
-        <label class="chip"><input type="checkbox" id="unc_doc_elec"> DOC. ELECTRICISTA</label>
-        <label class="chip"><input type="checkbox" id="unc_retie"> RETIE</label>
-        <label class="chip"><input type="checkbox" id="unc_ec_inmel"> EC INMEL</label>
+      <div class="sectionLabel">Documentos requeridos</div>
+      <div class="checklist">
+        <label class="checkItem"><input type="checkbox" id="unc_e1"> <span>FORMATO E1</span></label>
+        <label class="checkItem"><input type="checkbox" id="unc_ar"> <span>AR</span></label>
+        <label class="checkItem"><input type="checkbox" id="unc_dj"> <span>DJ</span></label>
+        <label class="checkItem"><input type="checkbox" id="unc_e6"> <span>E6</span></label>
+        <label class="checkItem"><input type="checkbox" id="unc_ec_part"> <span>EC PARTICULAR</span></label>
+        <label class="checkItem"><input type="checkbox" id="unc_doc_elec"> <span>DOC. ELECTRICISTA</span></label>
+        <label class="checkItem"><input type="checkbox" id="unc_retie"> <span>RETIE</span></label>
+        <label class="checkItem"><input type="checkbox" id="unc_ec_inmel"> <span>EC INMEL</span></label>
       </div>
 
-      <div class="sep"></div>
-      <div class="chips">
-        <label class="chip"><input type="checkbox" id="unc_requiere_muro"> ¿REQUIERE CONSTRUIR MURO?</label>
-        <label class="chip"><input type="checkbox" id="unc_arriostre"> ¿REQUIERE USO DE ARRIOSTRE?</label>
-        <label class="chip"><input type="checkbox" id="unc_acometida"> ACOMETIDA</label>
-        <label class="chip"><input type="checkbox" id="unc_ducto"> DUCTO 1" GALV.</label>
-        <label class="chip"><input type="checkbox" id="unc_celda"> CELDA</label>
-        <label class="chip"><input type="checkbox" id="unc_interruptor"> INTERRUPTOR</label>
-        <label class="chip"><input type="checkbox" id="unc_spt"> SPT (TIERRA)</label>
-        <label class="chip"><input type="checkbox" id="unc_inst_interna"> INSTALACIÓN INTERNA</label>
+      <div class="sectionLabel">Revisión norma técnica</div>
+      <div class="checklist">
+        <label class="checkItem"><input type="checkbox" id="unc_requiere_muro"> <span>¿REQUIERE CONSTRUIR MURO?</span></label>
+        <label class="checkItem"><input type="checkbox" id="unc_arriostre"> <span>¿REQUIERE USO DE ARRIOSTRE?</span></label>
+        <label class="checkItem"><input type="checkbox" id="unc_acometida"> <span>ACOMETIDA</span></label>
+        <label class="checkItem"><input type="checkbox" id="unc_ducto"> <span>DUCTO 1" GALV.</span></label>
+        <label class="checkItem"><input type="checkbox" id="unc_celda"> <span>CELDA</span></label>
+        <label class="checkItem"><input type="checkbox" id="unc_interruptor"> <span>INTERRUPTOR</span></label>
+        <label class="checkItem"><input type="checkbox" id="unc_spt"> <span>SPT (TIERRA)</span></label>
+        <label class="checkItem"><input type="checkbox" id="unc_inst_interna"> <span>INSTALACIÓN INTERNA</span></label>
       </div>
 
       <div class="grid">
@@ -489,7 +497,6 @@
   </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
 <script>
 /* =================== util ZIP (TinyZip) =================== */
 function crc32(buf){
@@ -865,9 +872,6 @@ async function buildEstructura(){
     toast("Faltan campos en ESTRUCTURAS");
     return null;
   }
-  if(!obj.Latitud || !obj.Longitud){ toast("Captura coordenadas (ESTRUCTURAS)"); return null; }
-  const valPrecision = validarPrecisionMaxima(obj.Precision, $("est_acc"));
-  if(!valPrecision.ok){ toast(valPrecision.msg); return null; }
   return {obj, isNew: (modo==="crear")};
 }
 
@@ -894,7 +898,6 @@ async function buildUNC(){
     AmpliacionRedes:$("unc_ampliacion_redes").checked?"Sí":"No",
     Estado:$("unc_estado").value||"",
     DocPropiedad:$("unc_doc_propiedad").value||"",
-    CedulaProp:$("unc_cedula_prop").checked?"Sí":"No",
     E1:$("unc_e1").checked?"Sí":"No",
     AR:$("unc_ar").checked?"Sí":"No",
     DJ:$("unc_dj").checked?"Sí":"No",
@@ -919,8 +922,6 @@ async function buildUNC(){
     return null;
   }
   if(!obj.Latitud || !obj.Longitud){ toast("Captura coordenadas (UNC)"); return null; }
-  const valPrecision = validarPrecisionMaxima(obj.Precision, $("unc_acc"));
-  if(!valPrecision.ok){ toast(valPrecision.msg); return null; }
   return obj;
 }
 
@@ -947,8 +948,6 @@ async function buildCliente(){
     return null;
   }
   if(!obj.Latitud || !obj.Longitud){ toast("Captura coordenadas (CLIENTE)"); return null; }
-  const valPrecision = validarPrecisionMaxima(obj.Precision, $("cli_acc"));
-  if(!valPrecision.ok){ toast(valPrecision.msg); return null; }
   return obj;
 }
 
@@ -970,8 +969,6 @@ async function buildSusp(){
     return null;
   }
   if(!obj.Latitud || !obj.Longitud){ toast("Captura coordenadas (SUSPENSIÓN)"); return null; }
-  const valPrecision = validarPrecisionMaxima(obj.Precision, $("sus_acc"));
-  if(!valPrecision.ok){ toast(valPrecision.msg); return null; }
   return obj;
 }
 
@@ -993,74 +990,85 @@ async function buildBaldio(){
     return null;
   }
   if(!obj.Latitud || !obj.Longitud){ toast("Captura coordenadas (BALDÍOS)"); return null; }
-  const valPrecision = validarPrecisionMaxima(obj.Precision, $("bal_acc"));
-  if(!valPrecision.ok){ toast(valPrecision.msg); return null; }
   return obj;
 }
 
-
-/* =================== Excel (XLSX multihoja) =================== */
-const PLANTILLA_SHEETS = {
-  "Estructuras": ["Ítem","Transformador (CD)","Capacidad transformador kVA","Punto Físico","Tipo Nodo","Material Nodo","Características Nodo","Punto Físico","Tipo de Redes BT","Luminarias (AP)","Latitud (Y)","Longitud (X)","Precisión (m)","Fecha y hora"],
-  "UNC": ["Ítem","Transformador (CD)","Punto Físico","Nombres","Identificación","Contacto","Sede","Municipio","Dirección","Localidad (Barrio/Vereda)","Tipo Zona","Latitud (Y)","Longitud (X)","Precisión (m)","Tipo material","Predio habitable","Requiere construir muro","Requiere ampliación/remodelación de redes","Tipo de población","Documentación","Documento de propiedad","Formato E1 Solicitud","Aceptación de requisitos","Declaración Juramentada","Formato E6 RT","EC Particular","Documentos electricista","Declaración RETIE","EC Inmel","Estado","Acometida","Ducto 1\" Galv.","Celda","Interruptor","SPT (Tierra)","Instalación interna","Observaciones","Fecha y hora"],
-  "Clientes": ["Ítem","Transformador (CD)","Punto Físico","Serie de medidor","Marca de medidor","No. Fases","Latitud (Y)","Longitud (X)","Precisión (m)","Estado de medidor","Estado de visor","¿Medidor requiere inspección/Cambio?","","Fecha y hora"],
-  "Suspensiones": ["Ítem","Transformador (CD)","Punto Físico","Punto Físico","Latitud (Y)","Longitud (X)","Precisión (m)","Motivo de suspensión","Fecha y hora"],
-  "Baldios": ["Ítem","Transformador (CD)","Punto Físico","Punto Físico","Latitud (Y)","Longitud (X)","Precisión (m)","Estado","Fecha y hora"]
-};
-
-function isoLocal(iso){
-  if(!iso) return "";
-  const d = new Date(iso);
-  if(isNaN(d)) return String(iso);
-  const pad=n=>String(n).padStart(2,"0");
-  return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
-}
-
-function buildWorkbookBlob(estr,unc,cli,sus,bal){
-  const wb = XLSX.utils.book_new();
-
-  const rowsE = estr.map(x=>[
-    x.item||"", x.Transformador||"", x.Capacidad_kVA||"", x.PuntoFisico||"", x.TipoNodo||"", x.MaterialNodo||"", x.CaracteristicasNodo||"", x.PuntoFisico||"", x.TipoRedBT||"", x.Luminarias||"", x.Latitud||"", x.Longitud||"", x.Precision||"", isoLocal(x.fechaISO)
-  ]);
-
-  const docU = (x)=> [x.CedulaProp,x.E1,x.AR,x.DJ,x.E6,x.ECPart,x.DocElectricista,x.RETIE,x.ECInmel].some(v=>v==="Sí") ? "Sí" : "No";
-  const rowsU = unc.map(x=>[
-    x.item||"", x.Transformador||"", x.PuntoFisico||"", x.Nombres||"", x.Identificacion||"", x.Contacto||"", x.Sede||"", x.Municipio||"", x.Direccion||"", x.Localidad||"", x.TipoZona||"", x.Latitud||"", x.Longitud||"", x.Precision||"", x.TipoMaterial||"", x.PredioHabitable||"", x.RequiereMuro||"", x.AmpliacionRedes||"", x.TipoPoblacion||"", docU(x), x.DocPropiedad||"", x.E1||"", x.AR||"", x.DJ||"", x.E6||"", x.ECPart||"", x.DocElectricista||"", x.RETIE||"", x.ECInmel||"", x.Estado||"", x.Acometida||"", x.Ducto||"", x.Celda||"", x.Interruptor||"", x.SPT||"", x.InstalacionInterna||"", x.Observaciones||"", isoLocal(x.fechaISO)
-  ]);
-
-  const rowsC = cli.map(x=>[
-    x.item||"", x.Transformador||"", x.PuntoFisico||"", x.SerieMedidor||"", x.MarcaMedidor||"", x.Fases||"", x.Latitud||"", x.Longitud||"", x.Precision||"", x.EstadoMedidor||"", x.EstadoVisor||"", x.ReqInspeccion||"", "", isoLocal(x.fechaISO)
-  ]);
-
-  const rowsS = sus.map(x=>[
-    x.item||"", x.Transformador||"", x.PuntoFisico||"", x.PuntoFisico||"", x.Latitud||"", x.Longitud||"", x.Precision||"", x.Motivo||"", isoLocal(x.fechaISO)
-  ]);
-
-  const rowsB = bal.map(x=>[
-    x.item||"", x.Transformador||"", x.PuntoFisico||"", x.PuntoFisico||"", x.Latitud||"", x.Longitud||"", x.Precision||"", x.Estado||"", isoLocal(x.fechaISO)
-  ]);
-
-  const sheetsData = {
-    "Estructuras": rowsE,
-    "UNC": rowsU,
-    "Clientes": rowsC,
-    "Suspensiones": rowsS,
-    "Baldios": rowsB
+/* =================== Excel (HTML) =================== */
+function buildExcel(estr,unc,cli,sus,bal){
+  const escXml=(v)=> String(v==null?"":v)
+    .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;").replace(/'/g,"&apos;");
+  const cell=(v)=> `<Cell><Data ss:Type="String">${escXml(v)}</Data></Cell>`;
+  const sheet=(name, headers, rows)=>{
+    const headerRow = "<Row>" + headers.map(h=>cell(h)).join("") + "</Row>";
+    const bodyRows = rows.map(r=>"<Row>"+headers.map(h=>cell(r[h] ?? "")).join("")+"</Row>").join("");
+    return `<Worksheet ss:Name="${escXml(name)}"><Table>${headerRow}${bodyRows}</Table></Worksheet>`;
   };
 
-  Object.keys(PLANTILLA_SHEETS).forEach(sheetName => {
-    const aoa = [PLANTILLA_SHEETS[sheetName], ...(sheetsData[sheetName] || [])];
-    const ws = XLSX.utils.aoa_to_sheet(aoa);
-    ws['!cols'] = PLANTILLA_SHEETS[sheetName].map(h => ({ wch: Math.max(14, String(h||"").length + 2) }));
-    XLSX.utils.book_append_sheet(wb, ws, sheetName);
-  });
+  const hdrE=["Ítem","Transformador (CD)","Tipo Nodo","Material Nodo","Características Nodo","Punto Físico","Tipo de Redes BT","Luminarias (AP)","Latitud (Y)","Longitud (X)","Precisión (m)","FECHA_HORA","GPS_HORA","Observaciones"];
+  const hdrU=["Ítem","Transformador (CD)","Punto Físico","Nombres","Identificación","Contacto","Sede","Municipio","Dirección","Localidad","Tipo Zona","Tipo material","Tipo de población","¿Predio habitable?","Para servicio requiere ampliación de redes","Documento de propiedad","Formato E1","AR","DJ","E6","EC Particular","Doc. electricista","RETIE","EC Inmel","Estado","¿Requiere muro?","¿Requiere uso de arriostre?","Acometida","Ducto 1\" Galv.","Celda","Interruptor","SPT (Tierra)","Instalación interna","Latitud (Y)","Longitud (X)","Precisión (m)","FECHA_HORA","GPS_HORA","Observaciones"];
+  const hdrC=["Ítem","Transformador (CD)","Punto Físico","Serie de medidor","Marca de medidor","No. Fases","Estado de medidor","Estado de visor","¿Requiere inspección/Cambio?","Latitud (Y)","Longitud (X)","Precisión (m)","FECHA_HORA","GPS_HORA","Observaciones"];
+  const hdrS=["Ítem","Transformador (CD)","Punto Físico","Motivo de suspensión","Latitud (Y)","Longitud (X)","Precisión (m)","FECHA_HORA","GPS_HORA","Observaciones"];
+  const hdrB=["Ítem","Transformador (CD)","Punto Físico","Estado","Latitud (Y)","Longitud (X)","Precisión (m)","FECHA_HORA","GPS_HORA","Observaciones"];
 
-  const wbout = XLSX.write(wb, { bookType:"xlsx", type:"array" });
-  return new Uint8Array(wbout);
+  const rowsE=estr.map(x=>({
+    "Ítem":x.item,"Transformador (CD)":x.Transformador,
+    "Tipo Nodo":x.TipoNodo,"Material Nodo":x.MaterialNodo,"Características Nodo":x.CaracteristicasNodo,
+    "Punto Físico":x.PuntoFisico,"Tipo de Redes BT":x.TipoRedBT,"Luminarias (AP)":x.Luminarias,
+    "Latitud (Y)":x.Latitud,"Longitud (X)":x.Longitud,"Precisión (m)":x.Precision||"",
+    "FECHA_HORA":x.fechaISO||"","GPS_HORA":x.gpsISO||"","Observaciones":x.Observaciones||""
+  }));
+  const rowsU=unc.map(x=>({
+    "Ítem":x.item,"Transformador (CD)":x.Transformador,"Punto Físico":x.PuntoFisico||"",
+    "Nombres":x.Nombres,"Identificación":x.Identificacion,"Contacto":x.Contacto,
+    "Sede":x.Sede,"Municipio":x.Municipio,"Dirección":x.Direccion,"Localidad":x.Localidad,
+    "Tipo Zona":x.TipoZona,"Tipo material":x.TipoMaterial,"Tipo de población":x.TipoPoblacion||"",
+    "¿Predio habitable?":x.PredioHabitable,"Para servicio requiere ampliación de redes":x.AmpliacionRedes,
+    "Documento de propiedad":x.DocPropiedad,
+    "Formato E1":x.E1,"AR":x.AR,"DJ":x.DJ,"E6":x.E6,
+    "EC Particular":x.ECPart,"Doc. electricista":x.DocElectricista,"RETIE":x.RETIE,"EC Inmel":x.ECInmel,
+    "Estado":x.Estado,"¿Requiere muro?":x.RequiereMuro,"¿Requiere uso de arriostre?":x.RequiereArriostre,
+    "Acometida":x.Acometida,"Ducto 1\" Galv.":x.Ducto,"Celda":x.Celda,"Interruptor":x.Interruptor,"SPT (Tierra)":x.SPT,"Instalación interna":x.InstalacionInterna,
+    "Latitud (Y)":x.Latitud,"Longitud (X)":x.Longitud,"Precisión (m)":x.Precision||"",
+    "FECHA_HORA":x.fechaISO||"","GPS_HORA":x.gpsISO||"","Observaciones":x.Observaciones||""
+  }));
+  const rowsC=cli.map(x=>({
+    "Ítem":x.item,"Transformador (CD)":x.Transformador,"Punto Físico":x.PuntoFisico||"",
+    "Serie de medidor":x.SerieMedidor,"Marca de medidor":x.MarcaMedidor,"No. Fases":x.Fases,
+    "Estado de medidor":x.EstadoMedidor,"Estado de visor":x.EstadoVisor,"¿Requiere inspección/Cambio?":x.ReqInspeccion,
+    "Latitud (Y)":x.Latitud,"Longitud (X)":x.Longitud,"Precisión (m)":x.Precision||"",
+    "FECHA_HORA":x.fechaISO||"","GPS_HORA":x.gpsISO||"","Observaciones":x.Observaciones||""
+  }));
+  const rowsS=sus.map(x=>({
+    "Ítem":x.item,"Transformador (CD)":x.Transformador,"Punto Físico":x.PuntoFisico||"",
+    "Motivo de suspensión":x.Motivo,
+    "Latitud (Y)":x.Latitud,"Longitud (X)":x.Longitud,"Precisión (m)":x.Precision||"",
+    "FECHA_HORA":x.fechaISO||"","GPS_HORA":x.gpsISO||"","Observaciones":x.Observaciones||""
+  }));
+  const rowsB=bal.map(x=>({
+    "Ítem":x.item,"Transformador (CD)":x.Transformador,"Punto Físico":x.PuntoFisico||"",
+    "Estado":x.Estado,
+    "Latitud (Y)":x.Latitud,"Longitud (X)":x.Longitud,"Precisión (m)":x.Precision||"",
+    "FECHA_HORA":x.fechaISO||"","GPS_HORA":x.gpsISO||"","Observaciones":x.Observaciones||""
+  }));
+
+  const xml = `<?xml version="1.0"?>
+  <?mso-application progid="Excel.Sheet"?>
+  <Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
+   xmlns:o="urn:schemas-microsoft-com:office:office"
+   xmlns:x="urn:schemas-microsoft-com:office:excel"
+   xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"
+   xmlns:html="http://www.w3.org/TR/REC-html40">
+    ${sheet("ESTRUCTURAS", hdrE, rowsE)}
+    ${sheet("UNC", hdrU, rowsU)}
+    ${sheet("CLIENTES", hdrC, rowsC)}
+    ${sheet("SUSPENSIONES", hdrS, rowsS)}
+    ${sheet("BALDIOS", hdrB, rowsB)}
+  </Workbook>`;
+  return new TextEncoder().encode(xml);
 }
 
 /* =================== Export ZIP =================== */
-
 function safeName(s){return (s||"").toString().trim().replace(/[\\/:*?\\"<>|]+/g," ").replace(/\\s+/g," ").trim();}
 async function exportAll(){
   try{
@@ -1083,8 +1091,8 @@ async function exportAll(){
     const cdSafe = cdAct.replace(/[^A-Z0-9_\\-]/g,"_");
     const baseName = `GS_Diagnostico_${cdSafe}_${stamp}_${hm}`;
 
-    const excelName = `${baseName}.xlsx`;
-    const excelU8 = buildWorkbookBlob(estrF,uncF,cliF,susF,balF);
+    const excelName = `${baseName}.xls`;
+    const excelU8=buildExcel(estrF,uncF,cliF,susF,balF);
 
     const zip=new TinyZip();
     zip.add(excelName, excelU8);
@@ -1158,6 +1166,12 @@ function wireEvents(){
   $("cli_marca").addEventListener("input", e=>e.target.value=upperAlnum(e.target.value));
   $("unc_localidad").addEventListener("input", e=>e.target.value=upperAlnum(e.target.value));
   $("unc_direccion").addEventListener("input", e=>e.target.value=upperAlnum(e.target.value));
+  $("unc_ec_part").addEventListener("change", ()=>{
+    if($("unc_ec_part").checked) $("unc_ec_inmel").checked=false;
+  });
+  $("unc_ec_inmel").addEventListener("change", ()=>{
+    if($("unc_ec_inmel").checked) $("unc_ec_part").checked=false;
+  });
 
   // GPS buttons
   $("est_btnGPS").addEventListener("click", ()=>captureGPS($("est_lat"),$("est_lon"),$("est_acc")));
@@ -1165,18 +1179,6 @@ function wireEvents(){
   $("cli_btnGPS").addEventListener("click", ()=>captureGPS($("cli_lat"),$("cli_lon"),$("cli_acc")));
   $("sus_btnGPS").addEventListener("click", ()=>captureGPS($("sus_lat"),$("sus_lon"),$("sus_acc")));
   $("bal_btnGPS").addEventListener("click", ()=>captureGPS($("bal_lat"),$("bal_lon"),$("bal_acc")));
-
-  const syncEcExclusive = (changed) => {
-    const part = $("unc_ec_part"), inmel = $("unc_ec_inmel");
-    if(!part || !inmel) return;
-    if(changed === "part" && part.checked){ inmel.checked = false; }
-    if(changed === "inmel" && inmel.checked){ part.checked = false; }
-    inmel.disabled = part.checked;
-    part.disabled = inmel.checked;
-  };
-  $("unc_ec_part").addEventListener("change", ()=>syncEcExclusive("part"));
-  $("unc_ec_inmel").addEventListener("change", ()=>syncEcExclusive("inmel"));
-  syncEcExclusive();
 
   // Dictation buttons
   document.querySelectorAll("button.mic").forEach(btn=>{
@@ -1245,9 +1247,11 @@ function wireEvents(){
     if(!validateSection("formUNC")) return;
     if(!(activeCD&&activeCAP)) return toast("Sin CD activo");
     const obj=await buildUNC(); if(!obj) return;
-    obj.Fotos=await readFiles($("unc_fotos"));
-    const item=await nextItem("unc");
-    if(editCtx && editCtx.store==="unc"){ await putRec("unc",{...obj,id:editCtx.id,item}); editCtx=null; }
+    const fotosNuevas=await readFiles($("unc_fotos"));
+    const prev = (editCtx && editCtx.store==="unc") ? await getById("unc", editCtx.id) : null;
+    obj.Fotos=fotosNuevas.length ? fotosNuevas : ((prev && prev.Fotos) || []);
+    const item=(editCtx && editCtx.store==="unc" && prev) ? (prev.item || await nextItem("unc")) : await nextItem("unc");
+    if(editCtx && editCtx.store==="unc"){ await putRec("unc",{...prev,...obj,id:editCtx.id,item}); editCtx=null; }
     else { await addRec("unc",{...obj,item}); }
     toast("Guardado ✅");
     resetForms();
@@ -1258,9 +1262,11 @@ function wireEvents(){
     if(!validateSection("formCliente")) return;
     if(!(activeCD&&activeCAP)) return toast("Sin CD activo");
     const obj=await buildCliente(); if(!obj) return;
-    obj.Fotos=await readFiles($("cli_fotos"));
-    const item=await nextItem("clientes");
-    if(editCtx && editCtx.store==="clientes"){ await putRec("clientes",{...obj,id:editCtx.id,item}); editCtx=null; }
+    const fotosNuevas=await readFiles($("cli_fotos"));
+    const prev = (editCtx && editCtx.store==="clientes") ? await getById("clientes", editCtx.id) : null;
+    obj.Fotos=fotosNuevas.length ? fotosNuevas : ((prev && prev.Fotos) || []);
+    const item=(editCtx && editCtx.store==="clientes" && prev) ? (prev.item || await nextItem("clientes")) : await nextItem("clientes");
+    if(editCtx && editCtx.store==="clientes"){ await putRec("clientes",{...prev,...obj,id:editCtx.id,item}); editCtx=null; }
     else { await addRec("clientes",{...obj,item}); }
     toast("Guardado ✅");
     resetForms();
@@ -1355,12 +1361,22 @@ function wireEvents(){
       $("unc_doc_propiedad").value = rec.DocPropiedad||"";
       $("unc_predio_habitable").checked = (rec.PredioHabitable==="Sí");
       $("unc_ampliacion_redes").checked = (rec.AmpliacionRedes==="Sí");
+      $("unc_e1").checked = (rec.E1==="Sí");
+      $("unc_ar").checked = (rec.AR==="Sí");
+      $("unc_dj").checked = (rec.DJ==="Sí");
+      $("unc_e6").checked = (rec.E6==="Sí");
+      $("unc_ec_part").checked = (rec.ECPart==="Sí");
+      $("unc_doc_elec").checked = (rec.DocElectricista==="Sí");
+      $("unc_retie").checked = (rec.RETIE==="Sí");
+      $("unc_ec_inmel").checked = (rec.ECInmel==="Sí");
       $("unc_requiere_muro").checked = (rec.RequiereMuro==="Sí");
       $("unc_arriostre").checked = (rec.RequiereArriostre==="Sí");
-      $("unc_ec_part").checked = (rec.ECPart==="Sí");
-      $("unc_ec_inmel").checked = (rec.ECInmel==="Sí");
-      $("unc_ec_inmel").disabled = $("unc_ec_part").checked;
-      $("unc_ec_part").disabled = $("unc_ec_inmel").checked;
+      $("unc_acometida").checked = (rec.Acometida==="Sí");
+      $("unc_ducto").checked = (rec.Ducto==="Sí");
+      $("unc_celda").checked = (rec.Celda==="Sí");
+      $("unc_interruptor").checked = (rec.Interruptor==="Sí");
+      $("unc_spt").checked = (rec.SPT==="Sí");
+      $("unc_inst_interna").checked = (rec.InstalacionInterna==="Sí");
       $("unc_obs").value = rec.Observaciones||"";
     } else {
       $("formCliente").style.display="";
