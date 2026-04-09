@@ -48,9 +48,23 @@
     .checkItem{display:flex;align-items:flex-start;justify-content:flex-start;gap:12px;width:100%;font-size:15px;color:#444;line-height:1.2;text-align:left;}
     .checkItem input[type="checkbox"]{margin-top:2px;transform:scale(1.25);}
     .sectionLabel{margin:18px 0 8px;font-size:14px;font-weight:800;color:var(--rojo);text-transform:uppercase;letter-spacing:.3px;border-top:3px solid #12b347;padding-top:10px;}
-    /* MAYÚSCULAS visual */
-    input[type="text"], input[type="tel"], input[type="search"], textarea{ text-transform: uppercase; }
 
+    /* Módulo modificar */
+    .modToolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:12px;}
+    .modToolbar input[type="file"], .modToolbar input[type="search"]{flex:1 1 240px;min-width:220px;}
+    .miniTableWrap{margin-top:12px;max-height:320px;overflow:auto;border:1px solid var(--borde);border-radius:14px;background:#fff;}
+    .miniTable{width:100%;border-collapse:collapse;font-size:14px;}
+    .miniTable th,.miniTable td{padding:10px 12px;border-bottom:1px solid #eee;text-align:left;vertical-align:top;}
+    .miniTable th{position:sticky;top:0;background:#fafafa;z-index:1;}
+    .miniTable tr.activeRow{background:#fff4ea;}
+    .modGrid{display:grid;grid-template-columns:1fr;gap:12px;margin-top:12px;}
+    @media(min-width:860px){.modGrid.two{grid-template-columns:1fr 1fr;} .modGrid.three{grid-template-columns:1fr 1fr 1fr;}}
+    .modField label{display:block;font-size:13px;color:var(--muted);margin:0 0 6px;}
+    .modField input[type="text"], .modField input[type="number"], .modField select, .modField textarea{width:100%;padding:12px;border-radius:14px;border:1px solid var(--borde);background:#fff;font-size:16px;}
+    .modField input[disabled]{background:#f2f2f2;color:#666;}
+    .modCheck{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border:1px solid var(--borde);border-radius:14px;background:#fff;}
+    .modCheck input{width:auto;flex:0 0 auto;margin-top:3px;}
+    .modSectionTitle{margin:16px 0 8px;font-size:14px;font-weight:800;color:var(--rojo);text-transform:uppercase;}
     /* dictado */
     .dictWrap{position:relative;}
     .dictWrap textarea{padding-right:56px;}
@@ -157,6 +171,7 @@
       <button class="secondary" id="btnExportar" type="button">Exportar (Excel + Fotos ZIP)</button>
       <button class="secondary" id="btnActualizar" type="button">Actualizar</button>
       <button class="secondary" id="btnConteos" type="button">Conteos</button>
+      <button class="secondary" id="btnModificarExcel" type="button">Modificar Excel</button>
     </div>
   </section>
 
@@ -448,6 +463,43 @@
     </div>
   </section>
 
+  <!-- SCREEN 3: MODIFICAR EXCEL -->
+  <section class="card" id="screen3" style="display:none;">
+    <div class="title">
+      <div><h2>Modificar registros UNC desde Excel</h2></div>
+      <div class="kpi"><div class="pill">📄 <b id="modExcelFileName">Sin archivo</b></div></div>
+    </div>
+
+    <div class="modToolbar">
+      <input id="modExcelInput" type="file" accept=".xlsx,.xls,.csv" />
+      <button class="secondary" id="btnCargarExcelMod" type="button">Cargar hoja Modificar</button>
+      <button class="secondary" id="btnExportarExcelMod" type="button">Exportar Excel actualizado</button>
+      <button class="secondary" id="btnBackModExcel" type="button">Volver</button>
+    </div>
+
+    <div class="modToolbar">
+      <input id="modExcelSearch" type="search" placeholder="Buscar por ítem, nombre, identificación, punto físico, dirección..." />
+      <div class="pill">Registros: <b id="modExcelCount">0</b></div>
+      <div class="pill">Activo: <b id="modExcelCurrent">Ninguno</b></div>
+    </div>
+
+    <div class="miniTableWrap">
+      <table class="miniTable" id="modExcelTable">
+        <thead></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <div class="sep"></div>
+    <div id="modExcelFormWrap">
+      <div style="color:var(--muted);font-size:14px;">Carga un archivo y selecciona un registro para editarlo.</div>
+    </div>
+
+    <div class="btnrow">
+      <button class="ok" id="btnGuardarFilaExcelMod" type="button">Guardar cambios del registro</button>
+    </div>
+  </section>
+
   <div class="toast" id="toast"></div>
 </main>
 
@@ -497,6 +549,7 @@
   </div>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
 /* =================== util ZIP (TinyZip) =================== */
 function crc32(buf){
@@ -593,8 +646,22 @@ function toast(msg){toastEl.textContent=msg;toastEl.classList.add("show");setTim
 function setBadge(msg){$("hdrBadge").textContent=msg;}
 function upperAlnum(s){return (s||"").toString().toUpperCase().trim();}
 function upperText(s){
-  return (s || "").toString().toUpperCase().trim();}
-function onlyDigits(s){return (s||"").toString().replace(/\\D+/g,"");}
+  return (s || "").toString().toUpperCase();
+}
+function upperTextFinal(s){
+  return upperText(s).replace(/\s+/g," ").trim();
+}
+function onlyDigits(s){return (s||"").toString().replace(/\D+/g,"");}
+function rememberLastLocalidad(val){
+  const clean = upperTextFinal(val||"");
+  if(clean) localStorage.setItem("gsdx_last_localidad_unc", clean);
+}
+function restoreLastLocalidad(){
+  const saved = localStorage.getItem("gsdx_last_localidad_unc") || "";
+  if(saved && $("unc_localidad") && !$("unc_localidad").value.trim()){
+    $("unc_localidad").value = saved;
+  }
+}
 
 /* =================== Características Nodo (dependiente) =================== */
 const caracteristicas = {
@@ -755,7 +822,7 @@ function dataURLtoU8(dataURL){
 /* =================== pantallas =================== */
 let activeCD=null, activeCAP=null;
 function show(id){
-  ["screen1","screen2"].forEach(x=>$(x).style.display=(x===id)?"":"none");
+  ["screen1","screen2","screen3"].forEach(x=>$(x).style.display=(x===id)?"":"none");
   window.scrollTo({top:0,behavior:"smooth"});
 }
 function updateActiveUI(){
@@ -887,8 +954,8 @@ async function buildUNC(){
     Contacto:onlyDigits($("unc_contacto").value),
     Sede:upperAlnum($("unc_sede").value),
     Municipio:upperAlnum($("unc_municipio").value),
-    Direccion:upperText($("unc_direccion").value),
-    Localidad:upperText($("unc_localidad").value),
+    Direccion:upperTextFinal($("unc_direccion").value),
+    Localidad:upperTextFinal($("unc_localidad").value),
     TipoZona:$("unc_tipo_zona").value||"",
     TipoMaterial:$("unc_tipo_material").value||"",
     TipoPoblacion:$("unc_tipo_poblacion").value||"",
@@ -924,6 +991,7 @@ async function buildUNC(){
     return null;
   }
   if(!obj.Latitud || !obj.Longitud){ toast("Captura coordenadas (UNC)"); return null; }
+  rememberLastLocalidad(obj.Localidad);
   return obj;
 }
 
@@ -1071,7 +1139,7 @@ function buildExcel(estr,unc,cli,sus,bal){
 }
 
 /* =================== Export ZIP =================== */
-function safeName(s){return (s||"").toString().trim().replace(/[\\/:*?\\"<>|]+/g," ").replace(/\\s+/g," ").trim();}
+function safeName(s){return (s||"").toString().trim().replace(/[\\/:*?\\"<>|]+/g," ").replace(/\s+/g," ").trim();}
 async function exportAll(){
   try{
     setBadge("EXPORTANDO… 📦");
@@ -1166,8 +1234,8 @@ function wireEvents(){
   $("cdInput").addEventListener("input", e=>e.target.value=upperAlnum(e.target.value));
   $("est_punto_fisico").addEventListener("input", e=>e.target.value=upperAlnum(e.target.value));
   $("cli_marca").addEventListener("input", e=>e.target.value=upperAlnum(e.target.value));
-  $("unc_localidad").addEventListener("input", e=>e.target.value=upperAlnum(e.target.value));
-  $("unc_direccion").addEventListener("input", e=>e.target.value=upperAlnum(e.target.value));
+  $("unc_localidad").addEventListener("input", e=>{ e.target.value=upperText(e.target.value); rememberLastLocalidad(e.target.value); });
+  $("unc_direccion").addEventListener("input", e=>e.target.value=upperText(e.target.value));
   $("unc_ec_part").addEventListener("change", ()=>{
     if($("unc_ec_part").checked) $("unc_ec_inmel").checked=false;
   });
@@ -1231,9 +1299,15 @@ function wireEvents(){
     show("screen2");
   });
   $("btnBack1").addEventListener("click", ()=>{ resetForms(); show("screen1"); });
+  $("btnModificarExcel").addEventListener("click", ()=>show("screen3"));
+  $("btnBackModExcel").addEventListener("click", ()=>show("screen1"));
+  $("btnCargarExcelMod").addEventListener("click", loadModExcelFile);
+  $("btnExportarExcelMod").addEventListener("click", exportModExcelFile);
+  $("btnGuardarFilaExcelMod").addEventListener("click", saveModExcelRecord);
+  $("modExcelSearch").addEventListener("input", renderModExcelTable);
 
   // open forms
-  $("btnUNC").addEventListener("click", async ()=>{ resetForms(); await refreshPFSelectors(); $("formUNC").style.display=""; });
+  $("btnUNC").addEventListener("click", async ()=>{ resetForms(); await refreshPFSelectors(); $("formUNC").style.display=""; restoreLastLocalidad(); });
   $("btnCliente").addEventListener("click", async ()=>{ resetForms(); await refreshPFSelectors(); $("formCliente").style.display=""; });
   $("btnSusp").addEventListener("click", async ()=>{ resetForms(); await refreshPFSelectors(); $("formSusp").style.display=""; });
   $("btnBaldio").addEventListener("click", async ()=>{ resetForms(); await refreshPFSelectors(); $("formBaldio").style.display=""; });
@@ -1300,7 +1374,7 @@ function wireEvents(){
   });
 
   // after save modal
-  $("goUNC").addEventListener("click", async ()=>{ $("modalAfterSave").style.display="none"; resetForms(); await refreshPFSelectors(); show("screen2"); $("formUNC").style.display=""; });
+  $("goUNC").addEventListener("click", async ()=>{ $("modalAfterSave").style.display="none"; resetForms(); await refreshPFSelectors(); show("screen2"); $("formUNC").style.display=""; restoreLastLocalidad(); });
   $("goCLI").addEventListener("click", async ()=>{ $("modalAfterSave").style.display="none"; resetForms(); await refreshPFSelectors(); show("screen2"); $("formCliente").style.display=""; });
   $("goSUS").addEventListener("click", async ()=>{ $("modalAfterSave").style.display="none"; resetForms(); await refreshPFSelectors(); show("screen2"); $("formSusp").style.display=""; });
   $("goBAL").addEventListener("click", async ()=>{ $("modalAfterSave").style.display="none"; resetForms(); await refreshPFSelectors(); show("screen2"); $("formBaldio").style.display=""; });
@@ -1350,11 +1424,16 @@ function wireEvents(){
     if(updStore==="unc"){
       $("formUNC").style.display="";
       $("unc_pf").value = rec.PuntoFisico||"";
+      $("unc_sede").value = rec.Sede||"";
+      const items=sedeMunicipios[$("unc_sede").value]||[];
+      $("unc_municipio").innerHTML=`<option value="">Selecciona…</option>` + items.map(m=>`<option value="${m}">${m}</option>`).join("");
+      $("unc_municipio").value = rec.Municipio||"";
       $("unc_nombres").value = rec.Nombres||"";
       $("unc_identificacion").value = rec.Identificacion||"";
       $("unc_contacto").value = rec.Contacto||"";
       $("unc_direccion").value = rec.Direccion||"";
       $("unc_localidad").value = rec.Localidad||"";
+      if(rec.Localidad) rememberLastLocalidad(rec.Localidad);
       $("unc_tipo_zona").value = rec.TipoZona||"";
       $("unc_tipo_material").value = rec.TipoMaterial||"";
       $("unc_tipo_poblacion").value = rec.TipoPoblacion||"";
@@ -1394,6 +1473,217 @@ function wireEvents(){
     }
     toast("Modo edición ✅");
   });
+}
+
+
+/* =================== Modificar Excel =================== */
+let modExcelWorkbook = null;
+let modExcelSheetName = "Modificar";
+let modExcelHeaders = [];
+let modExcelRows = [];
+let modExcelFilteredRows = [];
+let modExcelActiveIndex = -1;
+const MOD_NO_EDIT = ["Ítem","PDI","Municipio"];
+const MOD_CHECK_COLS = [
+  "Predio habitable","Requiere construir muro","Requiere ampliación/remodelación de redes",
+  "Formato E1 Solicitud","Aceptación de requisitos","Declaración Juramentada","Formato E6 RT",
+  "EC Particular","Documentos electricista","Declaración RETIE","EC Inmel",
+  "Acometida","Ducto 1 Pulgada Galv.","Celda","Interruptor","SPT (Tierra)","Instalación interna"
+];
+const MOD_DOC_OPTS = [
+  "","Certificado de libertad y tradición","Contrato de donación","Contrato de permuta",
+  "Contrato de sesión de bien inmueble","Contrato o promesa de compraventa",
+  "Declaración con fines extraprocesales","Declaración extrajuicio","Declaración juramentada",
+  "Declaración juramentada extraprocesal","Escritura pública","Matrícula inmobiliaria",
+  "No entrega documento","Sana posesión emitida por autoridad local"
+];
+const MOD_ESTADO_OPTS = [
+  "","Normalizado - requiere solo medidor","Pendiente por inspección",
+  "Requiere obra externa completa","Requiere obra externa parcial","Requiere obra interna completa",
+  "Requiere obra interna parcial","Requiere obras interna/externa completas","Requiere obras interna/externa parciales"
+];
+const MOD_TIPO_ZONA = ["","Rural","Urbana"];
+const MOD_TIPO_MATERIAL = ["","No perdurable","Perdurable"];
+const MOD_TIPO_POBLACION = [
+  "","Discapacidad auditiva","Discapacidad auditiva/Mudez","Discapacidad sensorial (Mudez)",
+  "Habitante regular","Persona con diabetes","Persona oxigeno-dependiente","Persona tecnodependiente",
+  "Tercera edad con asistencia de adulto","Tercera edad sin asistencia de adulto"
+];
+
+function normHeader(s){ return String(s||"").trim().toUpperCase(); }
+function modIsLocked(h){ return MOD_NO_EDIT.map(normHeader).includes(normHeader(h)); }
+function modIsCheck(h){ return MOD_CHECK_COLS.map(normHeader).includes(normHeader(h)); }
+function modIsTrue(v){
+  const t = String(v||"").trim().toUpperCase();
+  return ["SI","SÍ","TRUE","1","X","CHECK","CHECKED","OK"].includes(t);
+}
+function modYesNo(v){ return modIsTrue(v) ? "Sí" : "No"; }
+function modEsc(s){
+  return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+function modGetOptions(header){
+  const h = normHeader(header);
+  if(h==="TIPO ZONA") return MOD_TIPO_ZONA;
+  if(h==="TIPO MATERIAL") return MOD_TIPO_MATERIAL;
+  if(h==="ESTADO") return MOD_ESTADO_OPTS;
+  if(h==="DOCUMENTO DE PROPIEDAD") return MOD_DOC_OPTS;
+  if(h==="TIPO DE POBLACIÓN" || h==="TIPO DE POBLACION") return MOD_TIPO_POBLACION;
+  return null;
+}
+function renderModExcelTable(){
+  const thead = $("modExcelTable").querySelector("thead");
+  const tbody = $("modExcelTable").querySelector("tbody");
+  const visible = ["Ítem","Punto Físico","Nombres","Identificación","Dirección"];
+  thead.innerHTML = `<tr>${visible.map(h=>`<th>${modEsc(h)}</th>`).join("")}<th>Acción</th></tr>`;
+  const q = ($("modExcelSearch").value||"").trim().toUpperCase();
+  modExcelFilteredRows = modExcelRows.filter((row)=>{
+    if(!q) return true;
+    return modExcelHeaders.some(h=>String(row[h]||"").toUpperCase().includes(q));
+  });
+  tbody.innerHTML = modExcelFilteredRows.map((row,idx)=>{
+    const realIndex = modExcelRows.indexOf(row);
+    return `<tr class="${realIndex===modExcelActiveIndex?'activeRow':''}">
+      ${visible.map(h=>`<td>${modEsc(row[h]||"")}</td>`).join("")}
+      <td><button type="button" class="secondary" data-modidx="${realIndex}">Editar</button></td>
+    </tr>`;
+  }).join("");
+  $("modExcelCount").textContent = String(modExcelFilteredRows.length);
+  tbody.querySelectorAll("button[data-modidx]").forEach(btn=>{
+    btn.addEventListener("click", ()=>openModExcelRecord(Number(btn.getAttribute("data-modidx"))));
+  });
+}
+function openModExcelRecord(index){
+  modExcelActiveIndex = index;
+  const row = modExcelRows[index];
+  if(!row) return;
+  $("modExcelCurrent").textContent = row["Ítem"] || row["Identificación"] || "Activo";
+  renderModExcelTable();
+
+  const groupDocs = ["Formato E1 Solicitud","Aceptación de requisitos","Declaración Juramentada","Formato E6 RT","EC Particular","Documentos electricista","Declaración RETIE","EC Inmel"];
+  const groupNorma = ["Predio habitable","Requiere construir muro","Requiere ampliación/remodelación de redes","Acometida","Ducto 1 Pulgada Galv.","Celda","Interruptor","SPT (Tierra)","Instalación interna"];
+  const renderField = (header)=>{
+    const value = row[header] ?? "";
+    const id = `modf_${Math.random().toString(36).slice(2,9)}`;
+    if(modIsLocked(header)){
+      return `<div class="modField"><label>${modEsc(header)}</label><input type="text" data-header="${modEsc(header)}" value="${modEsc(value)}" disabled></div>`;
+    }
+    const opts = modGetOptions(header);
+    if(modIsCheck(header)){
+      return `<label class="modCheck"><input type="checkbox" data-header="${modEsc(header)}" ${modIsTrue(value)?'checked':''}><span>${modEsc(header)}</span></label>`;
+    }
+    if(opts){
+      return `<div class="modField"><label>${modEsc(header)}</label><select data-header="${modEsc(header)}">${opts.map(op=>`<option value="${modEsc(op)}" ${String(op).toUpperCase()===String(value).toUpperCase()?'selected':''}>${modEsc(op||'Selecciona…')}</option>`).join("")}</select></div>`;
+    }
+    if(normHeader(header).includes("OBSERVACIONES")){
+      return `<div class="modField"><label>${modEsc(header)}</label><textarea data-header="${modEsc(header)}">${modEsc(value)}</textarea></div>`;
+    }
+    return `<div class="modField"><label>${modEsc(header)}</label><input type="text" data-header="${modEsc(header)}" value="${modEsc(value)}"></div>`;
+  };
+
+  const firstHeaders = modExcelHeaders.filter(h=>!groupDocs.includes(h) && !groupNorma.includes(h));
+  const html = `
+    <div class="modGrid two">
+      ${firstHeaders.map(renderField).join("")}
+    </div>
+    <div class="modSectionTitle">Documentos requeridos</div>
+    <div class="checklist">
+      ${groupDocs.filter(h=>modExcelHeaders.includes(h)).map(renderField).join("")}
+    </div>
+    <div class="modSectionTitle">Revisión norma técnica</div>
+    <div class="checklist">
+      ${groupNorma.filter(h=>modExcelHeaders.includes(h)).map(renderField).join("")}
+    </div>
+  `;
+  $("modExcelFormWrap").innerHTML = html;
+
+  const ecPart = $("modExcelFormWrap").querySelector('input[data-header="EC Particular"]');
+  const ecInmel = $("modExcelFormWrap").querySelector('input[data-header="EC Inmel"]');
+  if(ecPart && ecInmel){
+    ecPart.addEventListener("change", ()=>{ if(ecPart.checked) ecInmel.checked = false; });
+    ecInmel.addEventListener("change", ()=>{ if(ecInmel.checked) ecPart.checked = false; });
+  }
+  const locInput = $("modExcelFormWrap").querySelector('[data-header="Localidad (Barrio_Vereda)"]');
+  if(locInput){
+    locInput.addEventListener("input", (e)=>{ e.target.value = upperText(e.target.value); rememberLastLocalidad(e.target.value); });
+    if(!locInput.value.trim()){
+      const saved = localStorage.getItem("gsdx_last_localidad_unc") || "";
+      if(saved) locInput.value = saved;
+    }
+  }
+  const dirInput = $("modExcelFormWrap").querySelector('[data-header="Dirección"]');
+  if(dirInput){
+    dirInput.addEventListener("input", (e)=>{ e.target.value = upperText(e.target.value); });
+  }
+  $("modExcelFormWrap").querySelectorAll('input[type="text"], textarea').forEach(el=>{
+    const header = el.getAttribute("data-header") || "";
+    if(header !== "Dirección" && header !== "Localidad (Barrio_Vereda)"){
+      el.addEventListener("input", ()=>{ el.value = upperText(el.value); });
+    }
+  });
+}
+function saveModExcelRecord(){
+  if(modExcelActiveIndex < 0){ toast("Selecciona un registro"); return; }
+  const row = modExcelRows[modExcelActiveIndex];
+  if(!row) return;
+  const controls = $("modExcelFormWrap").querySelectorAll("[data-header]");
+  controls.forEach(ctrl=>{
+    const h = ctrl.getAttribute("data-header");
+    if(modIsLocked(h)) return;
+    if(ctrl.type==="checkbox"){
+      row[h] = ctrl.checked ? "Sí" : "No";
+    }else{
+      let val = ctrl.value || "";
+      if(h==="Dirección" || h==="Localidad (Barrio_Vereda)") val = upperTextFinal(val);
+      else val = upperTextFinal(val);
+      row[h] = val;
+      if(h==="Localidad (Barrio_Vereda)") rememberLastLocalidad(val);
+    }
+  });
+  modExcelRows[modExcelActiveIndex] = row;
+  renderModExcelTable();
+  toast("Registro actualizado ✅");
+}
+function exportModExcelFile(){
+  if(!modExcelWorkbook || !modExcelRows.length){ toast("Carga un archivo primero"); return; }
+  const aoa = [modExcelHeaders, ...modExcelRows.map(r=>modExcelHeaders.map(h=>r[h] ?? ""))];
+  const ws = XLSX.utils.aoa_to_sheet(aoa);
+  modExcelWorkbook.Sheets[modExcelSheetName] = ws;
+  const base = ($("modExcelFileName").textContent || "REGISTRO_MODIFICAR").replace(/\.(xlsx|xls|csv)$/i,"");
+  XLSX.writeFile(modExcelWorkbook, `${base}_ACTUALIZADO.xlsx`);
+}
+function loadModExcelFile(){
+  const file = $("modExcelInput").files[0];
+  if(!file){ toast("Selecciona un archivo"); return; }
+  if(typeof XLSX === "undefined"){ toast("La librería Excel no cargó"); return; }
+  const reader = new FileReader();
+  reader.onload = (e)=>{
+    try{
+      modExcelWorkbook = XLSX.read(e.target.result, {type:"array"});
+      const targetSheet = modExcelWorkbook.SheetNames.find(n=>normHeader(n)==="MODIFICAR");
+      if(!targetSheet){ toast('No se encontró la hoja "Modificar"'); return; }
+      modExcelSheetName = targetSheet;
+      const ws = modExcelWorkbook.Sheets[targetSheet];
+      const aoa = XLSX.utils.sheet_to_json(ws, {header:1, defval:""});
+      if(!aoa.length){ toast("La hoja Modificar está vacía"); return; }
+      modExcelHeaders = aoa[0].map(h=>String(h||"").trim());
+      modExcelRows = aoa.slice(1).filter(r=>r.some(v=>String(v||"").trim()!=="")).map(arr=>{
+        const obj = {};
+        modExcelHeaders.forEach((h,i)=>obj[h]=arr[i] ?? "");
+        return obj;
+      });
+      modExcelActiveIndex = -1;
+      $("modExcelFileName").textContent = file.name;
+      $("modExcelCurrent").textContent = "Ninguno";
+      $("modExcelFormWrap").innerHTML = '<div style="color:var(--muted);font-size:14px;">Archivo cargado. Selecciona un registro para editarlo.</div>';
+      renderModExcelTable();
+      show("screen3");
+      toast("Hoja Modificar cargada ✅");
+    }catch(err){
+      console.error(err);
+      toast("No se pudo leer el Excel");
+    }
+  };
+  reader.readAsArrayBuffer(file);
 }
 
 /* =================== init =================== */
