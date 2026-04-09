@@ -1,4 +1,4 @@
-const CACHE_NAME = "gsdx-cache-v11"; // <-- SUBE ESTE NUMERO CADA VEZ
+const CACHE_NAME = "gsdx-cache-v12"; // <-- SUBE ESTE NUMERO CADA VEZ
 const ASSETS = [
   "/",
   "/index.html",
@@ -59,4 +59,3 @@ self.addEventListener("fetch", (e) => {
     })
   );
 });
-
