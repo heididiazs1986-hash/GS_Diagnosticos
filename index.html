@@ -592,6 +592,8 @@ const toastEl=$("toast");
 function toast(msg){toastEl.textContent=msg;toastEl.classList.add("show");setTimeout(()=>toastEl.classList.remove("show"),2400);}
 function setBadge(msg){$("hdrBadge").textContent=msg;}
 function upperAlnum(s){return (s||"").toString().toUpperCase().trim();}
+function upperText(s){
+  return (s || "").toString().toUpperCase().trim();}
 function onlyDigits(s){return (s||"").toString().replace(/\\D+/g,"");}
 
 /* =================== Características Nodo (dependiente) =================== */
@@ -885,8 +887,8 @@ async function buildUNC(){
     Contacto:onlyDigits($("unc_contacto").value),
     Sede:upperAlnum($("unc_sede").value),
     Municipio:upperAlnum($("unc_municipio").value),
-    Direccion:upperAlnum($("unc_direccion").value),
-    Localidad:upperAlnum($("unc_localidad").value),
+    Direccion:upperText($("unc_direccion").value),
+    Localidad:upperText($("unc_localidad").value),
     TipoZona:$("unc_tipo_zona").value||"",
     TipoMaterial:$("unc_tipo_material").value||"",
     TipoPoblacion:$("unc_tipo_poblacion").value||"",
