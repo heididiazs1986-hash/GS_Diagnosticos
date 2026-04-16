@@ -1735,5 +1735,108 @@ function loadModExcelFile(){
   }
 })();
 </script>
+  <!-- 🔴 BOTÓN DE RESPALDO -->
+<button onclick="respaldarDatosGSX()" style="
+  background:#d40000;
+  color:white;
+  border:none;
+  padding:12px 18px;
+  border-radius:8px;
+  font-weight:bold;
+  width:100%;
+  margin-top:10px;
+">
+📦 RESPALDAR DATOS (GSX)
+</button>
+
+<script>
+async function respaldarDatosGSX() {
+  try {
+    const respaldo = {
+      fecha: new Date().toISOString(),
+      localStorage: {},
+      indexedDB: {}
+    };
+
+    // =========================
+    // 🔹 LOCAL STORAGE
+    // =========================
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      respaldo.localStorage[key] = localStorage.getItem(key);
+    }
+
+    // =========================
+    // 🔹 INDEXED DB (BÁSICO)
+    // =========================
+    if (window.indexedDB && indexedDB.databases) {
+      const dbs = await indexedDB.databases();
+
+      for (const dbInfo of dbs) {
+        if (!dbInfo.name) continue;
+
+        respaldo.indexedDB[dbInfo.name] = {};
+
+        await new Promise((resolve) => {
+          const request = indexedDB.open(dbInfo.name);
+
+          request.onsuccess = function (event) {
+            const db = event.target.result;
+            const stores = db.objectStoreNames;
+
+            let pendientes = stores.length;
+            if (pendientes === 0) resolve();
+
+            for (let storeName of stores) {
+              const tx = db.transaction(storeName, "readonly");
+              const store = tx.objectStore(storeName);
+              const getAll = store.getAll();
+
+              getAll.onsuccess = function () {
+                respaldo.indexedDB[dbInfo.name][storeName] = getAll.result;
+                pendientes--;
+                if (pendientes === 0) resolve();
+              };
+
+              getAll.onerror = function () {
+                pendientes--;
+                if (pendientes === 0) resolve();
+              };
+            }
+          };
+
+          request.onerror = function () {
+            resolve();
+          };
+        });
+      }
+    }
+
+    // =========================
+    // 🔹 DESCARGA DEL ARCHIVO
+    // =========================
+    const blob = new Blob(
+      [JSON.stringify(respaldo, null, 2)],
+      { type: "application/json" }
+    );
+
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "GSX_RESPALDO_" + new Date().toISOString().slice(0,10) + ".json";
+
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+
+    alert("✅ Respaldo generado correctamente");
+
+  } catch (error) {
+    console.error(error);
+    alert("❌ Error al generar respaldo");
+  }
+}
+</script>
 </body>
 </html>
