@@ -1750,7 +1750,20 @@ function loadModExcelFile(){
 </button>
 
 <script>
-async function respaldarDatosGSX() {
+<button onclick="respaldoTotalGSX()" style="
+  background:#d40000;
+  color:white;
+  border:none;
+  padding:12px;
+  border-radius:8px;
+  width:100%;
+  font-weight:bold;
+">
+📦 RESPALDO TOTAL GSX
+</button>
+
+<script>
+async function respaldoTotalGSX() {
   try {
     const respaldo = {
       fecha: new Date().toISOString(),
@@ -1758,63 +1771,82 @@ async function respaldarDatosGSX() {
       indexedDB: {}
     };
 
-    // =========================
+    // ======================
     // 🔹 LOCAL STORAGE
-    // =========================
+    // ======================
     for (let i = 0; i < localStorage.length; i++) {
       const key = localStorage.key(i);
       respaldo.localStorage[key] = localStorage.getItem(key);
     }
 
-    // =========================
-    // 🔹 INDEXED DB (BÁSICO)
-    // =========================
-    if (window.indexedDB && indexedDB.databases) {
-      const dbs = await indexedDB.databases();
+    // ======================
+    // 🔹 INDEXED DB (INTENTO SEGURO)
+    // ======================
+    const posiblesDB = [
+      "GSX",
+      "GSX_DB",
+      "Diagnosticos",
+      "DiagnosticosDB",
+      "AppDB",
+      "DB",
+      "database",
+      "localforage",
+      "keyval-store"
+    ];
 
-      for (const dbInfo of dbs) {
-        if (!dbInfo.name) continue;
-
-        respaldo.indexedDB[dbInfo.name] = {};
-
+    for (const nombre of posiblesDB) {
+      try {
         await new Promise((resolve) => {
-          const request = indexedDB.open(dbInfo.name);
+          const req = indexedDB.open(nombre);
 
-          request.onsuccess = function (event) {
-            const db = event.target.result;
-            const stores = db.objectStoreNames;
+          req.onsuccess = function (e) {
+            const db = e.target.result;
 
-            let pendientes = stores.length;
-            if (pendientes === 0) resolve();
+            if (!db.objectStoreNames.length) {
+              db.close();
+              return resolve();
+            }
 
-            for (let storeName of stores) {
+            respaldo.indexedDB[nombre] = {};
+
+            let pendientes = db.objectStoreNames.length;
+
+            for (let storeName of db.objectStoreNames) {
               const tx = db.transaction(storeName, "readonly");
               const store = tx.objectStore(storeName);
               const getAll = store.getAll();
 
               getAll.onsuccess = function () {
-                respaldo.indexedDB[dbInfo.name][storeName] = getAll.result;
+                respaldo.indexedDB[nombre][storeName] = getAll.result;
                 pendientes--;
-                if (pendientes === 0) resolve();
+                if (pendientes === 0) {
+                  db.close();
+                  resolve();
+                }
               };
 
               getAll.onerror = function () {
                 pendientes--;
-                if (pendientes === 0) resolve();
+                if (pendientes === 0) {
+                  db.close();
+                  resolve();
+                }
               };
             }
           };
 
-          request.onerror = function () {
+          req.onerror = function () {
             resolve();
           };
         });
+      } catch (e) {
+        console.log("DB no accesible:", nombre);
       }
     }
 
-    // =========================
-    // 🔹 DESCARGA DEL ARCHIVO
-    // =========================
+    // ======================
+    // 🔹 DESCARGA
+    // ======================
     const blob = new Blob(
       [JSON.stringify(respaldo, null, 2)],
       { type: "application/json" }
@@ -1824,17 +1856,17 @@ async function respaldarDatosGSX() {
 
     const a = document.createElement("a");
     a.href = url;
-    a.download = "GSX_RESPALDO_" + new Date().toISOString().slice(0,10) + ".json";
+    a.download = "GSX_BACKUP_COMPLETO.json";
 
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
 
-    alert("✅ Respaldo generado correctamente");
+    alert("✅ Respaldo COMPLETO generado");
 
   } catch (error) {
     console.error(error);
-    alert("❌ Error al generar respaldo");
+    alert("❌ Error en respaldo");
   }
 }
 </script>
