@@ -2051,5 +2051,107 @@ function loadModExcelFile(){
   document.getElementById("btnDetectarDBReal").addEventListener("click", detectarBases);
 })();
 </script>
+  <button onclick="rescateRealGSX()" style="
+  background:#16a34a;
+  color:white;
+  border:none;
+  padding:14px;
+  border-radius:10px;
+  width:100%;
+  font-weight:bold;
+">
+💾 RESCATE REAL GSX (SEGURO)
+</button>
+
+<script>
+async function rescateRealGSX() {
+  try {
+    const nombreDB = "gs_dx_db_v1";
+
+    const db = await new Promise((resolve, reject) => {
+      const req = indexedDB.open(nombreDB);
+      req.onsuccess = e => resolve(e.target.result);
+      req.onerror = () => reject(req.error);
+    });
+
+    const respaldo = {
+      fecha: new Date().toISOString(),
+      db: nombreDB,
+      data: {}
+    };
+
+    const stores = Array.from(db.objectStoreNames);
+
+    for (const storeName of stores) {
+      respaldo.data[storeName] = [];
+
+      await new Promise((resolve) => {
+        const tx = db.transaction(storeName, "readonly");
+        const store = tx.objectStore(storeName);
+        const cursorReq = store.openCursor();
+
+        cursorReq.onsuccess = function (e) {
+          const cursor = e.target.result;
+          if (cursor) {
+            const item = cursor.value;
+
+            // 🔥 LIMPIEZA: quitar fotos / blobs
+            const limpio = {};
+
+            for (const k in item) {
+              const val = item[k];
+
+              if (
+                val instanceof Blob ||
+                val instanceof File ||
+                k.toLowerCase().includes("foto") ||
+                k.toLowerCase().includes("imagen") ||
+                k.toLowerCase().includes("file")
+              ) {
+                limpio[k] = "[ARCHIVO_REMOVIDO]";
+              } else {
+                limpio[k] = val;
+              }
+            }
+
+            respaldo.data[storeName].push(limpio);
+            cursor.continue();
+          } else {
+            resolve();
+          }
+        };
+
+        cursorReq.onerror = function () {
+          resolve();
+        };
+      });
+    }
+
+    db.close();
+
+    // 💾 DESCARGA SEGURA
+    const blob = new Blob(
+      [JSON.stringify(respaldo, null, 2)],
+      { type: "application/json" }
+    );
+
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "GSX_RESPALDO_REAL.json";
+
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+
+    alert("✅ RESCATE COMPLETO EXITOSO");
+
+  } catch (error) {
+    console.error(error);
+    alert("❌ Error en rescate real");
+  }
+}
+</script>
 </body>
 </html>
