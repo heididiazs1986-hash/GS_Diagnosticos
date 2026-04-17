@@ -1949,5 +1949,107 @@ function loadModExcelFile(){
   document.getElementById("btnRescateLigero").addEventListener("click", rescateLigero);
 })();
 </script>
+  <button id="btnDetectarDBReal" style="
+  background:#1f2937;
+  color:#fff;
+  border:none;
+  padding:12px 16px;
+  border-radius:12px;
+  font-weight:700;
+  margin:10px 0;
+  width:100%;
+">
+🔎 Detectar base real
+</button>
+
+<pre id="salidaDBReal" style="
+  white-space:pre-wrap;
+  background:#f8f8f8;
+  border:1px solid #ddd;
+  padding:12px;
+  border-radius:10px;
+  max-height:320px;
+  overflow:auto;
+  font-size:12px;
+"></pre>
+
+<script>
+(function () {
+  async function detectarBases() {
+    const salida = document.getElementById("salidaDBReal");
+    salida.textContent = "Detectando bases reales...";
+
+    let texto = "";
+    texto += "URL: " + location.href + "\n";
+    texto += "Origen: " + location.origin + "\n\n";
+
+    if (!window.indexedDB) {
+      salida.textContent = "IndexedDB no está disponible en este entorno.";
+      return;
+    }
+
+    if (typeof indexedDB.databases !== "function") {
+      salida.textContent =
+        "Este navegador no permite listar bases automáticamente.\n" +
+        "Necesitamos otro método basado en el código fuente de la app.";
+      return;
+    }
+
+    try {
+      const dbs = await indexedDB.databases();
+
+      if (!dbs || !dbs.length) {
+        salida.textContent = "No se detectaron bases por indexedDB.databases().";
+        return;
+      }
+
+      for (const dbInfo of dbs) {
+        if (!dbInfo.name) continue;
+        texto += "DB: " + dbInfo.name + "\n";
+        texto += "Versión: " + (dbInfo.version || "s/d") + "\n";
+
+        try {
+          const db = await new Promise((resolve, reject) => {
+            const req = indexedDB.open(dbInfo.name);
+            req.onsuccess = e => resolve(e.target.result);
+            req.onerror = () => reject(req.error);
+          });
+
+          const stores = Array.from(db.objectStoreNames);
+          if (!stores.length) {
+            texto += "  Sin object stores\n\n";
+            db.close();
+            continue;
+          }
+
+          for (const storeName of stores) {
+            const total = await new Promise((resolve) => {
+              const tx = db.transaction(storeName, "readonly");
+              const store = tx.objectStore(storeName);
+              const req = store.count();
+              req.onsuccess = () => resolve(req.result || 0);
+              req.onerror = () => resolve(0);
+            });
+            texto += "  - " + storeName + ": " + total + " registros\n";
+          }
+
+          texto += "\n";
+          db.close();
+        } catch (err) {
+          texto += "  Error al abrir esta DB\n\n";
+        }
+      }
+
+      salida.textContent = texto;
+    } catch (e) {
+      salida.textContent =
+        "No fue posible listar bases en este entorno.\n" +
+        "Error: " + (e && e.message ? e.message : e);
+    }
+  }
+
+  document.getElementById("btnDetectarDBReal").addEventListener("click", detectarBases);
+})();
+</script>
 </body>
 </html>
