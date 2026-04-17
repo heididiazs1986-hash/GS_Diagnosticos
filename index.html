@@ -2511,5 +2511,166 @@ async function exportarFotosMovil(storeName) {
   }
 }
 </script>
+  <div style="display:grid;gap:10px;margin:14px 0;">
+  <label style="font-weight:700;">Store</label>
+  <select id="rx_store" style="padding:10px;border-radius:10px;">
+    <option value="unc">unc</option>
+    <option value="susp">susp</option>
+    <option value="estructuras">estructuras</option>
+    <option value="clientes">clientes</option>
+    <option value="baldios">baldios</option>
+  </select>
+
+  <label style="font-weight:700;">ID del registro</label>
+  <input id="rx_id" type="number" value="1" style="padding:10px;border-radius:10px;" />
+
+  <button onclick="radiografiaFotosGSX()" style="
+    padding:12px;border:none;border-radius:10px;
+    background:#111827;color:#fff;font-weight:700;
+  ">🩻 Radiografía Fotos</button>
+</div>
+
+<pre id="rx_salida" style="
+  white-space:pre-wrap;
+  background:#f8f8f8;
+  border:1px solid #ddd;
+  padding:12px;
+  border-radius:10px;
+  max-height:420px;
+  overflow:auto;
+  font-size:12px;
+"></pre>
+
+<script>
+async function abrirDBGSX() {
+  return await new Promise((resolve, reject) => {
+    const req = indexedDB.open("gs_dx_db_v1");
+    req.onsuccess = e => resolve(e.target.result);
+    req.onerror = () => reject(req.error || new Error("No se pudo abrir la base"));
+  });
+}
+
+function tipoDetallado(v, nivel = 0, vistos = new WeakSet()) {
+  if (nivel > 4) return { tipo: "MAX_NIVEL" };
+  if (v === null) return { tipo: "null" };
+  if (v === undefined) return { tipo: "undefined" };
+
+  const t = typeof v;
+
+  if (t === "string") {
+    return {
+      tipo: "string",
+      length: v.length,
+      preview: v.slice(0, 120),
+      dataURL: v.startsWith("data:"),
+      blobURL: v.startsWith("blob:")
+    };
+  }
+
+  if (t === "number" || t === "boolean" || t === "bigint") {
+    return { tipo: t, valor: v };
+  }
+
+  if (v instanceof Blob) {
+    return { tipo: "Blob", mime: v.type || "", size: v.size || 0 };
+  }
+
+  if (v instanceof File) {
+    return { tipo: "File", name: v.name || "", mime: v.type || "", size: v.size || 0 };
+  }
+
+  if (typeof FileList !== "undefined" && v instanceof FileList) {
+    return {
+      tipo: "FileList",
+      length: v.length,
+      items: Array.from(v).slice(0, 5).map(f => ({
+        tipo: "File",
+        name: f.name || "",
+        mime: f.type || "",
+        size: f.size || 0
+      }))
+    };
+  }
+
+  if (Array.isArray(v)) {
+    return {
+      tipo: "Array",
+      length: v.length,
+      items: v.slice(0, 5).map(x => tipoDetallado(x, nivel + 1, vistos))
+    };
+  }
+
+  if (t === "object") {
+    if (vistos.has(v)) return { tipo: "CircularRef" };
+    vistos.add(v);
+
+    const claves = Object.keys(v);
+    const muestra = {};
+    for (const k of claves.slice(0, 20)) {
+      try {
+        muestra[k] = tipoDetallado(v[k], nivel + 1, vistos);
+      } catch (e) {
+        muestra[k] = { tipo: "ERROR_LEYENDO", error: String(e) };
+      }
+    }
+
+    return {
+      tipo: v.constructor && v.constructor.name ? v.constructor.name : "Object",
+      keys: claves,
+      muestra
+    };
+  }
+
+  return { tipo: t };
+}
+
+async function radiografiaFotosGSX() {
+  const salida = document.getElementById("rx_salida");
+  const storeName = document.getElementById("rx_store").value;
+  const id = Number(document.getElementById("rx_id").value || 1);
+
+  salida.textContent = "Leyendo registro...";
+
+  try {
+    const db = await abrirDBGSX();
+
+    const item = await new Promise((resolve, reject) => {
+      const tx = db.transaction(storeName, "readonly");
+      const store = tx.objectStore(storeName);
+      const req = store.get(id);
+      req.onsuccess = () => resolve(req.result);
+      req.onerror = () => reject(req.error);
+    });
+
+    if (!item) {
+      salida.textContent = `No se encontró registro id=${id} en ${storeName}`;
+      db.close();
+      return;
+    }
+
+    const claves = Object.keys(item);
+    const clavesFoto = claves.filter(k => /foto|image|imagen|file|blob|preview|url/i.test(k));
+
+    const informe = {
+      store: storeName,
+      id,
+      claves,
+      claves_relacionadas_con_fotos: clavesFoto,
+      Fotos: tipoDetallado(item.Fotos),
+      detalle_campos_relacionados: {}
+    };
+
+    for (const k of clavesFoto) {
+      informe.detalle_campos_relacionados[k] = tipoDetallado(item[k]);
+    }
+
+    salida.textContent = JSON.stringify(informe, null, 2);
+    db.close();
+  } catch (e) {
+    console.error(e);
+    salida.textContent = "Error: " + (e && e.message ? e.message : e);
+  }
+}
+</script>
 </body>
 </html>
