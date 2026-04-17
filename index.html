@@ -1735,401 +1735,118 @@ function loadModExcelFile(){
   }
 })();
 </script>
-  <button id="btnRescateLigero" style="
-  background:#b30000;
-  color:#fff;
+  <!-- 🔴 BOTÓN DE RESPALDO -->
+<button onclick="respaldarDatosGSX()" style="
+  background:#d40000;
+  color:white;
   border:none;
-  padding:12px 16px;
-  border-radius:12px;
-  font-weight:700;
-  margin:10px 0;
+  padding:12px 18px;
+  border-radius:8px;
+  font-weight:bold;
   width:100%;
+  margin-top:10px;
 ">
-📦 Rescate ligero de datos
+📦 RESPALDAR DATOS (GSX)
 </button>
 
 <script>
-(function () {
-  async function blobToInfo(v) {
-    try {
-      if (v instanceof Blob) {
-        return {
-          __tipo__: "Blob",
-          mime: v.type || "",
-          size: v.size || 0
-        };
-      }
-      if (v instanceof File) {
-        return {
-          __tipo__: "File",
-          name: v.name || "",
-          mime: v.type || "",
-          size: v.size || 0
-        };
-      }
-    } catch (e) {}
-    return v;
-  }
+<button onclick="respaldoTotalGSX()" style="
+  background:#d40000;
+  color:white;
+  border:none;
+  padding:12px;
+  border-radius:8px;
+  width:100%;
+  font-weight:bold;
+">
+📦 RESPALDO TOTAL GSX
+</button>
 
-  async function limpiarPesado(obj, nivel = 0) {
-    if (nivel > 4) return "[TRUNCADO]";
-    if (obj === null || obj === undefined) return obj;
+<script>
+async function respaldoTotalGSX() {
+  try {
+    const respaldo = {
+      fecha: new Date().toISOString(),
+      localStorage: {},
+      indexedDB: {}
+    };
 
-    if (obj instanceof Blob || obj instanceof File) {
-      return await blobToInfo(obj);
-    }
-
-    if (Array.isArray(obj)) {
-      const out = [];
-      for (const item of obj) out.push(await limpiarPesado(item, nivel + 1));
-      return out;
-    }
-
-    if (typeof obj === "object") {
-      const out = {};
-      for (const k of Object.keys(obj)) {
-        const val = obj[k];
-        if (
-          val instanceof Blob ||
-          val instanceof File ||
-          k.toLowerCase().includes("foto") ||
-          k.toLowerCase().includes("image") ||
-          k.toLowerCase().includes("imagen") ||
-          k.toLowerCase().includes("file") ||
-          k.toLowerCase().includes("archivo") ||
-          k.toLowerCase().includes("zip")
-        ) {
-          out[k] = await blobToInfo(val);
-        } else {
-          out[k] = await limpiarPesado(val, nivel + 1);
-        }
-      }
-      return out;
-    }
-
-    return obj;
-  }
-
-  function descargarJSON(nombre, data) {
-    const texto = JSON.stringify(data, null, 2);
-    const blob = new Blob([texto], { type: "application/json;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = nombre;
-    document.body.appendChild(a);
-    a.click();
-    setTimeout(() => {
-      URL.revokeObjectURL(url);
-      a.remove();
-    }, 1500);
-  }
-
-  async function exportarLocalStorage() {
-    const data = {};
+    // ======================
+    // 🔹 LOCAL STORAGE
+    // ======================
     for (let i = 0; i < localStorage.length; i++) {
       const key = localStorage.key(i);
-      let value = localStorage.getItem(key);
-      try {
-        data[key] = JSON.parse(value);
-      } catch {
-        data[key] = value;
-      }
+      respaldo.localStorage[key] = localStorage.getItem(key);
     }
-    return await limpiarPesado(data);
-  }
 
-  async function exportarDBConNombresProbables() {
-    const nombresProbables = [
+    // ======================
+    // 🔹 INDEXED DB (INTENTO SEGURO)
+    // ======================
+    const posiblesDB = [
       "GSX",
       "GSX_DB",
-      "gsx",
-      "gs-diagnosticos",
-      "GS Diagnósticos",
       "Diagnosticos",
-      "diagnosticos",
-      "diagnosticosDB",
+      "DiagnosticosDB",
+      "AppDB",
+      "DB",
+      "database",
       "localforage",
       "keyval-store"
     ];
 
-    const resultado = {};
-
-    for (const nombre of nombresProbables) {
+    for (const nombre of posiblesDB) {
       try {
-        const db = await new Promise((resolve, reject) => {
+        await new Promise((resolve) => {
           const req = indexedDB.open(nombre);
-          let creada = false;
-
-          req.onupgradeneeded = function () {
-            creada = true;
-          };
 
           req.onsuccess = function (e) {
-            const _db = e.target.result;
-            if (creada || !_db.objectStoreNames || _db.objectStoreNames.length === 0) {
-              _db.close();
-              resolve(null);
-              return;
+            const db = e.target.result;
+
+            if (!db.objectStoreNames.length) {
+              db.close();
+              return resolve();
             }
-            resolve(_db);
+
+            respaldo.indexedDB[nombre] = {};
+
+            let pendientes = db.objectStoreNames.length;
+
+            for (let storeName of db.objectStoreNames) {
+              const tx = db.transaction(storeName, "readonly");
+              const store = tx.objectStore(storeName);
+              const getAll = store.getAll();
+
+              getAll.onsuccess = function () {
+                respaldo.indexedDB[nombre][storeName] = getAll.result;
+                pendientes--;
+                if (pendientes === 0) {
+                  db.close();
+                  resolve();
+                }
+              };
+
+              getAll.onerror = function () {
+                pendientes--;
+                if (pendientes === 0) {
+                  db.close();
+                  resolve();
+                }
+              };
+            }
           };
 
           req.onerror = function () {
-            reject(req.error);
+            resolve();
           };
         });
-
-        if (!db) continue;
-
-        resultado[nombre] = {};
-
-        for (const storeName of Array.from(db.objectStoreNames)) {
-          resultado[nombre][storeName] = [];
-
-          await new Promise((resolve) => {
-            const tx = db.transaction(storeName, "readonly");
-            const store = tx.objectStore(storeName);
-            const cursorReq = store.openCursor();
-
-            cursorReq.onsuccess = async function (e) {
-              const cursor = e.target.result;
-              if (cursor) {
-                const limpio = await limpiarPesado(cursor.value);
-                resultado[nombre][storeName].push(limpio);
-                cursor.continue();
-              } else {
-                resolve();
-              }
-            };
-
-            cursorReq.onerror = function () {
-              resolve();
-            };
-          });
-        }
-
-        db.close();
       } catch (e) {
+        console.log("DB no accesible:", nombre);
       }
     }
 
-    return resultado;
-  }
-
-  async function rescateLigero() {
-    const btn = document.getElementById("btnRescateLigero");
-    const textoOriginal = btn.textContent;
-    btn.disabled = true;
-    btn.textContent = "Rescatando...";
-
-    try {
-      const respaldo = {
-        fecha: new Date().toISOString(),
-        origen: location.href,
-        localStorage: await exportarLocalStorage(),
-        indexedDB: await exportarDBConNombresProbables()
-      };
-
-      descargarJSON(
-        "GSX_RESCATE_LIGERO_" + new Date().toISOString().slice(0, 10) + ".json",
-        respaldo
-      );
-
-      alert("Rescate ligero generado. Revisa Descargas.");
-    } catch (e) {
-      console.error(e);
-      alert("Falló el rescate ligero.");
-    } finally {
-      btn.disabled = false;
-      btn.textContent = textoOriginal;
-    }
-  }
-
-  document.getElementById("btnRescateLigero").addEventListener("click", rescateLigero);
-})();
-</script>
-  <button id="btnDetectarDBReal" style="
-  background:#1f2937;
-  color:#fff;
-  border:none;
-  padding:12px 16px;
-  border-radius:12px;
-  font-weight:700;
-  margin:10px 0;
-  width:100%;
-">
-🔎 Detectar base real
-</button>
-
-<pre id="salidaDBReal" style="
-  white-space:pre-wrap;
-  background:#f8f8f8;
-  border:1px solid #ddd;
-  padding:12px;
-  border-radius:10px;
-  max-height:320px;
-  overflow:auto;
-  font-size:12px;
-"></pre>
-
-<script>
-(function () {
-  async function detectarBases() {
-    const salida = document.getElementById("salidaDBReal");
-    salida.textContent = "Detectando bases reales...";
-
-    let texto = "";
-    texto += "URL: " + location.href + "\n";
-    texto += "Origen: " + location.origin + "\n\n";
-
-    if (!window.indexedDB) {
-      salida.textContent = "IndexedDB no está disponible en este entorno.";
-      return;
-    }
-
-    if (typeof indexedDB.databases !== "function") {
-      salida.textContent =
-        "Este navegador no permite listar bases automáticamente.\n" +
-        "Necesitamos otro método basado en el código fuente de la app.";
-      return;
-    }
-
-    try {
-      const dbs = await indexedDB.databases();
-
-      if (!dbs || !dbs.length) {
-        salida.textContent = "No se detectaron bases por indexedDB.databases().";
-        return;
-      }
-
-      for (const dbInfo of dbs) {
-        if (!dbInfo.name) continue;
-        texto += "DB: " + dbInfo.name + "\n";
-        texto += "Versión: " + (dbInfo.version || "s/d") + "\n";
-
-        try {
-          const db = await new Promise((resolve, reject) => {
-            const req = indexedDB.open(dbInfo.name);
-            req.onsuccess = e => resolve(e.target.result);
-            req.onerror = () => reject(req.error);
-          });
-
-          const stores = Array.from(db.objectStoreNames);
-          if (!stores.length) {
-            texto += "  Sin object stores\n\n";
-            db.close();
-            continue;
-          }
-
-          for (const storeName of stores) {
-            const total = await new Promise((resolve) => {
-              const tx = db.transaction(storeName, "readonly");
-              const store = tx.objectStore(storeName);
-              const req = store.count();
-              req.onsuccess = () => resolve(req.result || 0);
-              req.onerror = () => resolve(0);
-            });
-            texto += "  - " + storeName + ": " + total + " registros\n";
-          }
-
-          texto += "\n";
-          db.close();
-        } catch (err) {
-          texto += "  Error al abrir esta DB\n\n";
-        }
-      }
-
-      salida.textContent = texto;
-    } catch (e) {
-      salida.textContent =
-        "No fue posible listar bases en este entorno.\n" +
-        "Error: " + (e && e.message ? e.message : e);
-    }
-  }
-
-  document.getElementById("btnDetectarDBReal").addEventListener("click", detectarBases);
-})();
-</script>
-  <button onclick="rescateRealGSX()" style="
-  background:#16a34a;
-  color:white;
-  border:none;
-  padding:14px;
-  border-radius:10px;
-  width:100%;
-  font-weight:bold;
-">
-💾 RESCATE REAL GSX (SEGURO)
-</button>
-
-<script>
-async function rescateRealGSX() {
-  try {
-    const nombreDB = "gs_dx_db_v1";
-
-    const db = await new Promise((resolve, reject) => {
-      const req = indexedDB.open(nombreDB);
-      req.onsuccess = e => resolve(e.target.result);
-      req.onerror = () => reject(req.error);
-    });
-
-    const respaldo = {
-      fecha: new Date().toISOString(),
-      db: nombreDB,
-      data: {}
-    };
-
-    const stores = Array.from(db.objectStoreNames);
-
-    for (const storeName of stores) {
-      respaldo.data[storeName] = [];
-
-      await new Promise((resolve) => {
-        const tx = db.transaction(storeName, "readonly");
-        const store = tx.objectStore(storeName);
-        const cursorReq = store.openCursor();
-
-        cursorReq.onsuccess = function (e) {
-          const cursor = e.target.result;
-          if (cursor) {
-            const item = cursor.value;
-
-            // 🔥 LIMPIEZA: quitar fotos / blobs
-            const limpio = {};
-
-            for (const k in item) {
-              const val = item[k];
-
-              if (
-                val instanceof Blob ||
-                val instanceof File ||
-                k.toLowerCase().includes("foto") ||
-                k.toLowerCase().includes("imagen") ||
-                k.toLowerCase().includes("file")
-              ) {
-                limpio[k] = "[ARCHIVO_REMOVIDO]";
-              } else {
-                limpio[k] = val;
-              }
-            }
-
-            respaldo.data[storeName].push(limpio);
-            cursor.continue();
-          } else {
-            resolve();
-          }
-        };
-
-        cursorReq.onerror = function () {
-          resolve();
-        };
-      });
-    }
-
-    db.close();
-
-    // 💾 DESCARGA SEGURA
+    // ======================
+    // 🔹 DESCARGA
+    // ======================
     const blob = new Blob(
       [JSON.stringify(respaldo, null, 2)],
       { type: "application/json" }
@@ -2139,536 +1856,17 @@ async function rescateRealGSX() {
 
     const a = document.createElement("a");
     a.href = url;
-    a.download = "GSX_RESPALDO_REAL.json";
+    a.download = "GSX_BACKUP_COMPLETO.json";
 
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
 
-    alert("✅ RESCATE COMPLETO EXITOSO");
+    alert("✅ Respaldo COMPLETO generado");
 
   } catch (error) {
     console.error(error);
-    alert("❌ Error en rescate real");
-  }
-}
-</script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-
-<div style="display:grid;gap:10px;margin:14px 0;">
-  <button onclick="exportarFotosParte('estructuras')" style="padding:12px;border:none;border-radius:10px;background:#1d4ed8;color:#fff;font-weight:700;">📸 Exportar fotos Estructuras</button>
-  <button onclick="exportarFotosParte('clientes')" style="padding:12px;border:none;border-radius:10px;background:#2563eb;color:#fff;font-weight:700;">📸 Exportar fotos Clientes</button>
-  <button onclick="exportarFotosParte('baldios')" style="padding:12px;border:none;border-radius:10px;background:#3b82f6;color:#fff;font-weight:700;">📸 Exportar fotos Baldíos</button>
-  <button onclick="exportarFotosParte('unc')" style="padding:12px;border:none;border-radius:10px;background:#0ea5e9;color:#fff;font-weight:700;">📸 Exportar fotos UNC</button>
-  <button onclick="exportarFotosParte('susp')" style="padding:12px;border:none;border-radius:10px;background:#0284c7;color:#fff;font-weight:700;">📸 Exportar fotos Susp</button>
-</div>
-
-<script>
-function limpiarNombre(v) {
-  return String(v || "")
-    .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
-    .replace(/[^\w\-]+/g, "_")
-    .replace(/_+/g, "_")
-    .replace(/^_|_$/g, "")
-    .slice(0, 80);
-}
-
-function quitarFotos(obj) {
-  const copia = {};
-  for (const k in obj) {
-    if (k.toLowerCase() === "fotos") continue;
-    copia[k] = obj[k];
-  }
-  return copia;
-}
-
-async function dataURLtoBlob(dataURL) {
-  const res = await fetch(dataURL);
-  return await res.blob();
-}
-
-async function normalizarFotos(valor) {
-  if (!valor) return [];
-
-  if (valor instanceof Blob || valor instanceof File) {
-    return [valor];
-  }
-
-  if (Array.isArray(valor)) {
-    const out = [];
-    for (const x of valor) {
-      if (x instanceof Blob || x instanceof File) out.push(x);
-      else if (typeof x === "string" && x.startsWith("data:")) out.push(await dataURLtoBlob(x));
-      else if (x && typeof x === "object") {
-        if (x.blob instanceof Blob) out.push(x.blob);
-        else if (x.file instanceof Blob) out.push(x.file);
-        else if (typeof x.data === "string" && x.data.startsWith("data:")) out.push(await dataURLtoBlob(x.data));
-      }
-    }
-    return out;
-  }
-
-  if (typeof valor === "string" && valor.startsWith("data:")) {
-    return [await dataURLtoBlob(valor)];
-  }
-
-  if (typeof valor === "object") {
-    if (valor.blob instanceof Blob) return [valor.blob];
-    if (valor.file instanceof Blob) return [valor.file];
-    if (typeof valor.data === "string" && valor.data.startsWith("data:")) {
-      return [await dataURLtoBlob(valor.data)];
-    }
-  }
-
-  return [];
-}
-
-async function abrirDBGSX() {
-  return await new Promise((resolve, reject) => {
-    const req = indexedDB.open("gs_dx_db_v1");
-    req.onsuccess = e => resolve(e.target.result);
-    req.onerror = () => reject(req.error || new Error("No se pudo abrir la base"));
-  });
-}
-
-async function exportarFotosParte(storeName) {
-  try {
-    const db = await abrirDBGSX();
-    const zip = new JSZip();
-    const carpeta = zip.folder(storeName);
-    const manifest = [];
-
-    await new Promise((resolve) => {
-      const tx = db.transaction(storeName, "readonly");
-      const store = tx.objectStore(storeName);
-      const req = store.openCursor();
-
-      req.onsuccess = async (e) => {
-        const cursor = e.target.result;
-        if (!cursor) return resolve();
-
-        const item = cursor.value || {};
-        const fotos = await normalizarFotos(item.Fotos);
-
-        const base = [
-          storeName,
-          "id" + (item.id ?? ""),
-          "item" + (item.item ?? ""),
-          limpiarNombre(item.PuntoFisico || item.Nombres || "sin_punto")
-        ].filter(Boolean).join("_");
-
-        let guardadas = 0;
-        for (let i = 0; i < fotos.length; i++) {
-          const foto = fotos[i];
-          const ext =
-            foto.type === "image/png" ? "png" :
-            foto.type === "image/webp" ? "webp" :
-            foto.type === "image/heic" ? "heic" : "jpg";
-
-          carpeta.file(`${base}_${i + 1}.${ext}`, foto);
-          guardadas++;
-        }
-
-        manifest.push({
-          ...quitarFotos(item),
-          fotos_exportadas: guardadas
-        });
-
-        cursor.continue();
-      };
-
-      req.onerror = () => resolve();
-    });
-
-    carpeta.file(`manifest_${storeName}.json`, JSON.stringify(manifest, null, 2));
-
-    const contenido = await zip.generateAsync({ type: "blob" });
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(contenido);
-    a.download = `GSX_FOTOS_${storeName}.zip`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-
-    alert(`✅ ZIP generado: ${storeName}`);
-    db.close();
-  } catch (err) {
-    console.error(err);
-    alert(`❌ Error exportando fotos de ${storeName}`);
-  }
-}
-</script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-
-<div style="display:grid;gap:10px;margin:14px 0;">
-  <button onclick="exportarFotosMovil('unc')" style="padding:12px;border:none;border-radius:10px;background:#0ea5e9;color:#fff;font-weight:700;">🖼️ Fotos UNC</button>
-  <button onclick="exportarFotosMovil('susp')" style="padding:12px;border:none;border-radius:10px;background:#0284c7;color:#fff;font-weight:700;">🖼️ Fotos Susp</button>
-  <button onclick="exportarFotosMovil('estructuras')" style="padding:12px;border:none;border-radius:10px;background:#1d4ed8;color:#fff;font-weight:700;">🖼️ Fotos Estructuras</button>
-  <button onclick="exportarFotosMovil('clientes')" style="padding:12px;border:none;border-radius:10px;background:#2563eb;color:#fff;font-weight:700;">🖼️ Fotos Clientes</button>
-  <button onclick="exportarFotosMovil('baldios')" style="padding:12px;border:none;border-radius:10px;background:#3b82f6;color:#fff;font-weight:700;">🖼️ Fotos Baldíos</button>
-</div>
-
-<script>
-function nombreSeguro(v) {
-  return String(v || "")
-    .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
-    .replace(/[^\w\-]+/g, "_")
-    .replace(/_+/g, "_")
-    .replace(/^_|_$/g, "")
-    .slice(0, 80);
-}
-
-async function abrirDBGSX() {
-  return await new Promise((resolve, reject) => {
-    const req = indexedDB.open("gs_dx_db_v1");
-    req.onsuccess = e => resolve(e.target.result);
-    req.onerror = () => reject(req.error || new Error("No se pudo abrir la base"));
-  });
-}
-
-async function dataURLtoBlob(dataURL) {
-  const res = await fetch(dataURL);
-  return await res.blob();
-}
-
-async function urlToBlob(url) {
-  const res = await fetch(url);
-  return await res.blob();
-}
-
-function pareceDataURL(v) {
-  return typeof v === "string" && v.startsWith("data:image/");
-}
-
-function pareceBlobURL(v) {
-  return typeof v === "string" && v.startsWith("blob:");
-}
-
-function esFileList(v) {
-  return typeof FileList !== "undefined" && v instanceof FileList;
-}
-
-async function recolectarFotos(valor, bolsa = []) {
-  if (!valor) return bolsa;
-
-  if (valor instanceof Blob || valor instanceof File) {
-    bolsa.push(valor);
-    return bolsa;
-  }
-
-  if (esFileList(valor)) {
-    for (const f of Array.from(valor)) bolsa.push(f);
-    return bolsa;
-  }
-
-  if (Array.isArray(valor)) {
-    for (const x of valor) await recolectarFotos(x, bolsa);
-    return bolsa;
-  }
-
-  if (pareceDataURL(valor)) {
-    bolsa.push(await dataURLtoBlob(valor));
-    return bolsa;
-  }
-
-  if (pareceBlobURL(valor)) {
-    try { bolsa.push(await urlToBlob(valor)); } catch (e) {}
-    return bolsa;
-  }
-
-  if (typeof valor === "object") {
-    for (const k of Object.keys(valor)) {
-      if (/foto|image|imagen|file|blob|preview|url/i.test(k)) {
-        await recolectarFotos(valor[k], bolsa);
-      }
-    }
-  }
-
-  return bolsa;
-}
-
-function deduplicarBlobs(lista) {
-  const vistos = new Set();
-  const out = [];
-  for (const b of lista) {
-    const firma = [b.size, b.type].join("|");
-    if (!vistos.has(firma)) {
-      vistos.add(firma);
-      out.push(b);
-    }
-  }
-  return out;
-}
-
-async function guardarOCompartir(blob, nombreArchivo) {
-  const file = new File([blob], nombreArchivo, { type: "application/zip" });
-
-  if (navigator.canShare && navigator.canShare({ files: [file] })) {
-    await navigator.share({
-      files: [file],
-      title: nombreArchivo,
-      text: "Exportación GSX"
-    });
-    return "share";
-  }
-
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = nombreArchivo;
-  a.style.display = "none";
-  document.body.appendChild(a);
-  a.click();
-
-  setTimeout(() => {
-    URL.revokeObjectURL(url);
-    a.remove();
-  }, 3000);
-
-  return "download";
-}
-
-async function exportarFotosMovil(storeName) {
-  try {
-    const db = await abrirDBGSX();
-    const zip = new JSZip();
-    const carpeta = zip.folder(storeName);
-    const manifest = [];
-
-    await new Promise((resolve) => {
-      const tx = db.transaction(storeName, "readonly");
-      const store = tx.objectStore(storeName);
-      const req = store.openCursor();
-
-      req.onsuccess = async (e) => {
-        const cursor = e.target.result;
-        if (!cursor) return resolve();
-
-        const item = cursor.value || {};
-        let fotos = [];
-
-        fotos = await recolectarFotos(item.Fotos, fotos);
-
-        if (!fotos.length) {
-          for (const k of Object.keys(item)) {
-            if (/foto|image|imagen|file|blob|preview|url/i.test(k)) {
-              fotos = await recolectarFotos(item[k], fotos);
-            }
-          }
-        }
-
-        fotos = deduplicarBlobs(fotos);
-
-        const base = [
-          item.Transformador || "CD",
-          storeName,
-          "id" + (item.id ?? ""),
-          nombreSeguro(item.PuntoFisico || item.SerieMedidor || item.Nombres || "sin_ref")
-        ].filter(Boolean).join("_");
-
-        let guardadas = 0;
-        for (let i = 0; i < fotos.length; i++) {
-          const foto = fotos[i];
-          const ext =
-            foto.type === "image/png" ? "png" :
-            foto.type === "image/webp" ? "webp" :
-            foto.type === "image/heic" ? "heic" :
-            foto.type === "image/heif" ? "heif" : "jpg";
-
-          carpeta.file(`${base}_${i + 1}.${ext}`, foto);
-          guardadas++;
-        }
-
-        manifest.push({
-          id: item.id ?? null,
-          item: item.item ?? null,
-          PuntoFisico: item.PuntoFisico ?? "",
-          Transformador: item.Transformador ?? "",
-          fotos_exportadas: guardadas
-        });
-
-        cursor.continue();
-      };
-
-      req.onerror = () => resolve();
-    });
-
-    carpeta.file(`manifest_${storeName}.json`, JSON.stringify(manifest, null, 2));
-
-    const contenido = await zip.generateAsync({ type: "blob" });
-    const modo = await guardarOCompartir(contenido, `GSX_FOTOS_${storeName}.zip`);
-
-    db.close();
-
-    if (modo === "share") {
-      alert(`✅ ZIP listo. Se abrió el menú para compartir: ${storeName}`);
-    } else {
-      alert(`✅ ZIP generado. Revisa Descargas: ${storeName}`);
-    }
-  } catch (err) {
-    console.error(err);
-    alert(`❌ Error exportando fotos de ${storeName}: ` + (err.message || err));
-  }
-}
-</script>
-  <div style="display:grid;gap:10px;margin:14px 0;">
-  <label style="font-weight:700;">Store</label>
-  <select id="rx_store" style="padding:10px;border-radius:10px;">
-    <option value="unc">unc</option>
-    <option value="susp">susp</option>
-    <option value="estructuras">estructuras</option>
-    <option value="clientes">clientes</option>
-    <option value="baldios">baldios</option>
-  </select>
-
-  <label style="font-weight:700;">ID del registro</label>
-  <input id="rx_id" type="number" value="1" style="padding:10px;border-radius:10px;" />
-
-  <button onclick="radiografiaFotosGSX()" style="
-    padding:12px;border:none;border-radius:10px;
-    background:#111827;color:#fff;font-weight:700;
-  ">🩻 Radiografía Fotos</button>
-</div>
-
-<pre id="rx_salida" style="
-  white-space:pre-wrap;
-  background:#f8f8f8;
-  border:1px solid #ddd;
-  padding:12px;
-  border-radius:10px;
-  max-height:420px;
-  overflow:auto;
-  font-size:12px;
-"></pre>
-
-<script>
-async function abrirDBGSX() {
-  return await new Promise((resolve, reject) => {
-    const req = indexedDB.open("gs_dx_db_v1");
-    req.onsuccess = e => resolve(e.target.result);
-    req.onerror = () => reject(req.error || new Error("No se pudo abrir la base"));
-  });
-}
-
-function tipoDetallado(v, nivel = 0, vistos = new WeakSet()) {
-  if (nivel > 4) return { tipo: "MAX_NIVEL" };
-  if (v === null) return { tipo: "null" };
-  if (v === undefined) return { tipo: "undefined" };
-
-  const t = typeof v;
-
-  if (t === "string") {
-    return {
-      tipo: "string",
-      length: v.length,
-      preview: v.slice(0, 120),
-      dataURL: v.startsWith("data:"),
-      blobURL: v.startsWith("blob:")
-    };
-  }
-
-  if (t === "number" || t === "boolean" || t === "bigint") {
-    return { tipo: t, valor: v };
-  }
-
-  if (v instanceof Blob) {
-    return { tipo: "Blob", mime: v.type || "", size: v.size || 0 };
-  }
-
-  if (v instanceof File) {
-    return { tipo: "File", name: v.name || "", mime: v.type || "", size: v.size || 0 };
-  }
-
-  if (typeof FileList !== "undefined" && v instanceof FileList) {
-    return {
-      tipo: "FileList",
-      length: v.length,
-      items: Array.from(v).slice(0, 5).map(f => ({
-        tipo: "File",
-        name: f.name || "",
-        mime: f.type || "",
-        size: f.size || 0
-      }))
-    };
-  }
-
-  if (Array.isArray(v)) {
-    return {
-      tipo: "Array",
-      length: v.length,
-      items: v.slice(0, 5).map(x => tipoDetallado(x, nivel + 1, vistos))
-    };
-  }
-
-  if (t === "object") {
-    if (vistos.has(v)) return { tipo: "CircularRef" };
-    vistos.add(v);
-
-    const claves = Object.keys(v);
-    const muestra = {};
-    for (const k of claves.slice(0, 20)) {
-      try {
-        muestra[k] = tipoDetallado(v[k], nivel + 1, vistos);
-      } catch (e) {
-        muestra[k] = { tipo: "ERROR_LEYENDO", error: String(e) };
-      }
-    }
-
-    return {
-      tipo: v.constructor && v.constructor.name ? v.constructor.name : "Object",
-      keys: claves,
-      muestra
-    };
-  }
-
-  return { tipo: t };
-}
-
-async function radiografiaFotosGSX() {
-  const salida = document.getElementById("rx_salida");
-  const storeName = document.getElementById("rx_store").value;
-  const id = Number(document.getElementById("rx_id").value || 1);
-
-  salida.textContent = "Leyendo registro...";
-
-  try {
-    const db = await abrirDBGSX();
-
-    const item = await new Promise((resolve, reject) => {
-      const tx = db.transaction(storeName, "readonly");
-      const store = tx.objectStore(storeName);
-      const req = store.get(id);
-      req.onsuccess = () => resolve(req.result);
-      req.onerror = () => reject(req.error);
-    });
-
-    if (!item) {
-      salida.textContent = `No se encontró registro id=${id} en ${storeName}`;
-      db.close();
-      return;
-    }
-
-    const claves = Object.keys(item);
-    const clavesFoto = claves.filter(k => /foto|image|imagen|file|blob|preview|url/i.test(k));
-
-    const informe = {
-      store: storeName,
-      id,
-      claves,
-      claves_relacionadas_con_fotos: clavesFoto,
-      Fotos: tipoDetallado(item.Fotos),
-      detalle_campos_relacionados: {}
-    };
-
-    for (const k of clavesFoto) {
-      informe.detalle_campos_relacionados[k] = tipoDetallado(item[k]);
-    }
-
-    salida.textContent = JSON.stringify(informe, null, 2);
-    db.close();
-  } catch (e) {
-    console.error(e);
-    salida.textContent = "Error: " + (e && e.message ? e.message : e);
+    alert("❌ Error en respaldo");
   }
 }
 </script>
