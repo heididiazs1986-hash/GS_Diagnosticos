@@ -2298,5 +2298,196 @@ async function exportarFotosParte(storeName) {
   }
 }
 </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
+<div style="display:grid;gap:10px;margin:14px 0;">
+  <button onclick="exportarFotosPro('estructuras')" style="padding:12px;border:none;border-radius:10px;background:#1d4ed8;color:#fff;font-weight:700;">🖼️ Fotos Estructuras PRO</button>
+  <button onclick="exportarFotosPro('clientes')" style="padding:12px;border:none;border-radius:10px;background:#2563eb;color:#fff;font-weight:700;">🖼️ Fotos Clientes PRO</button>
+  <button onclick="exportarFotosPro('baldios')" style="padding:12px;border:none;border-radius:10px;background:#3b82f6;color:#fff;font-weight:700;">🖼️ Fotos Baldíos PRO</button>
+  <button onclick="exportarFotosPro('unc')" style="padding:12px;border:none;border-radius:10px;background:#0ea5e9;color:#fff;font-weight:700;">🖼️ Fotos UNC PRO</button>
+  <button onclick="exportarFotosPro('susp')" style="padding:12px;border:none;border-radius:10px;background:#0284c7;color:#fff;font-weight:700;">🖼️ Fotos Susp PRO</button>
+</div>
+
+<script>
+function nombreSeguro(v) {
+  return String(v || "")
+    .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^\w\-]+/g, "_")
+    .replace(/_+/g, "_")
+    .replace(/^_|_$/g, "")
+    .slice(0, 80);
+}
+
+async function abrirDBGSX() {
+  return await new Promise((resolve, reject) => {
+    const req = indexedDB.open("gs_dx_db_v1");
+    req.onsuccess = e => resolve(e.target.result);
+    req.onerror = () => reject(req.error || new Error("No se pudo abrir la base"));
+  });
+}
+
+async function dataURLtoBlob(dataURL) {
+  const res = await fetch(dataURL);
+  return await res.blob();
+}
+
+async function urlToBlob(url) {
+  const res = await fetch(url);
+  return await res.blob();
+}
+
+function pareceDataURL(v) {
+  return typeof v === "string" && v.startsWith("data:image/");
+}
+
+function pareceBlobURL(v) {
+  return typeof v === "string" && v.startsWith("blob:");
+}
+
+function esFileList(v) {
+  return typeof FileList !== "undefined" && v instanceof FileList;
+}
+
+async function recolectarFotos(valor, bolsa = []) {
+  if (!valor) return bolsa;
+
+  if (valor instanceof Blob || valor instanceof File) {
+    bolsa.push(valor);
+    return bolsa;
+  }
+
+  if (esFileList(valor)) {
+    for (const f of Array.from(valor)) bolsa.push(f);
+    return bolsa;
+  }
+
+  if (Array.isArray(valor)) {
+    for (const x of valor) await recolectarFotos(x, bolsa);
+    return bolsa;
+  }
+
+  if (pareceDataURL(valor)) {
+    bolsa.push(await dataURLtoBlob(valor));
+    return bolsa;
+  }
+
+  if (pareceBlobURL(valor)) {
+    try { bolsa.push(await urlToBlob(valor)); } catch (e) {}
+    return bolsa;
+  }
+
+  if (typeof valor === "object") {
+    const clavesProbables = [
+      "Fotos", "fotos", "foto", "imagenes", "imagenesFiles", "images",
+      "file", "files", "blob", "blobs", "data", "dataUrl", "preview", "url"
+    ];
+
+    for (const k of Object.keys(valor)) {
+      const v = valor[k];
+      if (clavesProbables.includes(k) || /foto|image|imagen|file|blob|preview|url/i.test(k)) {
+        await recolectarFotos(v, bolsa);
+      }
+    }
+  }
+
+  return bolsa;
+}
+
+function deduplicarBlobs(lista) {
+  const vistos = new Set();
+  const out = [];
+  for (const b of lista) {
+    const firma = [b.size, b.type].join("|");
+    if (!vistos.has(firma)) {
+      vistos.add(firma);
+      out.push(b);
+    }
+  }
+  return out;
+}
+
+async function exportarFotosPro(storeName) {
+  try {
+    const db = await abrirDBGSX();
+    const zip = new JSZip();
+    const carpeta = zip.folder(storeName);
+    const manifest = [];
+
+    await new Promise((resolve) => {
+      const tx = db.transaction(storeName, "readonly");
+      const store = tx.objectStore(storeName);
+      const req = store.openCursor();
+
+      req.onsuccess = async (e) => {
+        const cursor = e.target.result;
+        if (!cursor) return resolve();
+
+        const item = cursor.value || {};
+        let fotos = [];
+
+        fotos = await recolectarFotos(item.Fotos, fotos);
+
+        if (!fotos.length) {
+          for (const k of Object.keys(item)) {
+            if (/foto|image|imagen|file|blob|preview|url/i.test(k)) {
+              fotos = await recolectarFotos(item[k], fotos);
+            }
+          }
+        }
+
+        fotos = deduplicarBlobs(fotos);
+
+        const base = [
+          item.Transformador || "CD",
+          storeName,
+          "id" + (item.id ?? ""),
+          nombreSeguro(item.PuntoFisico || item.SerieMedidor || item.Nombres || "sin_ref")
+        ].filter(Boolean).join("_");
+
+        let guardadas = 0;
+        for (let i = 0; i < fotos.length; i++) {
+          const foto = fotos[i];
+          const ext =
+            foto.type === "image/png" ? "png" :
+            foto.type === "image/webp" ? "webp" :
+            foto.type === "image/heic" ? "heic" :
+            foto.type === "image/heif" ? "heif" : "jpg";
+
+          carpeta.file(`${base}_${i + 1}.${ext}`, foto);
+          guardadas++;
+        }
+
+        manifest.push({
+          id: item.id ?? null,
+          item: item.item ?? null,
+          PuntoFisico: item.PuntoFisico ?? "",
+          Transformador: item.Transformador ?? "",
+          fotos_exportadas: guardadas
+        });
+
+        cursor.continue();
+      };
+
+      req.onerror = () => resolve();
+    });
+
+    carpeta.file(`manifest_${storeName}.json`, JSON.stringify(manifest, null, 2));
+
+    const contenido = await zip.generateAsync({ type: "blob" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(contenido);
+    a.download = `GSX_FOTOS_PRO_${storeName}.zip`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+
+    alert(`✅ ZIP PRO generado: ${storeName}`);
+    db.close();
+  } catch (err) {
+    console.error(err);
+    alert(`❌ Error exportando fotos PRO de ${storeName}`);
+  }
+}
+</script>
 </body>
 </html>
