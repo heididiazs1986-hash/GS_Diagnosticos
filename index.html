@@ -2301,11 +2301,11 @@ async function exportarFotosParte(storeName) {
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 
 <div style="display:grid;gap:10px;margin:14px 0;">
-  <button onclick="exportarFotosPro('estructuras')" style="padding:12px;border:none;border-radius:10px;background:#1d4ed8;color:#fff;font-weight:700;">🖼️ Fotos Estructuras PRO</button>
-  <button onclick="exportarFotosPro('clientes')" style="padding:12px;border:none;border-radius:10px;background:#2563eb;color:#fff;font-weight:700;">🖼️ Fotos Clientes PRO</button>
-  <button onclick="exportarFotosPro('baldios')" style="padding:12px;border:none;border-radius:10px;background:#3b82f6;color:#fff;font-weight:700;">🖼️ Fotos Baldíos PRO</button>
-  <button onclick="exportarFotosPro('unc')" style="padding:12px;border:none;border-radius:10px;background:#0ea5e9;color:#fff;font-weight:700;">🖼️ Fotos UNC PRO</button>
-  <button onclick="exportarFotosPro('susp')" style="padding:12px;border:none;border-radius:10px;background:#0284c7;color:#fff;font-weight:700;">🖼️ Fotos Susp PRO</button>
+  <button onclick="exportarFotosMovil('unc')" style="padding:12px;border:none;border-radius:10px;background:#0ea5e9;color:#fff;font-weight:700;">🖼️ Fotos UNC</button>
+  <button onclick="exportarFotosMovil('susp')" style="padding:12px;border:none;border-radius:10px;background:#0284c7;color:#fff;font-weight:700;">🖼️ Fotos Susp</button>
+  <button onclick="exportarFotosMovil('estructuras')" style="padding:12px;border:none;border-radius:10px;background:#1d4ed8;color:#fff;font-weight:700;">🖼️ Fotos Estructuras</button>
+  <button onclick="exportarFotosMovil('clientes')" style="padding:12px;border:none;border-radius:10px;background:#2563eb;color:#fff;font-weight:700;">🖼️ Fotos Clientes</button>
+  <button onclick="exportarFotosMovil('baldios')" style="padding:12px;border:none;border-radius:10px;background:#3b82f6;color:#fff;font-weight:700;">🖼️ Fotos Baldíos</button>
 </div>
 
 <script>
@@ -2377,15 +2377,9 @@ async function recolectarFotos(valor, bolsa = []) {
   }
 
   if (typeof valor === "object") {
-    const clavesProbables = [
-      "Fotos", "fotos", "foto", "imagenes", "imagenesFiles", "images",
-      "file", "files", "blob", "blobs", "data", "dataUrl", "preview", "url"
-    ];
-
     for (const k of Object.keys(valor)) {
-      const v = valor[k];
-      if (clavesProbables.includes(k) || /foto|image|imagen|file|blob|preview|url/i.test(k)) {
-        await recolectarFotos(v, bolsa);
+      if (/foto|image|imagen|file|blob|preview|url/i.test(k)) {
+        await recolectarFotos(valor[k], bolsa);
       }
     }
   }
@@ -2406,7 +2400,35 @@ function deduplicarBlobs(lista) {
   return out;
 }
 
-async function exportarFotosPro(storeName) {
+async function guardarOCompartir(blob, nombreArchivo) {
+  const file = new File([blob], nombreArchivo, { type: "application/zip" });
+
+  if (navigator.canShare && navigator.canShare({ files: [file] })) {
+    await navigator.share({
+      files: [file],
+      title: nombreArchivo,
+      text: "Exportación GSX"
+    });
+    return "share";
+  }
+
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = nombreArchivo;
+  a.style.display = "none";
+  document.body.appendChild(a);
+  a.click();
+
+  setTimeout(() => {
+    URL.revokeObjectURL(url);
+    a.remove();
+  }, 3000);
+
+  return "download";
+}
+
+async function exportarFotosMovil(storeName) {
   try {
     const db = await abrirDBGSX();
     const zip = new JSZip();
@@ -2474,18 +2496,18 @@ async function exportarFotosPro(storeName) {
     carpeta.file(`manifest_${storeName}.json`, JSON.stringify(manifest, null, 2));
 
     const contenido = await zip.generateAsync({ type: "blob" });
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(contenido);
-    a.download = `GSX_FOTOS_PRO_${storeName}.zip`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+    const modo = await guardarOCompartir(contenido, `GSX_FOTOS_${storeName}.zip`);
 
-    alert(`✅ ZIP PRO generado: ${storeName}`);
     db.close();
+
+    if (modo === "share") {
+      alert(`✅ ZIP listo. Se abrió el menú para compartir: ${storeName}`);
+    } else {
+      alert(`✅ ZIP generado. Revisa Descargas: ${storeName}`);
+    }
   } catch (err) {
     console.error(err);
-    alert(`❌ Error exportando fotos PRO de ${storeName}`);
+    alert(`❌ Error exportando fotos de ${storeName}: ` + (err.message || err));
   }
 }
 </script>
