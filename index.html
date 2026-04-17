@@ -2153,5 +2153,150 @@ async function rescateRealGSX() {
   }
 }
 </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
+<div style="display:grid;gap:10px;margin:14px 0;">
+  <button onclick="exportarFotosParte('estructuras')" style="padding:12px;border:none;border-radius:10px;background:#1d4ed8;color:#fff;font-weight:700;">📸 Exportar fotos Estructuras</button>
+  <button onclick="exportarFotosParte('clientes')" style="padding:12px;border:none;border-radius:10px;background:#2563eb;color:#fff;font-weight:700;">📸 Exportar fotos Clientes</button>
+  <button onclick="exportarFotosParte('baldios')" style="padding:12px;border:none;border-radius:10px;background:#3b82f6;color:#fff;font-weight:700;">📸 Exportar fotos Baldíos</button>
+  <button onclick="exportarFotosParte('unc')" style="padding:12px;border:none;border-radius:10px;background:#0ea5e9;color:#fff;font-weight:700;">📸 Exportar fotos UNC</button>
+  <button onclick="exportarFotosParte('susp')" style="padding:12px;border:none;border-radius:10px;background:#0284c7;color:#fff;font-weight:700;">📸 Exportar fotos Susp</button>
+</div>
+
+<script>
+function limpiarNombre(v) {
+  return String(v || "")
+    .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^\w\-]+/g, "_")
+    .replace(/_+/g, "_")
+    .replace(/^_|_$/g, "")
+    .slice(0, 80);
+}
+
+function quitarFotos(obj) {
+  const copia = {};
+  for (const k in obj) {
+    if (k.toLowerCase() === "fotos") continue;
+    copia[k] = obj[k];
+  }
+  return copia;
+}
+
+async function dataURLtoBlob(dataURL) {
+  const res = await fetch(dataURL);
+  return await res.blob();
+}
+
+async function normalizarFotos(valor) {
+  if (!valor) return [];
+
+  if (valor instanceof Blob || valor instanceof File) {
+    return [valor];
+  }
+
+  if (Array.isArray(valor)) {
+    const out = [];
+    for (const x of valor) {
+      if (x instanceof Blob || x instanceof File) out.push(x);
+      else if (typeof x === "string" && x.startsWith("data:")) out.push(await dataURLtoBlob(x));
+      else if (x && typeof x === "object") {
+        if (x.blob instanceof Blob) out.push(x.blob);
+        else if (x.file instanceof Blob) out.push(x.file);
+        else if (typeof x.data === "string" && x.data.startsWith("data:")) out.push(await dataURLtoBlob(x.data));
+      }
+    }
+    return out;
+  }
+
+  if (typeof valor === "string" && valor.startsWith("data:")) {
+    return [await dataURLtoBlob(valor)];
+  }
+
+  if (typeof valor === "object") {
+    if (valor.blob instanceof Blob) return [valor.blob];
+    if (valor.file instanceof Blob) return [valor.file];
+    if (typeof valor.data === "string" && valor.data.startsWith("data:")) {
+      return [await dataURLtoBlob(valor.data)];
+    }
+  }
+
+  return [];
+}
+
+async function abrirDBGSX() {
+  return await new Promise((resolve, reject) => {
+    const req = indexedDB.open("gs_dx_db_v1");
+    req.onsuccess = e => resolve(e.target.result);
+    req.onerror = () => reject(req.error || new Error("No se pudo abrir la base"));
+  });
+}
+
+async function exportarFotosParte(storeName) {
+  try {
+    const db = await abrirDBGSX();
+    const zip = new JSZip();
+    const carpeta = zip.folder(storeName);
+    const manifest = [];
+
+    await new Promise((resolve) => {
+      const tx = db.transaction(storeName, "readonly");
+      const store = tx.objectStore(storeName);
+      const req = store.openCursor();
+
+      req.onsuccess = async (e) => {
+        const cursor = e.target.result;
+        if (!cursor) return resolve();
+
+        const item = cursor.value || {};
+        const fotos = await normalizarFotos(item.Fotos);
+
+        const base = [
+          storeName,
+          "id" + (item.id ?? ""),
+          "item" + (item.item ?? ""),
+          limpiarNombre(item.PuntoFisico || item.Nombres || "sin_punto")
+        ].filter(Boolean).join("_");
+
+        let guardadas = 0;
+        for (let i = 0; i < fotos.length; i++) {
+          const foto = fotos[i];
+          const ext =
+            foto.type === "image/png" ? "png" :
+            foto.type === "image/webp" ? "webp" :
+            foto.type === "image/heic" ? "heic" : "jpg";
+
+          carpeta.file(`${base}_${i + 1}.${ext}`, foto);
+          guardadas++;
+        }
+
+        manifest.push({
+          ...quitarFotos(item),
+          fotos_exportadas: guardadas
+        });
+
+        cursor.continue();
+      };
+
+      req.onerror = () => resolve();
+    });
+
+    carpeta.file(`manifest_${storeName}.json`, JSON.stringify(manifest, null, 2));
+
+    const contenido = await zip.generateAsync({ type: "blob" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(contenido);
+    a.download = `GSX_FOTOS_${storeName}.zip`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+
+    alert(`✅ ZIP generado: ${storeName}`);
+    db.close();
+  } catch (err) {
+    console.error(err);
+    alert(`❌ Error exportando fotos de ${storeName}`);
+  }
+}
+</script>
 </body>
 </html>
