@@ -1,68 +1,42 @@
-const CACHE_NAME = "gsdx-cache-v14";
+<input type="file" id="inputImportGSX" accept=".json,.gsx,.gsx.json" style="display:none" onchange="importBackupGSX(event)">
 
-const ASSETS = [
-  "/",
-  "/index.html",
-  "/manifest.json",
-  "/sw.js",
-  "/LOGO.jpg",
-  "/icon-192.png",
-  "/icon-512.png",
-  "/icon-180.png"
-];
+<button type="button" onclick="document.getElementById('inputImportGSX').click()">
+  Importar respaldo GSX
+</button>
 
-self.addEventListener("install", (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS))
-  );
-  self.skipWaiting();
-});
+<script>
+async function saveImportedData(data) {
+  // 🔁 ADAPTA ESTA FUNCIÓN
+  // Aquí debes volver a guardar en tu almacenamiento real
+  window.registrosEstructuras = data.estructuras || [];
+  window.registrosUNC = data.unc || [];
+  window.registrosClientes = data.clientes || [];
+  window.registrosSuspensiones = data.suspensiones || [];
+  window.registrosBaldios = data.baldios || [];
+}
 
-self.addEventListener("activate", (event) => {
-  event.waitUntil(
-    caches.keys().then((keys) =>
-      Promise.all(
-        keys.map((key) => {
-          if (key !== CACHE_NAME) {
-            return caches.delete(key);
-          }
-          return Promise.resolve();
-        })
-      )
-    )
-  );
-  self.clients.claim();
-});
+async function importBackupGSX(event) {
+  try {
+    const file = event.target.files?.[0];
+    if (!file) return;
 
-self.addEventListener("fetch", (event) => {
-  const req = event.request;
+    const text = await file.text();
+    const parsed = JSON.parse(text);
 
-  if (req.mode === "navigate") {
-    event.respondWith(
-      fetch(req)
-        .then((response) => {
-          const copy = response.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put("/index.html", copy));
-          return response;
-        })
-        .catch(() => caches.match("/index.html"))
-    );
-    return;
+    if (!parsed || !parsed.data) {
+      throw new Error("Archivo GSX inválido");
+    }
+
+    await saveImportedData(parsed.data);
+
+    setExportStatus("✅ Respaldo importado");
+    showToast("Respaldo GSX importado correctamente");
+  } catch (err) {
+    console.error(err);
+    setExportStatus("❌ Error importando GSX");
+    alert("No se pudo importar el respaldo GSX.");
+  } finally {
+    event.target.value = "";
   }
-
-  event.respondWith(
-    caches.match(req).then((cached) => {
-      const fetchPromise = fetch(req)
-        .then((networkResponse) => {
-          if (networkResponse && networkResponse.status === 200) {
-            const copy = networkResponse.clone();
-            caches.open(CACHE_NAME).then((cache) => cache.put(req, copy));
-          }
-          return networkResponse;
-        })
-        .catch(() => cached);
-
-      return cached || fetchPromise;
-    })
-  );
-});
+}
+</script>
