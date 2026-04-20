@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Rescate GSX</title>
+  <style>
+    :root{--rojo:#d40000;--gris:#f5f5f5;--borde:#dedede;--texto:#1f1f1f;--muted:#6a6a6a;--card:#fff;}
+    *{box-sizing:border-box;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+    body{margin:0;background:var(--gris);color:var(--texto)}
+    header{background:linear-gradient(135deg,var(--rojo),#ff3a3a);color:#fff;padding:16px}
+    h1{margin:0;font-size:20px}
+    main{max-width:760px;margin:0 auto;padding:16px}
+    .card{background:var(--card);border:1px solid var(--borde);border-radius:18px;padding:18px;margin:14px 0;box-shadow:0 10px 26px rgba(0,0,0,.08)}
+    .muted{color:var(--muted);font-size:14px;line-height:1.45}
+    .btnrow{display:flex;flex-wrap:wrap;gap:12px;margin-top:14px}
+    button,a.btn{border:0;border-radius:14px;padding:14px 16px;font-weight:800;background:var(--rojo);color:#fff;cursor:pointer;font-size:15px;text-decoration:none;display:inline-flex;align-items:center;justify-content:center}
+    button.secondary,a.secondary{background:#fff;color:#111;border:1px solid var(--borde)}
+    button:disabled{opacity:.45;cursor:not-allowed}
+    pre{background:#111;color:#f4f4f4;padding:12px;border-radius:14px;overflow:auto;font-size:12px;white-space:pre-wrap}
+    .ok{color:#0a7c2f;font-weight:700}
+    .err{color:#b00020;font-weight:700}
+  </style>
+</head>
+<body>
+<header>
+  <h1>📦 Rescate GSX</h1>
+</header>
+<main>
+  <div class="card">
+    <div class="muted">Esta página no carga toda la app. Solo intenta leer <b>localStorage</b> e <b>IndexedDB</b> del mismo dominio para sacar un respaldo JSON. Úsala en el celular que tiene la información.</div>
+    <div class="btnrow">
+      <button id="btnRescate">Generar respaldo</button>
+      <a id="manualLink" class="btn secondary" href="#" download style="display:none">Descargar respaldo</a>
+    </div>
+    <div id="estado" class="muted" style="margin-top:12px">Esperando…</div>
+  </div>
+
+  <div class="card">
+    <div><b>Detalle técnico</b></div>
+    <pre id="log"></pre>
+  </div>
+</main>
+
+<script>
+const logEl = document.getElementById("log");
+const estadoEl = document.getElementById("estado");
+const manualLink = document.getElementById("manualLink");
+function log(msg){
+  console.log(msg);
+  logEl.textContent += msg + "\n";
+}
+function setEstado(msg, cls=""){
+  estadoEl.className = "muted " + cls;
+  estadoEl.textContent = msg;
+}
+function sleep(ms){ return new Promise(r=>setTimeout(r, ms)); }
+
+async function openDbByName(name){
+  return await new Promise((resolve) => {
+    let req;
+    try{
+      req = indexedDB.open(name);
+    }catch(e){
+      log("No se pudo abrir " + name + ": " + e.message);
+      return resolve(null);
+    }
+    req.onsuccess = e => resolve(e.target.result);
+    req.onerror = () => resolve(null);
+    req.onblocked = () => resolve(null);
+  });
+}
+
+async function readDb(db){
+  const out = {};
+  const names = Array.from(db.objectStoreNames || []);
+  if(!names.length){
+    db.close();
+    return out;
+  }
+
+  for(const storeName of names){
+    out[storeName] = await new Promise((resolve) => {
+      try{
+        const tx = db.transaction(storeName, "readonly");
+        const store = tx.objectStore(storeName);
+        const req = store.getAll();
+        req.onsuccess = () => resolve(req.result || []);
+        req.onerror = () => resolve([]);
+      }catch(e){
+        resolve([]);
+      }
+    });
+    log(`Store ${storeName}: ${out[storeName].length} registros`);
+    await sleep(20);
+  }
+
+  db.close();
+  return out;
+}
+
+async function generarRespaldo(){
+  try{
+    document.getElementById("btnRescate").disabled = true;
+    logEl.textContent = "";
+    manualLink.style.display = "none";
+    setEstado("Leyendo datos...", "");
+
+    const respaldo = {
+      fecha: new Date().toISOString(),
+      origen: location.origin,
+      localStorage: {},
+      indexedDB: {}
+    };
+
+    for(let i=0;i<localStorage.length;i++){
+      const key = localStorage.key(i);
+      respaldo.localStorage[key] = localStorage.getItem(key);
+    }
+    log("localStorage keys: " + Object.keys(respaldo.localStorage).length);
+
+    const posiblesDB = [
+      "gs_dx_db_v1",
+      "GSX",
+      "GSX_DB",
+      "Diagnosticos",
+      "DiagnosticosDB",
+      "AppDB",
+      "DB",
+      "database",
+      "localforage",
+      "keyval-store"
+    ];
+
+    for(const nombre of posiblesDB){
+      setEstado("Leyendo IndexedDB: " + nombre + " ...");
+      const db = await openDbByName(nombre);
+      if(!db){
+        log("DB no accesible o no existe: " + nombre);
+        continue;
+      }
+      log("DB abierta: " + nombre);
+      respaldo.indexedDB[nombre] = await readDb(db);
+    }
+
+    const texto = JSON.stringify(respaldo, null, 2);
+    const blob = new Blob([texto], {type:"application/json"});
+    const stamp = new Date().toISOString().slice(0,19).replace(/[:T]/g,"-");
+    const filename = "RESCATE_GSX_" + stamp + ".json";
+    const url = URL.createObjectURL(blob);
+
+    manualLink.href = url;
+    manualLink.download = filename;
+    manualLink.style.display = "inline-flex";
+
+    const file = new File([blob], filename, {type:"application/json"});
+    if(navigator.canShare && navigator.canShare({files:[file]})){
+      try{
+        await navigator.share({
+          files:[file],
+          title:"Rescate GSX",
+          text:"Respaldo de GS Diagnósticos"
+        });
+        setEstado("✅ Respaldo generado y compartido", "ok");
+        return;
+      }catch(e){
+        log("Compartir cancelado o no disponible");
+      }
+    }
+
+    try{
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setEstado("✅ Respaldo generado. Si no bajó solo, usa el botón de descarga.", "ok");
+    }catch(e){
+      setEstado("✅ Respaldo listo. Usa el botón de descarga.", "ok");
+    }
+
+  }catch(e){
+    console.error(e);
+    log("ERROR: " + (e && e.message ? e.message : e));
+    setEstado("❌ Error generando respaldo", "err");
+  }finally{
+    document.getElementById("btnRescate").disabled = false;
+  }
+}
+
+document.getElementById("btnRescate").addEventListener("click", generarRespaldo);
+</script>
+</body>
+</html>
