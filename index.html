@@ -1735,17 +1735,33 @@ function loadModExcelFile(){
   }
 })();
 </script>
-  <!-- 🔴 BOTONES DE RESPALDO -->
+  <!-- 🔴 BOTÓN DE RESPALDO -->
 <div class="card" style="margin:12px 14px 18px;">
   <div class="btnrow" style="margin-top:0;">
-    <button type="button" onclick="respaldoTotalGSX()" style="width:100%;">📦 RESPALDO TOTAL GSX</button>
+    <button id="btnBackupGSX" type="button" style="width:100%;">📦 RESPALDO TOTAL GSX</button>
   </div>
   <div id="exportStatus" style="margin-top:8px;font-size:13px;color:#666;min-height:18px;font-weight:600;"></div>
 </div>
 
 <script>
+function setExportStatus(msg){
+  const el = document.getElementById("exportStatus");
+  if(el) el.textContent = msg || "";
+}
+
 async function respaldoTotalGSX() {
+  const btn = document.getElementById("btnBackupGSX");
+  const oldText = btn ? btn.textContent : "📦 RESPALDO TOTAL GSX";
+
   try {
+    if (btn) {
+      btn.disabled = true;
+      btn.textContent = "GENERANDO RESPALDO...";
+    }
+
+    setBadge("RESPALDANDO… 📦");
+    setExportStatus("Leyendo datos locales...");
+
     const respaldo = {
       fecha: new Date().toISOString(),
       localStorage: {},
@@ -1772,6 +1788,7 @@ async function respaldoTotalGSX() {
 
     for (const nombre of posiblesDB) {
       try {
+        setExportStatus(`Leyendo base ${nombre}...`);
         await new Promise((resolve) => {
           const req = indexedDB.open(nombre);
 
@@ -1802,6 +1819,7 @@ async function respaldoTotalGSX() {
               };
 
               getAll.onerror = function () {
+                respaldo.indexedDB[nombre][storeName] = [];
                 pendientes--;
                 if (pendientes === 0) {
                   db.close();
@@ -1820,31 +1838,81 @@ async function respaldoTotalGSX() {
       }
     }
 
-    const blob = new Blob(
-      [JSON.stringify(respaldo, null, 2)],
-      { type: "application/json" }
-    );
+    setExportStatus("Construyendo archivo JSON...");
+    const json = JSON.stringify(respaldo, null, 2);
+    const blob = new Blob([json], { type: "application/json" });
 
+    const stamp = new Date().toISOString().slice(0,19).replace(/[:T]/g,"-");
+    const fileName = `GSX_BACKUP_COMPLETO_${stamp}.json`;
+    const file = new File([blob], fileName, { type: "application/json" });
+
+    // 1) Compartir archivo si el teléfono lo permite
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      try {
+        setExportStatus("Abriendo compartir...");
+        await navigator.share({
+          files: [file],
+          title: "Respaldo GSX",
+          text: "Respaldo de GS Diagnósticos"
+        });
+        setBadge("LISTO ✅");
+        setExportStatus("✅ Respaldo compartido");
+        toast("Respaldo compartido ✅");
+        return;
+      } catch (shareErr) {
+        console.log("Share cancelado o no disponible:", shareErr);
+      }
+    }
+
+    // 2) Intento de descarga automática
+    setExportStatus("Preparando descarga...");
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = "GSX_BACKUP_COMPLETO.json";
+    a.download = fileName;
+    a.rel = "noopener";
+    a.style.display = "none";
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
-    setTimeout(() => URL.revokeObjectURL(url), 1500);
 
-    alert("✅ Respaldo COMPLETO generado");
+    // 3) Fallback visual: usar el modal existente
+    const link = document.getElementById("dlLink");
+    const modal = document.getElementById("dlModal");
+    if (link && modal) {
+      link.href = url;
+      link.download = fileName;
+      link.textContent = "DESCARGAR RESPALDO GSX";
+      modal.style.display = "flex";
+    } else {
+      setTimeout(() => window.open(url, "_blank"), 500);
+    }
+
+    setTimeout(() => URL.revokeObjectURL(url), 60000);
+
+    setBadge("LISTO ✅");
+    setExportStatus("✅ Respaldo listo");
+    toast("Respaldo listo ✅");
 
   } catch (error) {
     console.error(error);
-    alert("❌ Error en respaldo");
+    setBadge("LISTO ✅");
+    setExportStatus("❌ Error en respaldo");
+    toast("Error en respaldo ❌");
+    alert("No se pudo generar el respaldo.");
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.textContent = oldText;
+    }
   }
 }
 
 function respaldarDatosGSX(){
   return respaldoTotalGSX();
 }
+
+document.getElementById("btnBackupGSX")?.addEventListener("click", respaldoTotalGSX);
 </script>
 </body>
 </html>
