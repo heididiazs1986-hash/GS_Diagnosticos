@@ -140,13 +140,17 @@
         <div><label>Tipo de Redes BT</label>
           <select id="est_tipo_red_bt" required><option value="">Selecciona…</option><option>Abierta</option><option>Trenzada</option></select>
         </div>
-        <div><label>Luminarias (AP)</label><input id="est_luminarias" inputmode="numeric" placeholder="0" required></div>
+        <div><label>Luminarias (AP)</label><input id="est_luminarias" inputmode="numeric" placeholder="0" value="0"></div>
       </div>
 
       <div class="grid four">
         <div><label>Latitud (Y)</label><input id="est_lat" readonly placeholder="GPS"></div>
         <div><label>Longitud (X)</label><input id="est_lon" readonly placeholder="GPS"></div>
         <div><label>Precisión (m)</label><input id="est_acc" readonly placeholder="GPS"></div>
+        <div class="btnrow" style="margin:0;align-items:end;"><button class="secondary" id="est_btnGPS" type="button">📍 Coordenadas</button></div>
+      </div>
+
+      <div class="grid">
         <div><label>Fotos</label><input id="est_fotos" type="file" accept="image/*" multiple data-max="7"></div>
       </div>
 
@@ -161,7 +165,6 @@
       </div>
 
       <div class="btnrow">
-        <button class="secondary" id="est_btnGPS" type="button">📍 Coordenadas</button>
         <button class="ok" id="btnGuardarEstructura" type="button">Guardar</button>
       </div>
     </div>
@@ -251,7 +254,7 @@
         </div>
         <div class="chips">
           <label class="chip"><input type="checkbox" id="unc_predio_habitable"> ¿PREDIO HABITABLE?</label>
-          <label class="chip"><input type="checkbox" id="unc_ampliacion_redes"> PARA SERVICIO REQUIERE AMPLIACIÓN DE REDES</label>
+          
         </div>
       </div>
 
@@ -302,6 +305,7 @@
 
       <div class="sectionLabel">Revisión norma técnica</div>
       <div class="checklist">
+        <label class="checkItem"><input type="checkbox" id="unc_ampliacion_redes"> <span>PARA SERVICIO REQUIERE AMPLIACIÓN DE REDES</span></label>
         <label class="checkItem"><input type="checkbox" id="unc_requiere_muro"> <span>¿REQUIERE CONSTRUIR MURO?</span></label>
         <label class="checkItem"><input type="checkbox" id="unc_arriostre"> <span>¿REQUIERE USO DE ARRIOSTRE?</span></label>
         <label class="checkItem"><input type="checkbox" id="unc_acometida"> <span>ACOMETIDA</span></label>
@@ -338,7 +342,7 @@
 
       <div class="grid three">
         <div><label>Serie de medidor</label><input id="cli_serie" inputmode="numeric" required></div>
-        <div><label>Marca de medidor</label><input id="cli_marca" required></div>
+        <div><label>Marca de medidor</label><select id="cli_marca" required><option value="">Selecciona…</option><option>@METER</option><option>ABB</option><option>ACTARIS</option><option>AEG</option><option>ALDANA</option><option>Car-1</option><option>CDM</option><option>CHINT</option><option>COMPLANT</option><option>ELGAMA</option><option>ELSTER</option><option>ENEL</option><option>ESTROM</option><option>GALILEO</option><option>GAUGETECH</option><option>GOMELONG</option><option>HEXCELL</option><option>HEXING</option><option>HIKING</option><option>HOLLEY</option><option>INHEMETER</option><option>ISKRA</option><option>ITRON</option><option>KRIZIK</option><option>LANDIS</option><option>METCOM</option><option>MICROSTAR</option><option>NANSEN</option><option>NINGBO</option><option>OSAKI</option><option>PAFAL</option><option>SCHLUMBERGER</option><option>SCORPION</option><option>SIEMENS</option><option>SKAITEKS</option><option>SUMMETER</option><option>SUNRISE</option><option>TECUN</option><option>TR-CEICA/ME-WINSKY</option><option>WASION</option><option>WINSKY</option></select></div>
         <div><label>No. Fases</label><select id="cli_fases" required><option value="">Selecciona…</option><option>Monofásico</option><option>Bifásico</option><option>Trifásico</option></select></div>
       </div>
 
@@ -522,8 +526,11 @@
   <div class="modalCard">
     <div style="font-weight:900;font-size:16px;">Actualizar registro</div>
     <div class="vBtns" id="updPick">
+      <button class="secondary" id="updEST" type="button">ESTRUCTURAS</button>
       <button class="secondary" id="updUNC" type="button">UNC</button>
       <button class="secondary" id="updCLI" type="button">CLIENTE</button>
+      <button class="secondary" id="updSUS" type="button">SUSPENSIÓN</button>
+      <button class="secondary" id="updBAL" type="button">BALDÍOS</button>
       <button class="secondary" id="updClose" type="button">Cerrar</button>
     </div>
     <div id="updListWrap" style="display:none;margin-top:10px;">
@@ -662,6 +669,125 @@ function restoreLastLocalidad(){
     $("unc_localidad").value = saved;
   }
 }
+
+const METER_BRANDS = ["@METER", "ABB", "ACTARIS", "AEG", "ALDANA", "Car-1", "CDM", "CHINT", "COMPLANT", "ELGAMA", "ELSTER", "ENEL", "ESTROM", "GALILEO", "GAUGETECH", "GOMELONG", "HEXCELL", "HEXING", "HIKING", "HOLLEY", "INHEMETER", "ISKRA", "ITRON", "KRIZIK", "LANDIS", "METCOM", "MICROSTAR", "NANSEN", "NINGBO", "OSAKI", "PAFAL", "SCHLUMBERGER", "SCORPION", "SIEMENS", "SKAITEKS", "SUMMETER", "SUNRISE", "TECUN", "TR-CEICA/ME-WINSKY", "WASION", "WINSKY"];
+function isStandaloneMode(){
+  return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true || document.referrer.startsWith('android-app://');
+}
+function updateInstallStateUI(){
+  const mode = isStandaloneMode() ? 'APP INSTALADA ✅' : 'MODO ENLACE 🌐';
+  setBadge(mode);
+}
+async function requestPersistentStorage(){
+  try{
+    if(navigator.storage && navigator.storage.persist){ await navigator.storage.persist(); }
+  }catch(e){}
+}
+function clearFileInput(id){ const el=$(id); if(el) el.value=''; }
+function setSelectIfExists(id, value){ const el=$(id); if(el) el.value = value || ''; }
+function setCheckbox(id, checked){ const el=$(id); if(el) el.checked = !!checked; }
+function saveDraft(formKey, data){
+  try{ localStorage.setItem(`gsdx_draft_${formKey}`, JSON.stringify({savedAt:new Date().toISOString(), data})); }catch(e){}
+}
+function getDraft(formKey){
+  try{ const raw=localStorage.getItem(`gsdx_draft_${formKey}`); return raw?JSON.parse(raw).data||{}:{}; }catch(e){ return {}; }
+}
+function clearDraft(formKey){ try{ localStorage.removeItem(`gsdx_draft_${formKey}`); }catch(e){} }
+function collectFormValues(selectors){
+  const out={};
+  selectors.forEach(id=>{
+    const el=$(id); if(!el) return;
+    if(el.type==='checkbox') out[id]=!!el.checked;
+    else out[id]=el.value || '';
+  });
+  return out;
+}
+function applyFormValues(values){
+  Object.entries(values||{}).forEach(([id,val])=>{
+    const el=$(id); if(!el) return;
+    if(el.type==='checkbox') el.checked = !!val;
+    else el.value = val || '';
+  });
+}
+function bindDraftAutosave(formKey, selectors){
+  selectors.forEach(id=>{
+    const el=$(id); if(!el) return;
+    const ev = (el.type==='checkbox' || el.tagName==='SELECT') ? 'change' : 'input';
+    el.addEventListener(ev, ()=>saveDraft(formKey, collectFormValues(selectors)));
+  });
+}
+function restoreDraft(formKey, defaults={}){
+  applyFormValues({...defaults, ...getDraft(formKey)});
+}
+function clearEstructuraForm(){
+  setSelectIfExists('est_tipo_nodo','');
+  setSelectIfExists('est_material_nodo','');
+  fillCaracteristicas($('est_tipo_nodo'),$('est_material_nodo'),$('est_caracteristicas'));
+  setSelectIfExists('est_caracteristicas','');
+  $('est_punto_fisico').value='';
+  setSelectIfExists('est_tipo_red_bt','');
+  $('est_luminarias').value='0';
+  $('est_lat').value=''; $('est_lon').value=''; $('est_acc').value='';
+  $('est_obs').value='';
+  clearFileInput('est_fotos');
+  clearDraft('estructuras');
+}
+function clearUNCForm(preserve=true){
+  const keep = preserve ? {unc_pf:$('unc_pf').value, unc_sede:$('unc_sede').value, unc_municipio:$('unc_municipio').value, unc_localidad:$('unc_localidad').value, unc_tipo_zona:$('unc_tipo_zona').value} : {};
+  ['unc_nombres','unc_identificacion','unc_contacto','unc_direccion','unc_lat','unc_lon','unc_acc','unc_obs'].forEach(id=>$(id).value='');
+  ['unc_tipo_material','unc_tipo_poblacion','unc_estado','unc_doc_propiedad'].forEach(id=>setSelectIfExists(id,''));
+  ['unc_predio_habitable','unc_ampliacion_redes','unc_e1','unc_ar','unc_dj','unc_e6','unc_ec_part','unc_doc_elec','unc_retie','unc_ec_inmel','unc_requiere_muro','unc_arriostre','unc_acometida','unc_ducto','unc_celda','unc_interruptor','unc_spt','unc_inst_interna'].forEach(id=>setCheckbox(id,false));
+  clearFileInput('unc_fotos');
+  applyFormValues(keep);
+  saveDraft('unc', keep);
+}
+function clearClienteForm(preserve=true){
+  const keep = preserve ? {cli_pf:$('cli_pf').value} : {};
+  ['cli_serie','cli_lat','cli_lon','cli_acc','cli_obs'].forEach(id=>$(id).value='');
+  ['cli_marca','cli_fases','cli_estado_medidor','cli_estado_visor'].forEach(id=>setSelectIfExists(id,''));
+  setCheckbox('cli_req_inspeccion', false);
+  clearFileInput('cli_fotos');
+  applyFormValues(keep);
+  saveDraft('cliente', keep);
+}
+function clearSuspForm(preserve=true){
+  const keep = preserve ? {sus_pf:$('sus_pf').value} : {};
+  ['sus_lat','sus_lon','sus_acc','sus_obs'].forEach(id=>$(id).value='');
+  setSelectIfExists('sus_motivo','');
+  clearFileInput('sus_fotos');
+  applyFormValues(keep);
+  saveDraft('susp', keep);
+}
+function clearBaldioForm(preserve=true){
+  const keep = preserve ? {bal_pf:$('bal_pf').value} : {};
+  ['bal_lat','bal_lon','bal_acc','bal_obs'].forEach(id=>$(id).value='');
+  setSelectIfExists('bal_estado','');
+  clearFileInput('bal_fotos');
+  applyFormValues(keep);
+  saveDraft('baldio', keep);
+}
+async function updateSilentAutoBackup(reason='auto'){
+  try{
+    const [estructuras,unc,clientes,susp,baldios] = await Promise.all([getAll('estructuras'),getAll('unc'),getAll('clientes'),getAll('susp'),getAll('baldios')]);
+    const snapshot = {reason, fecha:new Date().toISOString(), activeCD, activeCAP, data:{estructuras,unc,clientes,susp,baldios}};
+    localStorage.setItem('gsdx_auto_backup_latest', JSON.stringify(snapshot));
+    await setMeta('auto_backup_latest_at', snapshot.fecha);
+  }catch(e){}
+}
+function bindDraftSystem(){
+  bindDraftAutosave('estructuras',['est_tipo_nodo','est_material_nodo','est_caracteristicas','est_punto_fisico','est_tipo_red_bt','est_luminarias','est_lat','est_lon','est_acc','est_obs']);
+  bindDraftAutosave('unc',['unc_pf','unc_nombres','unc_identificacion','unc_contacto','unc_sede','unc_municipio','unc_direccion','unc_localidad','unc_tipo_zona','unc_tipo_material','unc_tipo_poblacion','unc_estado','unc_lat','unc_lon','unc_acc','unc_doc_propiedad','unc_predio_habitable','unc_ampliacion_redes','unc_e1','unc_ar','unc_dj','unc_e6','unc_ec_part','unc_doc_elec','unc_retie','unc_ec_inmel','unc_requiere_muro','unc_arriostre','unc_acometida','unc_ducto','unc_celda','unc_interruptor','unc_spt','unc_inst_interna','unc_obs']);
+  bindDraftAutosave('cliente',['cli_pf','cli_serie','cli_marca','cli_fases','cli_lat','cli_lon','cli_acc','cli_estado_medidor','cli_req_inspeccion','cli_estado_visor','cli_obs']);
+  bindDraftAutosave('susp',['sus_pf','sus_lat','sus_lon','sus_acc','sus_motivo','sus_obs']);
+  bindDraftAutosave('baldio',['bal_pf','bal_estado','bal_lat','bal_lon','bal_acc','bal_obs']);
+}
+window.addEventListener('beforeunload', ()=>{
+  saveDraft('estructuras', collectFormValues(['est_tipo_nodo','est_material_nodo','est_caracteristicas','est_punto_fisico','est_tipo_red_bt','est_luminarias','est_lat','est_lon','est_acc','est_obs']));
+  saveDraft('unc', collectFormValues(['unc_pf','unc_nombres','unc_identificacion','unc_contacto','unc_sede','unc_municipio','unc_direccion','unc_localidad','unc_tipo_zona','unc_tipo_material','unc_tipo_poblacion','unc_estado','unc_lat','unc_lon','unc_acc','unc_doc_propiedad','unc_predio_habitable','unc_ampliacion_redes','unc_e1','unc_ar','unc_dj','unc_e6','unc_ec_part','unc_doc_elec','unc_retie','unc_ec_inmel','unc_requiere_muro','unc_arriostre','unc_acometida','unc_ducto','unc_celda','unc_interruptor','unc_spt','unc_inst_interna','unc_obs']));
+  saveDraft('cliente', collectFormValues(['cli_pf','cli_serie','cli_marca','cli_fases','cli_lat','cli_lon','cli_acc','cli_estado_medidor','cli_req_inspeccion','cli_estado_visor','cli_obs']));
+  saveDraft('susp', collectFormValues(['sus_pf','sus_lat','sus_lon','sus_acc','sus_motivo','sus_obs']));
+  saveDraft('baldio', collectFormValues(['bal_pf','bal_estado','bal_lat','bal_lon','bal_acc','bal_obs']));
+});
 
 /* =================== Características Nodo (dependiente) =================== */
 const caracteristicas = {
@@ -937,7 +1063,7 @@ async function buildEstructura(){
     Fotos:[]
   };
 
-  if(!obj.TipoNodo || !obj.MaterialNodo || !obj.CaracteristicasNodo || !obj.PuntoFisico || !obj.TipoRedBT || !obj.Luminarias || !obj.Observaciones){
+  if(!obj.TipoNodo || !obj.MaterialNodo || !obj.CaracteristicasNodo || !obj.PuntoFisico || !obj.TipoRedBT || !obj.Observaciones){
     toast("Faltan campos en ESTRUCTURAS");
     return null;
   }
@@ -1210,13 +1336,8 @@ async function registerSW(){
   try{
     if(location.protocol==="file:") return;
     if(!("serviceWorker" in navigator)) return;
-    const reg = await navigator.serviceWorker.register("/sw.js", { updateViaCache: "none" });
+    const reg = await navigator.serviceWorker.register("/sw.js?v=blindaje3", { updateViaCache: "none" });
     await reg.update();
-    let reloaded=false;
-    navigator.serviceWorker.addEventListener("controllerchange",()=>{
-      if(reloaded) return; reloaded=true;
-      window.location.reload();
-    });
   }catch(e){}
 }
 
@@ -1233,8 +1354,7 @@ function wireEvents(){
   // CD SIEMPRE mayúscula alfanumérica
   $("cdInput").addEventListener("input", e=>e.target.value=upperAlnum(e.target.value));
   $("est_punto_fisico").addEventListener("input", e=>e.target.value=upperAlnum(e.target.value));
-  $("cli_marca").addEventListener("input", e=>e.target.value=upperAlnum(e.target.value));
-  $("unc_localidad").addEventListener("input", e=>{ e.target.value=upperText(e.target.value); rememberLastLocalidad(e.target.value); });
+    $("unc_localidad").addEventListener("input", e=>{ e.target.value=upperText(e.target.value); rememberLastLocalidad(e.target.value); });
   $("unc_direccion").addEventListener("input", e=>e.target.value=upperText(e.target.value));
   $("unc_ec_part").addEventListener("change", ()=>{
     if($("unc_ec_part").checked) $("unc_ec_inmel").checked=false;
@@ -1277,18 +1397,10 @@ function wireEvents(){
     }
     updateActiveUI();
     await refreshPFSelectors();
+    await updateSilentAutoBackup(editCtx && editCtx.store==="estructuras" ? "update_estructura" : "save_estructura");
     toast("Guardado ✅");
-
-    // limpieza
-    $("est_tipo_nodo").value="";
-    $("est_material_nodo").value="";
-    fillCaracteristicas($("est_tipo_nodo"),$("est_material_nodo"),$("est_caracteristicas"));
-    $("est_punto_fisico").value="";
-    $("est_tipo_red_bt").value="";
-    $("est_luminarias").value="";
-    $("est_lat").value=""; $("est_lon").value=""; $("est_acc").value="";
-    $("est_obs").value="";
-    $("est_fotos").value="";
+    editCtx=null;
+    clearEstructuraForm();
   });
 
   // nav
@@ -1307,10 +1419,10 @@ function wireEvents(){
   $("modExcelSearch").addEventListener("input", renderModExcelTable);
 
   // open forms
-  $("btnUNC").addEventListener("click", async ()=>{ resetForms(); await refreshPFSelectors(); $("formUNC").style.display=""; restoreLastLocalidad(); });
-  $("btnCliente").addEventListener("click", async ()=>{ resetForms(); await refreshPFSelectors(); $("formCliente").style.display=""; });
-  $("btnSusp").addEventListener("click", async ()=>{ resetForms(); await refreshPFSelectors(); $("formSusp").style.display=""; });
-  $("btnBaldio").addEventListener("click", async ()=>{ resetForms(); await refreshPFSelectors(); $("formBaldio").style.display=""; });
+  $("btnUNC").addEventListener("click", async ()=>{ resetForms(); await refreshPFSelectors(); $("formUNC").style.display=""; restoreLastLocalidad(); restoreDraft("unc", {unc_pf:$("unc_pf").value, unc_sede:$("unc_sede").value, unc_municipio:$("unc_municipio").value, unc_localidad:$("unc_localidad").value, unc_tipo_zona:$("unc_tipo_zona").value}); });
+  $("btnCliente").addEventListener("click", async ()=>{ resetForms(); await refreshPFSelectors(); $("formCliente").style.display=""; restoreDraft("cliente", {cli_pf:$("cli_pf").value}); });
+  $("btnSusp").addEventListener("click", async ()=>{ resetForms(); await refreshPFSelectors(); $("formSusp").style.display=""; restoreDraft("susp", {sus_pf:$("sus_pf").value}); });
+  $("btnBaldio").addEventListener("click", async ()=>{ resetForms(); await refreshPFSelectors(); $("formBaldio").style.display=""; restoreDraft("baldio", {bal_pf:$("bal_pf").value}); });
 
   // cancel
   $("btnCancelUNC").addEventListener("click", ()=>resetForms());
@@ -1329,8 +1441,11 @@ function wireEvents(){
     const item=(editCtx && editCtx.store==="unc" && prev) ? (prev.item || await nextItem("unc")) : await nextItem("unc");
     if(editCtx && editCtx.store==="unc"){ await putRec("unc",{...prev,...obj,id:editCtx.id,item}); editCtx=null; }
     else { await addRec("unc",{...obj,item}); }
+    await updateSilentAutoBackup("save_unc");
     toast("Guardado ✅");
+    clearUNCForm(true);
     resetForms();
+    $("formUNC").style.display="";
     $("modalAfterSave").style.display="flex";
   });
 
@@ -1344,8 +1459,11 @@ function wireEvents(){
     const item=(editCtx && editCtx.store==="clientes" && prev) ? (prev.item || await nextItem("clientes")) : await nextItem("clientes");
     if(editCtx && editCtx.store==="clientes"){ await putRec("clientes",{...prev,...obj,id:editCtx.id,item}); editCtx=null; }
     else { await addRec("clientes",{...obj,item}); }
+    await updateSilentAutoBackup("save_cliente");
     toast("Guardado ✅");
+    clearClienteForm(true);
     resetForms();
+    $("formCliente").style.display="";
     $("modalAfterSave").style.display="flex";
   });
 
@@ -1353,11 +1471,17 @@ function wireEvents(){
     if(!validateSection("formSusp")) return;
     if(!(activeCD&&activeCAP)) return toast("Sin CD activo");
     const obj=await buildSusp(); if(!obj) return;
-    obj.Fotos=await readFiles($("sus_fotos"));
-    const item=await nextItem("susp");
-    await addRec("susp",{...obj,item});
+    const fotosNuevas=await readFiles($("sus_fotos"));
+    const prev = (editCtx && editCtx.store==="susp") ? await getById("susp", editCtx.id) : null;
+    obj.Fotos=fotosNuevas.length ? fotosNuevas : ((prev && prev.Fotos) || []);
+    const item=(editCtx && editCtx.store==="susp" && prev) ? (prev.item || await nextItem("susp")) : await nextItem("susp");
+    if(editCtx && editCtx.store==="susp"){ await putRec("susp",{...prev,...obj,id:editCtx.id,item}); editCtx=null; }
+    else { await addRec("susp",{...obj,item}); }
+    await updateSilentAutoBackup("save_susp");
     toast("Guardado ✅");
+    clearSuspForm(true);
     resetForms();
+    $("formSusp").style.display="";
     $("modalAfterSave").style.display="flex";
   });
 
@@ -1365,19 +1489,25 @@ function wireEvents(){
     if(!validateSection("formBaldio")) return;
     if(!(activeCD&&activeCAP)) return toast("Sin CD activo");
     const obj=await buildBaldio(); if(!obj) return;
-    obj.Fotos=await readFiles($("bal_fotos"));
-    const item=await nextItem("baldios");
-    await addRec("baldios",{...obj,item});
+    const fotosNuevas=await readFiles($("bal_fotos"));
+    const prev = (editCtx && editCtx.store==="baldios") ? await getById("baldios", editCtx.id) : null;
+    obj.Fotos=fotosNuevas.length ? fotosNuevas : ((prev && prev.Fotos) || []);
+    const item=(editCtx && editCtx.store==="baldios" && prev) ? (prev.item || await nextItem("baldios")) : await nextItem("baldios");
+    if(editCtx && editCtx.store==="baldios"){ await putRec("baldios",{...prev,...obj,id:editCtx.id,item}); editCtx=null; }
+    else { await addRec("baldios",{...obj,item}); }
+    await updateSilentAutoBackup("save_baldio");
     toast("Guardado ✅");
+    clearBaldioForm(true);
     resetForms();
+    $("formBaldio").style.display="";
     $("modalAfterSave").style.display="flex";
   });
 
   // after save modal
-  $("goUNC").addEventListener("click", async ()=>{ $("modalAfterSave").style.display="none"; resetForms(); await refreshPFSelectors(); show("screen2"); $("formUNC").style.display=""; restoreLastLocalidad(); });
-  $("goCLI").addEventListener("click", async ()=>{ $("modalAfterSave").style.display="none"; resetForms(); await refreshPFSelectors(); show("screen2"); $("formCliente").style.display=""; });
-  $("goSUS").addEventListener("click", async ()=>{ $("modalAfterSave").style.display="none"; resetForms(); await refreshPFSelectors(); show("screen2"); $("formSusp").style.display=""; });
-  $("goBAL").addEventListener("click", async ()=>{ $("modalAfterSave").style.display="none"; resetForms(); await refreshPFSelectors(); show("screen2"); $("formBaldio").style.display=""; });
+  $("goUNC").addEventListener("click", async ()=>{ $("modalAfterSave").style.display="none"; resetForms(); await refreshPFSelectors(); show("screen2"); $("formUNC").style.display=""; restoreLastLocalidad(); restoreDraft("unc", {unc_pf:$("unc_pf").value, unc_sede:$("unc_sede").value, unc_municipio:$("unc_municipio").value, unc_localidad:$("unc_localidad").value, unc_tipo_zona:$("unc_tipo_zona").value}); });
+  $("goCLI").addEventListener("click", async ()=>{ $("modalAfterSave").style.display="none"; resetForms(); await refreshPFSelectors(); show("screen2"); $("formCliente").style.display=""; restoreDraft("cliente", {cli_pf:$("cli_pf").value}); });
+  $("goSUS").addEventListener("click", async ()=>{ $("modalAfterSave").style.display="none"; resetForms(); await refreshPFSelectors(); show("screen2"); $("formSusp").style.display=""; restoreDraft("susp", {sus_pf:$("sus_pf").value}); });
+  $("goBAL").addEventListener("click", async ()=>{ $("modalAfterSave").style.display="none"; resetForms(); await refreshPFSelectors(); show("screen2"); $("formBaldio").style.display=""; restoreDraft("baldio", {bal_pf:$("bal_pf").value}); });
   $("goNO").addEventListener("click", ()=>{ $("modalAfterSave").style.display="none"; resetForms(); show("screen1"); });
 
   // export
@@ -1390,7 +1520,7 @@ function wireEvents(){
     toast(`Estructuras: ${a} | UNC: ${b} | Clientes: ${c} | Susp: ${d} | Baldíos: ${e}`);
   });
 
-  // Update modal (UNC + CLIENTE)
+  // Update modal (TODOS LOS FORMULARIOS)
   $("btnActualizar").addEventListener("click", ()=>{ $("modalUpdate").style.display="flex"; $("updPick").style.display="flex"; $("updListWrap").style.display="none"; });
   $("updClose").addEventListener("click", ()=>{ $("modalUpdate").style.display="none"; });
   $("updBack").addEventListener("click", ()=>{ $("updPick").style.display="flex"; $("updListWrap").style.display="none"; });
@@ -1402,15 +1532,22 @@ function wireEvents(){
     const filtered=all.filter(r=>String(r.Transformador||"")===String(activeCD||""));
     const sel=$("updSelect");
     sel.innerHTML = `<option value="">Selecciona…</option>` + filtered.map(r=>{
-      const key = store==="unc" ? (r.Nombres||"") : (r.SerieMedidor||"");
-      const pf = r.PuntoFisico||"";
-      return `<option value="${r.id}">${pf} | ${key} | ID:${r.id}</option>`;
+      let key = r.PuntoFisico || "";
+      if(store==="unc") key = `${r.PuntoFisico||""} | ${r.Nombres||""}`;
+      else if(store==="clientes") key = `${r.PuntoFisico||""} | ${r.SerieMedidor||""}`;
+      else if(store==="estructuras") key = `${r.PuntoFisico||""} | ${r.TipoNodo||""}`;
+      else if(store==="susp") key = `${r.PuntoFisico||""} | ${r.Motivo||""}`;
+      else if(store==="baldios") key = `${r.PuntoFisico||""} | ${r.Estado||""}`;
+      return `<option value="${r.id}">${key} | ID:${r.id}</option>`;
     }).join("");
     $("updHint").textContent = filtered.length ? "Selecciona un registro para editar" : "No hay registros en este CD";
     $("updPick").style.display="none"; $("updListWrap").style.display="block";
   }
+  $("updEST").addEventListener("click", ()=>loadUpdList("estructuras"));
   $("updUNC").addEventListener("click", ()=>loadUpdList("unc"));
   $("updCLI").addEventListener("click", ()=>loadUpdList("clientes"));
+  $("updSUS").addEventListener("click", ()=>loadUpdList("susp"));
+  $("updBAL").addEventListener("click", ()=>loadUpdList("baldios"));
   $("updLoad").addEventListener("click", async ()=>{
     const id=Number($("updSelect").value||0);
     if(!id) return toast("Selecciona un registro");
@@ -1420,8 +1557,19 @@ function wireEvents(){
     $("modalUpdate").style.display="none";
     resetForms();
     await refreshPFSelectors();
-    show("screen2");
-    if(updStore==="unc"){
+    if(updStore==="estructuras"){
+      show("screen1");
+      $("est_tipo_nodo").value = rec.TipoNodo||"";
+      $("est_material_nodo").value = rec.MaterialNodo||"";
+      fillCaracteristicas($("est_tipo_nodo"),$("est_material_nodo"),$("est_caracteristicas"));
+      $("est_caracteristicas").value = rec.CaracteristicasNodo||"";
+      $("est_punto_fisico").value = rec.PuntoFisico||"";
+      $("est_tipo_red_bt").value = rec.TipoRedBT||"";
+      $("est_luminarias").value = rec.Luminarias || '0';
+      $("est_lat").value = rec.Latitud||""; $("est_lon").value = rec.Longitud||""; $("est_acc").value = rec.Precision||"";
+      $("est_obs").value = rec.Observaciones||"";
+    } else if(updStore==="unc"){
+      show("screen2");
       $("formUNC").style.display="";
       $("unc_pf").value = rec.PuntoFisico||"";
       $("unc_sede").value = rec.Sede||"";
@@ -1459,7 +1607,8 @@ function wireEvents(){
       $("unc_spt").checked = (rec.SPT==="Sí");
       $("unc_inst_interna").checked = (rec.InstalacionInterna==="Sí");
       $("unc_obs").value = rec.Observaciones||"";
-    } else {
+    } else if(updStore==="clientes") {
+      show("screen2");
       $("formCliente").style.display="";
       $("cli_pf").value = rec.PuntoFisico||"";
       $("cli_serie").value = rec.SerieMedidor||"";
@@ -1470,6 +1619,20 @@ function wireEvents(){
       $("cli_req_inspeccion").checked = (rec.ReqInspeccion==="Sí");
       $("cli_lat").value = rec.Latitud||""; $("cli_lon").value = rec.Longitud||""; $("cli_acc").value = rec.Precision||"";
       $("cli_obs").value = rec.Observaciones||"";
+    } else if(updStore==="susp") {
+      show("screen2");
+      $("formSusp").style.display="";
+      $("sus_pf").value = rec.PuntoFisico||"";
+      $("sus_motivo").value = rec.Motivo||"";
+      $("sus_lat").value = rec.Latitud||""; $("sus_lon").value = rec.Longitud||""; $("sus_acc").value = rec.Precision||"";
+      $("sus_obs").value = rec.Observaciones||"";
+    } else if(updStore==="baldios") {
+      show("screen2");
+      $("formBaldio").style.display="";
+      $("bal_pf").value = rec.PuntoFisico||"";
+      $("bal_estado").value = rec.Estado||"";
+      $("bal_lat").value = rec.Latitud||""; $("bal_lon").value = rec.Longitud||""; $("bal_acc").value = rec.Precision||"";
+      $("bal_obs").value = rec.Observaciones||"";
     }
     toast("Modo edición ✅");
   });
@@ -1727,8 +1890,12 @@ function loadModExcelFile(){
     updateActiveUI();
 
     wireEvents();
+    bindDraftSystem();
+    if(!$("est_luminarias").value) $("est_luminarias").value = "0";
     await registerSW();
-    setBadge("LISTO ✅");
+    await requestPersistentStorage();
+    updateInstallStateUI();
+    window.matchMedia('(display-mode: standalone)').addEventListener?.('change', updateInstallStateUI);
   }catch(e){
     console.error(e);
     toast("Error cargando app");
@@ -1736,7 +1903,7 @@ function loadModExcelFile(){
 })();
 </script>
   <!-- 🔴 BOTÓN DE RESPALDO -->
-<div class="card" style="margin:12px 14px 18px;">
+<div class="card" id="autoBackupCard" style="display:none;margin:12px 14px 18px;">
   <div class="btnrow" style="margin-top:0;">
     <button id="btnBackupGSX" type="button" style="width:100%;">📦 RESPALDO TOTAL GSX</button>
   </div>
