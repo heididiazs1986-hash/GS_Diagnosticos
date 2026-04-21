@@ -10,19 +10,7 @@
   <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
   <link rel="apple-touch-icon" sizes="180x180" href="icon-180.png">
   <style>
-    :root{
-      --rojo:#d40000;
-      --rojo-dark:#b10b0b;
-      --gris:#f3f4f6;
-      --gris-2:#f8fafc;
-      --borde:#e4e7ec;
-      --texto:#1f2937;
-      --muted:#667085;
-      --card:#ffffff;
-      --soft-red:#fff1f2;
-      --shadow:0 8px 24px rgba(15,23,42,.06);
-      --radius:20px;
-    }
+    :root{--rojo:#d40000;--gris:#f5f5f5;--borde:#dedede;--texto:#1f1f1f;--muted:#6a6a6a;--card:#fff;--shadow:0 10px 26px rgba(0,0,0,.08);--radius:18px;}
     *{box-sizing:border-box;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;}
     body{margin:0;background:var(--gris);color:var(--texto);}
     header{position:sticky;top:0;z-index:10;background:linear-gradient(135deg,var(--rojo),#ff3a3a);color:#fff;padding:14px 16px;box-shadow:0 8px 18px rgba(0,0,0,.12);}
@@ -89,70 +77,85 @@
     .vBtns button{width:100%;padding:14px 12px;border-radius:14px;font-size:16px;}
     a.dl{display:inline-flex;justify-content:center;align-items:center;text-decoration:none;}
   
-    .app-shell{padding-top:10px;}
-    header{background:linear-gradient(180deg,var(--rojo),var(--rojo-dark));padding:18px 16px;box-shadow:0 10px 28px rgba(178,17,17,.18);}
-    header h1{font-size:20px;font-weight:900;}
-    header .badge{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.18);font-weight:700;}
-    main{padding:14px;max-width:1180px;margin:0 auto;}
-    .card{border-radius:24px;box-shadow:var(--shadow);border:1px solid var(--borde);background:var(--card);}
-    label{font-size:12px;font-weight:700;letter-spacing:.2px;color:var(--muted);}
-    input,select,textarea{background:var(--gris-2);font-size:16px;border-radius:16px;border-color:var(--borde);color:var(--texto);}
-    input:focus,select:focus,textarea:focus{box-shadow:0 0 0 4px rgba(212,0,0,.08);}
-    .btnrow{gap:10px}
-    button{border-radius:16px;padding:12px 15px;font-size:14px;font-weight:800;letter-spacing:.2px;}
-    button.secondary{background:#fff;color:#344054;border:1px solid var(--borde);}
-    .chip.radioBig{background:var(--soft-red);color:#9f1239;border:1px solid #fecdd3;font-weight:800;}
-    .chip.radioBig:has(input:checked){background:linear-gradient(180deg,var(--rojo),var(--rojo-dark));color:#fff;box-shadow:0 10px 20px rgba(212,0,0,.15);}
-    .sectionLabel{border-top:0;padding-top:0;margin-top:14px}
-    .dashboard-wrap{display:grid;gap:16px;margin-bottom:16px;}
-    .summary-panel,.actions-panel,.sync-panel,.util-panel,.footer-signature{background:var(--card);border:1px solid var(--borde);border-radius:24px;box-shadow:var(--shadow);}
-    .summary-panel,.actions-panel,.sync-panel,.util-panel{padding:18px;}
-    .section-head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:14px;}
-    .section-head h3{margin:0;font-size:15px;font-weight:900;color:var(--texto);}
-    .section-sub{font-size:12px;color:var(--muted);}
-    .summary-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;}
-    .stat-tile{background:var(--gris-2);border:1px solid var(--borde);border-radius:18px;padding:14px;min-height:94px;display:flex;flex-direction:column;justify-content:center;}
-    .stat-tile .mini{font-size:12px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.35px;}
-    .stat-tile .big{font-size:16px;font-weight:900;margin-top:8px;color:var(--texto);}
-    .quick-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;}
-    .quick-btn{border:1px solid var(--borde);background:#fff;border-radius:20px;padding:14px 10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;min-height:92px;cursor:pointer;box-shadow:0 4px 12px rgba(15,23,42,.04);}
-    .quick-btn .icon{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--soft-red);color:var(--rojo);font-size:22px;font-weight:900;}
-    .quick-btn .txt{font-size:13px;font-weight:800;color:var(--texto);text-align:center;line-height:1.2;}
-    .sync-panel{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;}
-    .sync-left{display:flex;gap:14px;align-items:center;min-width:0;}
-    .sync-cloud{width:56px;height:56px;border-radius:18px;background:var(--soft-red);display:flex;align-items:center;justify-content:center;color:var(--rojo);font-size:30px;flex:0 0 auto;}
-    .sync-title{font-size:12px;color:var(--muted);font-weight:800;text-transform:uppercase;letter-spacing:.35px;}
-    .sync-main{font-size:16px;color:#d00000;font-weight:900;margin-top:4px;}
-    .sync-desc{font-size:12px;color:var(--muted);margin-top:6px;line-height:1.4;}
-    .sync-action{background:var(--soft-red);color:var(--rojo);border:1px solid #fecdd3;}
-    .util-list{display:flex;flex-direction:column;gap:0;}
-    .util-item{display:flex;align-items:center;justify-content:space-between;padding:14px 6px;border-top:1px solid var(--borde);}
-    .util-item:first-child{border-top:0;}
-    .util-left{display:flex;align-items:center;gap:12px;}
-    .util-icon{width:36px;height:36px;border-radius:12px;background:var(--soft-red);display:flex;align-items:center;justify-content:center;color:var(--rojo);font-size:18px;}
-    .util-name{font-size:14px;font-weight:800;color:var(--texto);}
-    .util-desc{font-size:12px;color:var(--muted);margin-top:2px;}
-    .util-arrow{color:#98a2b3;font-size:20px;padding-right:6px;}
-    .footer-signature{padding:12px 18px;margin:14px 0 8px;text-align:center;font-size:13px;color:#667085;font-style:italic;}
-    #autoBackupCard{display:none !important;}
-    @media(min-width:860px){
-      .dashboard-wrap{grid-template-columns:1.15fr 1fr;}
-      .summary-grid{grid-template-columns:repeat(4,minmax(0,1fr));}
-      .quick-grid{grid-template-columns:repeat(4,minmax(0,1fr));}
-      .dashboard-full{grid-column:1/-1;}
+    /* ===== Ultra Premium v4 ===== */
+    :root{
+      --rojo:#d40000;
+      --rojo-osc:#b40808;
+      --gris:#f4f6f8;
+      --gris-soft:#fafbfc;
+      --card:#ffffff;
+      --borde:#e5e7eb;
+      --texto:#172033;
+      --muted:#667085;
+      --shadow:0 10px 24px rgba(16,24,40,.06);
+      --radius:22px;
     }
+    body{background:var(--gris);color:var(--texto);}
+    header{background:linear-gradient(135deg,var(--rojo),#e21414);padding:12px 14px;box-shadow:0 12px 24px rgba(180,8,8,.18);}
+    header h1{font-size:18px}
+    header .badge{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.22);}
+    main{padding:14px;max-width:1180px;margin:0 auto;}
+    .card{border:1px solid var(--borde);border-radius:24px;box-shadow:var(--shadow);padding:16px 16px 18px;background:var(--card);}
+    input,select,textarea{background:#fcfcfd;border:1px solid var(--borde);font-size:16px;color:var(--texto);}
+    label{font-weight:700;color:#667085;}
+    input:focus,select:focus,textarea:focus{border-color:rgba(212,0,0,.35);box-shadow:0 0 0 4px rgba(212,0,0,.08);}
+    .btnrow{gap:10px}
+    button{border-radius:16px;padding:12px 16px;font-weight:800;letter-spacing:.2px;transition:.18s ease;box-shadow:none}
+    button:hover{transform:translateY(-1px)}
+    button.secondary{background:#f8fafc;color:#344054;border:1px solid var(--borde);}
+    button.ok{background:linear-gradient(135deg,var(--rojo),var(--rojo-osc));}
+    .chip.radioBig{background:#fff;color:var(--texto);border:1px solid #f1c3c3;min-height:56px}
+    .chip.radioBig:has(input:checked){background:#fff5f5;box-shadow:0 0 0 3px rgba(212,0,0,.08) inset}
+    .sectionLabel{border-top:0;padding-top:0;color:var(--texto);font-size:15px;margin:18px 0 10px}
+    .pill{background:#fff;border-color:var(--borde);color:var(--muted);font-weight:700}
+    .action-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:12px}
+    @media(min-width:760px){.action-grid{grid-template-columns:repeat(4,minmax(0,1fr));}}
+    .action-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;min-height:94px;background:#fff;border:1px solid var(--borde);border-radius:20px;color:var(--texto);font-weight:800;padding:14px;text-align:center}
+    .action-btn .ico{width:42px;height:42px;border-radius:999px;background:#fff3f3;color:var(--rojo);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:900}
+    .dashboard-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:10px}
+    @media(min-width:860px){.dashboard-grid{grid-template-columns:repeat(4,minmax(0,1fr));}}
+    .stat-card{background:#fff;border:1px solid var(--borde);border-radius:18px;padding:14px;min-height:104px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center}
+    .stat-card .n{font-size:34px;font-weight:900;line-height:1;color:var(--texto)}
+    .stat-card .l{font-size:13px;color:var(--muted);font-weight:800;margin-top:8px}
+    .sync-card{display:flex;gap:16px;align-items:center;justify-content:space-between;flex-wrap:wrap;background:linear-gradient(180deg,#fff,#fff6f6);border:1px solid #f3d0d0}
+    .soft-btn{background:#f9fafb;color:#344054;border:1px solid var(--borde);padding:10px 14px;border-radius:14px;font-weight:700}
+    .muted-p{color:var(--muted);font-size:14px;line-height:1.55;margin:8px 0 0}
+    .small-footer{margin-top:20px;text-align:center;color:#667085;font-size:13px;font-style:italic}
+    .screen-shell{display:none}
+    .screen-shell.active{display:block}
+    .floating-panel{max-width:620px;margin:0 auto;background:linear-gradient(180deg,#fff,#fffafb);border:1px solid var(--borde);border-radius:26px;padding:18px;box-shadow:var(--shadow)}
+    .utility-list{display:grid;gap:10px;margin-top:10px}
+    .utility-item{display:flex;align-items:center;justify-content:space-between;background:#fff;border:1px solid var(--borde);padding:14px 16px;border-radius:18px}
+    .gallery-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+    @media(min-width:760px){.gallery-grid{grid-template-columns:repeat(4,minmax(0,1fr));}}
+    .thumb{background:#fff;border:1px solid var(--borde);border-radius:18px;padding:8px}
+    .thumb img{width:100%;height:132px;object-fit:cover;border-radius:12px;display:block;background:#f4f4f4}
+    .nav-mini{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+    .hide{display:none!important}
     @media (prefers-color-scheme: dark){
-      :root{--gris:#101418;--gris-2:#161b22;--card:#11161d;--borde:#243041;--texto:#f2f4f7;--muted:#98a2b3;--soft-red:#281113;--shadow:0 8px 24px rgba(0,0,0,.35);}
-      body{background:var(--gris);}
-      header{box-shadow:0 10px 28px rgba(0,0,0,.35);}
-      button.secondary,.quick-btn,.stat-tile{background:var(--gris-2);color:var(--texto);}
-      input,select,textarea{background:var(--gris-2);color:var(--texto);}
-      .util-arrow{color:#667085;}
-      .sync-main{color:#ff6b6b;}
-      .footer-signature{background:var(--card);}
+      body{background:#10131a;color:#eef2f7}
+      .card,.stat-card,.action-btn,.utility-item,.thumb,.floating-panel{background:#171b24;border-color:#2a3240;color:#eef2f7}
+      input,select,textarea{background:#121722;color:#eef2f7;border-color:#2a3240}
+      .muted-p,label,.l,.pill{color:#b6c2d2}
+      .pill{background:#141a23}
+      .action-btn .ico{background:#2a1518}
+      button.secondary,.soft-btn{background:#161c26;color:#eef2f7;border-color:#2a3240}
+      .sync-card{background:linear-gradient(180deg,#1a1e27,#171b24);border-color:#3a2b2b}
+      .small-footer{color:#b6c2d2}
     }
 
+
+    .form-counter{display:inline-flex;align-items:center;gap:8px;background:#fff7f7;border:1px solid #f0d3d6;color:#8a2430;padding:8px 12px;border-radius:999px;font-size:13px;font-weight:700;}
+    .form-headline{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:2px 0 10px;}
+    .field-hint{font-size:12px;color:var(--muted);margin-top:4px;}
+    .button-stack{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+    #screen2 .btnrow button,#screen1 .btnrow button,#screen3 .btnrow button,.vBtns button,.soft-btn{box-shadow:0 6px 18px rgba(135,19,33,.10);font-weight:800;min-height:46px;}
+    #screen2 .btnrow button.secondary,#screen1 .btnrow button.secondary,#screen3 .btnrow button.secondary,.vBtns button.secondary,.soft-btn.secondary{box-shadow:none;}
+    .floating-panel{background:linear-gradient(180deg,#ffffff,#fbfbfc);border:1px solid var(--borde);border-radius:24px;padding:18px;box-shadow:0 14px 32px rgba(16,24,40,.08);}
+    .obs-auto-note{font-size:12px;color:#8a2430;margin-top:6px;}
+
   </style>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
 <header>
@@ -163,92 +166,94 @@
 </header>
 
 <main>
-  <div class="app-shell">
 
-  <div class="dashboard-wrap">
-    <section class="summary-panel dashboard-full" id="dashboardTop">
-      <div class="section-head">
-        <div>
-          <h3>📊 Resumen general</h3>
-        </div>
-        <div class="section-sub" id="todayLabel"></div>
-      </div>
-      <div class="summary-grid">
-        <div class="stat-tile">
-          <div class="mini">Diagnósticos</div>
-          <div class="big"><span id="dashTotalRegs">0</span></div>
-        </div>
-        <div class="stat-tile">
-          <div class="mini">Fotos</div>
-          <div class="big"><span id="dashTotalPhotos">0</span></div>
-        </div>
-        <div class="stat-tile">
-          <div class="mini">CD activo</div>
-          <div class="big" id="dashCDActivo">Sin CD</div>
-        </div>
-        <div class="stat-tile">
-          <div class="mini">Respaldo</div>
-          <div class="big" id="dashBackupState">Local</div>
-        </div>
-      </div>
-    </section>
+  <section class="card screen-shell active" id="screenHome">
+    <div class="title">
+      <div><h2>Resumen general</h2></div>
+      <div class="pill" id="homeDatePill"></div>
+    </div>
+    <div class="dashboard-grid">
+      <div class="stat-card"><div class="n" id="summaryDiag">0</div><div class="l">Diagnósticos</div></div>
+      <div class="stat-card"><div class="n" id="summaryPhotos">0</div><div class="l">Fotos</div></div>
+      <div class="stat-card"><div class="n" id="summaryEstr">0</div><div class="l">Estructuras</div></div>
+      <div class="stat-card"><div class="n" id="summaryPending">0</div><div class="l">Por sincronizar</div></div>
+    </div>
 
-    <section class="actions-panel">
-      <div class="section-head"><h3>Acciones principales</h3></div>
-      <div class="quick-grid">
-        <button type="button" class="quick-btn" id="qaRegistrar"><span class="icon">＋</span><span class="txt">Registrar</span></button>
-        <button type="button" class="quick-btn" id="qaExportar"><span class="icon">⇪</span><span class="txt">Exportar</span></button>
-        <button type="button" class="quick-btn" id="qaEditar"><span class="icon">✎</span><span class="txt">Editar</span></button>
-        <button type="button" class="quick-btn" id="qaConteo"><span class="icon">◔</span><span class="txt">Conteo</span></button>
-        <button type="button" class="quick-btn" id="qaExcel"><span class="icon">▣</span><span class="txt">Excel</span></button>
-        <button type="button" class="quick-btn" id="qaFotos"><span class="icon">◫</span><span class="txt">Fotos</span></button>
-        <button type="button" class="quick-btn" id="qaRespaldo"><span class="icon">☁</span><span class="txt">Respaldo</span></button>
-        <button type="button" class="quick-btn" id="qaInicio"><span class="icon">⌂</span><span class="txt">Inicio</span></button>
-      </div>
-    </section>
+    <div class="title" style="margin-top:18px;"><div><h2>Acciones principales</h2></div></div>
+    <div class="action-grid">
+      <button class="action-btn" id="homeRegistrar"><span class="ico">＋</span><span>Registrar</span></button>
+      <button class="action-btn" id="homeExportar"><span class="ico">⇪</span><span>Exportar</span></button>
+      <button class="action-btn" id="homeEditar"><span class="ico">✎</span><span>Editar</span></button>
+      <button class="action-btn" id="homeConteo"><span class="ico">◔</span><span>Conteo</span></button>
+      <button class="action-btn" id="homeExcel"><span class="ico">⌗</span><span>Excel</span></button>
+      <button class="action-btn" id="homeFotos"><span class="ico">▣</span><span>Fotos</span></button>
+    </div>
 
-    <section class="sync-panel">
-      <div class="sync-left">
-        <div class="sync-cloud">☁</div>
-        <div>
-          <div class="sync-title">Último respaldo</div>
-          <div class="sync-main" id="syncStatusMain">Aún no has respaldado</div>
-          <div class="sync-desc" id="syncStatusDesc">Usa “Respaldo” para crear una copia local segura de la información.</div>
-        </div>
-      </div>
-      <button type="button" class="sync-action" id="qaSyncNow">☁ Respaldar ahora</button>
-    </section>
+    <div class="nav-mini" style="margin-top:18px;">
+      <button id="btnOpenRespaldo" class="soft-btn" type="button">Crear respaldo de datos</button>
+    </div>
 
-    <section class="util-panel dashboard-full">
-      <div class="section-head"><h3>Utilidades</h3></div>
-      <div class="util-list">
-        <div class="util-item" id="utilDB">
-          <div class="util-left">
-            <div class="util-icon">⛁</div>
-            <div><div class="util-name">Base de datos</div><div class="util-desc">Exportar o respaldar la base local</div></div>
-          </div>
-          <div class="util-arrow">›</div>
-        </div>
-        <div class="util-item" id="utilEditar">
-          <div class="util-left">
-            <div class="util-icon">✎</div>
-            <div><div class="util-name">Edición</div><div class="util-desc">Editar estructuras, UNC, cliente, suspensión o baldíos</div></div>
-          </div>
-          <div class="util-arrow">›</div>
-        </div>
-        <div class="util-item" id="utilApp">
-          <div class="util-left">
-            <div class="util-icon">ⓘ</div>
-            <div><div class="util-name">Acerca de</div><div class="util-desc">GS Diagnósticos · proceso de Gestión Social</div></div>
-          </div>
-          <div class="util-arrow">›</div>
-        </div>
+    <div class="title" style="margin-top:18px;"><div><h2>Utilidades</h2></div></div>
+    <div class="utility-list">
+      <button class="utility-item" id="utilFotos" type="button"><span>Fotos</span><span>›</span></button>
+      <button class="utility-item" id="utilAcerca" type="button"><span>Acerca de</span><span>›</span></button>
+    </div>
+
+    <p class="muted-p">GS Diagnósticos es una herramienta de apoyo para la gestión social en campo. Facilita la caracterización técnica y social de predios, organiza la evidencia fotográfica y consolida información crítica para el seguimiento operativo del proceso.</p>
+    <div class="small-footer">Creado por Heidi Díaz para el proceso de Gestión Social.</div>
+  </section>
+
+  <section class="card screen-shell" id="screenFotos">
+    <div class="title">
+      <div><h2>Fotos</h2></div>
+      <div class="pill" id="photosSummaryPill">Galería local</div>
+    </div>
+    <p class="muted-p">Este apartado sirve para revisar rápidamente la evidencia fotográfica almacenada en el dispositivo. Es útil para validar captura, calidad y cantidad de soporte visual antes de exportar o sincronizar.</p>
+    <div class="nav-mini">
+      <button class="secondary" id="btnFotosBackHome" type="button">Inicio</button>
+    </div>
+    <div id="photosGallery" class="gallery-grid" style="margin-top:12px;"></div>
+  </section>
+
+  <section class="card screen-shell" id="screenAcerca">
+    <div class="title">
+      <div><h2>Acerca de</h2></div>
+      <div class="pill">Instructivo</div>
+    </div>
+    <div class="muted-p">
+      <b>GS Diagnósticos</b> permite registrar estructuras, usuarios no clientes, clientes, suspensiones y baldíos desde el celular, incluso en condiciones de trabajo prolongadas en campo. Recomendaciones de uso: primero cree o continúe un CD, luego registre estructuras, después avance a caracterización, exporte o sincronice cuando lo considere necesario y revise la galería de fotos antes de cerrar jornada.
+    </div>
+    <div class="muted-p">
+      El botón <b>Excel</b> abre el módulo para cargar y modificar registros UNC a partir de un archivo. El botón <b>Editar</b> sirve para actualizar registros ya guardados de estructuras, UNC, clientes, suspensiones y baldíos. El botón <b>Fotos</b> abre la galería local de evidencia capturada.
+    </div>
+    <div class="nav-mini">
+      <button class="secondary" id="btnAcercaBackHome" type="button">Inicio</button>
+    </div>
+    <div class="small-footer">Creado por Heidi Díaz para el proceso de Gestión Social.</div>
+  </section>
+
+  <section class="card screen-shell" id="screenRespaldo">
+    <div class="title">
+      <div><h2>Respaldo y sincronización</h2></div>
+      <div class="pill">Drive + Local</div>
+    </div>
+    <div class="card sync-card" style="margin:6px 0 0;">
+      <div>
+        <div style="font-weight:900;font-size:16px;">Estado actual</div>
+        <div id="syncDriveMetaPage" class="muted-p">Aún no has sincronizado</div>
       </div>
-    </section>
-  </div>
+      <button id="btnSyncDrivePage" class="ok" type="button">☁️ SINCRONIZAR DRIVE</button>
+    </div>
+    <div class="muted-p">Aquí puedes crear un respaldo manual de tus datos locales o sincronizar el JSON de trabajo hacia Google Drive cuando tengas buena conexión y decidas hacerlo.</div>
+    <div class="nav-mini">
+      <button id="btnBackupGSXSubtle" class="soft-btn" type="button">Crear respaldo de datos</button>
+      <button class="secondary" id="btnRespaldoBackHome" type="button">Inicio</button>
+    </div>
+    <div class="small-footer">Creado por Heidi Díaz para el proceso de Gestión Social.</div>
+  </section>
 
   <!-- SCREEN 1: ESTRUCTURAS + EXPORT -->
-  <section class="card" id="screen1">
+  <section class="card" id="screen1" style="display:none;">
     <div class="title">
       <div><h2>Centro de distribución</h2></div>
       <div class="kpi" id="activeBox" style="display:none;">
@@ -317,6 +322,7 @@
       <div class="grid">
         <div>
           <label>Observaciones</label>
+          <div class="obs-auto-note">La app puede sugerir una observación base según los elementos marcados.</div>
           <div class="dictWrap">
             <textarea id="est_obs" placeholder="(OBLIGATORIO)"></textarea>
             <button class="secondary mic" type="button" data-target="est_obs" title="Dictar">🎤</button>
@@ -330,16 +336,16 @@
     </div>
 
     <div class="btnrow">
-      <button id="btnIrARegistro" type="button">Registrar</button>
-      <button class="secondary" id="btnExportar" type="button">Exportar</button>
-      <button class="secondary" id="btnEditar" type="button">Editar</button>
-      <button class="secondary" id="btnConteo" type="button">Conteo</button>
-      <button class="secondary" id="btnModificarExcel" type="button">Excel</button>
+      <button id="btnIrARegistro" type="button">Registrar diagnóstico</button>
+      <button class="secondary" id="btnExportar" type="button">Exportar (Excel + Fotos ZIP)</button>
+      <button class="secondary" id="btnActualizar" type="button">Actualizar</button>
+      <button class="secondary" id="btnConteos" type="button">Conteos</button>
+      <button class="secondary" id="btnModificarExcel" type="button">Modificar Excel</button>
     </div>
   </section>
 
   <!-- SCREEN 2: FORMULARIOS -->
-  <section class="card" id="screen2" style="display:none;">
+  <section class="card floating-panel" id="screen2" style="display:none;">
     <div class="title">
       <div><h2>Caracterización</h2></div>
       <div class="kpi"><div class="pill">⚡ <b id="cdPill"></b></div></div>
@@ -350,12 +356,13 @@
       <button id="btnCliente" type="button">Cliente</button>
       <button id="btnSusp" type="button">Suspensión</button>
       <button id="btnBaldio" type="button">Baldíos</button>
-      <button class="secondary" id="btnBack1" type="button">Volver</button>
+      <button class="secondary" id="btnBack1" type="button">Estructuras</button>
     </div>
 
     <!-- UNC -->
     <div id="formUNC" style="display:none;">
       <div class="sep"></div>
+      <div class="form-headline"><div class="pill">Registro UNC</div><div class="form-counter" id="countUNCForm">UNC: 0</div></div>
       <div class="grid three">
         <div><label>Nombres</label><input id="unc_nombres" type="text" autocomplete="name" required></div>
         <div><label>Identificación</label><input id="unc_identificacion" inputmode="numeric" required></div>
@@ -416,6 +423,11 @@
           <label class="chip"><input type="checkbox" id="unc_predio_habitable"> ¿PREDIO HABITABLE?</label>
           
         </div>
+      </div>
+
+      <div class="grid two">
+        <div><label>Longitud al nodo amarrado (m)</label><input id="unc_long_nodo" inputmode="decimal" placeholder="0"></div>
+        <div></div>
       </div>
 
       <div class="grid four">
@@ -495,6 +507,7 @@
     <!-- CLIENTE -->
     <div id="formCliente" style="display:none;">
       <div class="sep"></div>
+      <div class="form-headline"><div class="pill">Registro Cliente</div><div class="form-counter" id="countCLIForm">Clientes: 0</div></div>
       <div class="grid two">
         <div><label>Punto Físico</label><select id="cli_pf" required></select></div>
         <div></div>
@@ -504,6 +517,11 @@
         <div><label>Serie de medidor</label><input id="cli_serie" inputmode="numeric" required></div>
         <div><label>Marca de medidor</label><select id="cli_marca" required><option value="">Selecciona…</option><option>@METER</option><option>ABB</option><option>ACTARIS</option><option>AEG</option><option>ALDANA</option><option>Car-1</option><option>CDM</option><option>CHINT</option><option>COMPLANT</option><option>ELGAMA</option><option>ELSTER</option><option>ENEL</option><option>ESTROM</option><option>GALILEO</option><option>GAUGETECH</option><option>GOMELONG</option><option>HEXCELL</option><option>HEXING</option><option>HIKING</option><option>HOLLEY</option><option>INHEMETER</option><option>ISKRA</option><option>ITRON</option><option>KRIZIK</option><option>LANDIS</option><option>METCOM</option><option>MICROSTAR</option><option>NANSEN</option><option>NINGBO</option><option>OSAKI</option><option>PAFAL</option><option>SCHLUMBERGER</option><option>SCORPION</option><option>SIEMENS</option><option>SKAITEKS</option><option>SUMMETER</option><option>SUNRISE</option><option>TECUN</option><option>TR-CEICA/ME-WINSKY</option><option>WASION</option><option>WINSKY</option></select></div>
         <div><label>No. Fases</label><select id="cli_fases" required><option value="">Selecciona…</option><option>Monofásico</option><option>Bifásico</option><option>Trifásico</option></select></div>
+      </div>
+
+      <div class="grid two">
+        <div><label>Longitud al nodo amarrado (m)</label><input id="cli_long_nodo" inputmode="decimal" placeholder="0"></div>
+        <div></div>
       </div>
 
       <div class="grid four">
@@ -542,8 +560,14 @@
     <!-- SUSP -->
     <div id="formSusp" style="display:none;">
       <div class="sep"></div>
+      <div class="form-headline"><div class="pill">Registro Suspensión</div><div class="form-counter" id="countSUSForm">Suspensiones: 0</div></div>
       <div class="grid two">
         <div><label>Punto Físico</label><select id="sus_pf" required></select></div>
+        <div></div>
+      </div>
+
+      <div class="grid two">
+        <div><label>Longitud al nodo amarrado (m)</label><input id="sus_long_nodo" inputmode="decimal" placeholder="0"></div>
         <div></div>
       </div>
 
@@ -587,6 +611,7 @@
     <!-- BALDIOS -->
     <div id="formBaldio" style="display:none;">
       <div class="sep"></div>
+      <div class="form-headline"><div class="pill">Registro Baldío</div><div class="form-counter" id="countBALForm">Baldíos: 0</div></div>
       <div class="grid two">
         <div><label>Punto Físico</label><select id="bal_pf" required></select></div>
         <div><label>Estado</label>
@@ -597,6 +622,11 @@
             <option>PREDIO EN CONSTRUCCIÓN, INHABITABLE – CON SERVICIO DIRECTO</option>
           </select>
         </div>
+      </div>
+
+      <div class="grid two">
+        <div><label>Longitud al nodo amarrado (m)</label><input id="bal_long_nodo" inputmode="decimal" placeholder="0"></div>
+        <div></div>
       </div>
 
       <div class="grid four">
@@ -684,7 +714,7 @@
 <!-- MODAL: UPDATE -->
 <div class="modalBack" id="modalUpdate">
   <div class="modalCard">
-    <div style="font-weight:900;font-size:16px;">Editar registro</div>
+    <div style="font-weight:900;font-size:16px;">Actualizar registro</div>
     <div class="vBtns" id="updPick">
       <button class="secondary" id="updEST" type="button">ESTRUCTURAS</button>
       <button class="secondary" id="updUNC" type="button">UNC</button>
@@ -700,6 +730,18 @@
         <button class="ok" id="updLoad" type="button">Cargar</button>
         <button class="secondary" id="updBack" type="button">Atrás</button>
       </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- MODAL: CONTEOS -->
+<div class="modalBack" id="countModal">
+  <div class="modalCard">
+    <div style="font-weight:900;font-size:16px;">Conteo general</div>
+    <div id="countModalBody" class="muted-p" style="margin-top:10px;line-height:1.6"></div>
+    <div class="vBtns" style="margin-top:14px;">
+      <button class="secondary" id="countModalClose" type="button">Cerrar</button>
     </div>
   </div>
 </div>
@@ -894,7 +936,7 @@ function clearEstructuraForm(){
 }
 function clearUNCForm(preserve=true){
   const keep = preserve ? {unc_pf:$('unc_pf').value, unc_sede:$('unc_sede').value, unc_municipio:$('unc_municipio').value, unc_localidad:$('unc_localidad').value, unc_tipo_zona:$('unc_tipo_zona').value} : {};
-  ['unc_nombres','unc_identificacion','unc_contacto','unc_direccion','unc_lat','unc_lon','unc_acc','unc_obs'].forEach(id=>$(id).value='');
+  ['unc_nombres','unc_identificacion','unc_contacto','unc_direccion','unc_lat','unc_lon','unc_acc','unc_long_nodo','unc_obs'].forEach(id=>$(id).value='');
   ['unc_tipo_material','unc_tipo_poblacion','unc_estado','unc_doc_propiedad'].forEach(id=>setSelectIfExists(id,''));
   ['unc_predio_habitable','unc_ampliacion_redes','unc_e1','unc_ar','unc_dj','unc_e6','unc_ec_part','unc_doc_elec','unc_retie','unc_ec_inmel','unc_requiere_muro','unc_arriostre','unc_acometida','unc_ducto','unc_celda','unc_interruptor','unc_spt','unc_inst_interna'].forEach(id=>setCheckbox(id,false));
   clearFileInput('unc_fotos');
@@ -903,7 +945,7 @@ function clearUNCForm(preserve=true){
 }
 function clearClienteForm(preserve=true){
   const keep = preserve ? {cli_pf:$('cli_pf').value} : {};
-  ['cli_serie','cli_lat','cli_lon','cli_acc','cli_obs'].forEach(id=>$(id).value='');
+  ['cli_serie','cli_lat','cli_lon','cli_acc','cli_long_nodo','cli_obs'].forEach(id=>$(id).value='');
   ['cli_marca','cli_fases','cli_estado_medidor','cli_estado_visor'].forEach(id=>setSelectIfExists(id,''));
   setCheckbox('cli_req_inspeccion', false);
   clearFileInput('cli_fotos');
@@ -912,7 +954,7 @@ function clearClienteForm(preserve=true){
 }
 function clearSuspForm(preserve=true){
   const keep = preserve ? {sus_pf:$('sus_pf').value} : {};
-  ['sus_lat','sus_lon','sus_acc','sus_obs'].forEach(id=>$(id).value='');
+  ['sus_lat','sus_lon','sus_acc','sus_long_nodo','sus_obs'].forEach(id=>$(id).value='');
   setSelectIfExists('sus_motivo','');
   clearFileInput('sus_fotos');
   applyFormValues(keep);
@@ -920,7 +962,7 @@ function clearSuspForm(preserve=true){
 }
 function clearBaldioForm(preserve=true){
   const keep = preserve ? {bal_pf:$('bal_pf').value} : {};
-  ['bal_lat','bal_lon','bal_acc','bal_obs'].forEach(id=>$(id).value='');
+  ['bal_lat','bal_lon','bal_acc','bal_long_nodo','bal_obs'].forEach(id=>$(id).value='');
   setSelectIfExists('bal_estado','');
   clearFileInput('bal_fotos');
   applyFormValues(keep);
@@ -936,17 +978,17 @@ async function updateSilentAutoBackup(reason='auto'){
 }
 function bindDraftSystem(){
   bindDraftAutosave('estructuras',['est_tipo_nodo','est_material_nodo','est_caracteristicas','est_punto_fisico','est_tipo_red_bt','est_luminarias','est_lat','est_lon','est_acc','est_obs']);
-  bindDraftAutosave('unc',['unc_pf','unc_nombres','unc_identificacion','unc_contacto','unc_sede','unc_municipio','unc_direccion','unc_localidad','unc_tipo_zona','unc_tipo_material','unc_tipo_poblacion','unc_estado','unc_lat','unc_lon','unc_acc','unc_doc_propiedad','unc_predio_habitable','unc_ampliacion_redes','unc_e1','unc_ar','unc_dj','unc_e6','unc_ec_part','unc_doc_elec','unc_retie','unc_ec_inmel','unc_requiere_muro','unc_arriostre','unc_acometida','unc_ducto','unc_celda','unc_interruptor','unc_spt','unc_inst_interna','unc_obs']);
-  bindDraftAutosave('cliente',['cli_pf','cli_serie','cli_marca','cli_fases','cli_lat','cli_lon','cli_acc','cli_estado_medidor','cli_req_inspeccion','cli_estado_visor','cli_obs']);
-  bindDraftAutosave('susp',['sus_pf','sus_lat','sus_lon','sus_acc','sus_motivo','sus_obs']);
-  bindDraftAutosave('baldio',['bal_pf','bal_estado','bal_lat','bal_lon','bal_acc','bal_obs']);
+  bindDraftAutosave('unc',['unc_pf','unc_nombres','unc_identificacion','unc_contacto','unc_sede','unc_municipio','unc_direccion','unc_localidad','unc_tipo_zona','unc_tipo_material','unc_tipo_poblacion','unc_estado','unc_lat','unc_lon','unc_acc','unc_long_nodo','unc_doc_propiedad','unc_predio_habitable','unc_ampliacion_redes','unc_e1','unc_ar','unc_dj','unc_e6','unc_ec_part','unc_doc_elec','unc_retie','unc_ec_inmel','unc_requiere_muro','unc_arriostre','unc_acometida','unc_ducto','unc_celda','unc_interruptor','unc_spt','unc_inst_interna','unc_obs']);
+  bindDraftAutosave('cliente',['cli_pf','cli_serie','cli_marca','cli_fases','cli_lat','cli_lon','cli_acc','cli_long_nodo','cli_estado_medidor','cli_req_inspeccion','cli_estado_visor','cli_obs']);
+  bindDraftAutosave('susp',['sus_pf','sus_lat','sus_lon','sus_acc','sus_long_nodo','sus_motivo','sus_obs']);
+  bindDraftAutosave('baldio',['bal_pf','bal_estado','bal_lat','bal_lon','bal_acc','bal_long_nodo','bal_obs']);
 }
 window.addEventListener('beforeunload', ()=>{
   saveDraft('estructuras', collectFormValues(['est_tipo_nodo','est_material_nodo','est_caracteristicas','est_punto_fisico','est_tipo_red_bt','est_luminarias','est_lat','est_lon','est_acc','est_obs']));
-  saveDraft('unc', collectFormValues(['unc_pf','unc_nombres','unc_identificacion','unc_contacto','unc_sede','unc_municipio','unc_direccion','unc_localidad','unc_tipo_zona','unc_tipo_material','unc_tipo_poblacion','unc_estado','unc_lat','unc_lon','unc_acc','unc_doc_propiedad','unc_predio_habitable','unc_ampliacion_redes','unc_e1','unc_ar','unc_dj','unc_e6','unc_ec_part','unc_doc_elec','unc_retie','unc_ec_inmel','unc_requiere_muro','unc_arriostre','unc_acometida','unc_ducto','unc_celda','unc_interruptor','unc_spt','unc_inst_interna','unc_obs']));
-  saveDraft('cliente', collectFormValues(['cli_pf','cli_serie','cli_marca','cli_fases','cli_lat','cli_lon','cli_acc','cli_estado_medidor','cli_req_inspeccion','cli_estado_visor','cli_obs']));
-  saveDraft('susp', collectFormValues(['sus_pf','sus_lat','sus_lon','sus_acc','sus_motivo','sus_obs']));
-  saveDraft('baldio', collectFormValues(['bal_pf','bal_estado','bal_lat','bal_lon','bal_acc','bal_obs']));
+  saveDraft('unc', collectFormValues(['unc_pf','unc_nombres','unc_identificacion','unc_contacto','unc_sede','unc_municipio','unc_direccion','unc_localidad','unc_tipo_zona','unc_tipo_material','unc_tipo_poblacion','unc_estado','unc_lat','unc_lon','unc_acc','unc_long_nodo','unc_doc_propiedad','unc_predio_habitable','unc_ampliacion_redes','unc_e1','unc_ar','unc_dj','unc_e6','unc_ec_part','unc_doc_elec','unc_retie','unc_ec_inmel','unc_requiere_muro','unc_arriostre','unc_acometida','unc_ducto','unc_celda','unc_interruptor','unc_spt','unc_inst_interna','unc_obs']));
+  saveDraft('cliente', collectFormValues(['cli_pf','cli_serie','cli_marca','cli_fases','cli_lat','cli_lon','cli_acc','cli_long_nodo','cli_estado_medidor','cli_req_inspeccion','cli_estado_visor','cli_obs']));
+  saveDraft('susp', collectFormValues(['sus_pf','sus_lat','sus_lon','sus_acc','sus_long_nodo','sus_motivo','sus_obs']));
+  saveDraft('baldio', collectFormValues(['bal_pf','bal_estado','bal_lat','bal_lon','bal_acc','bal_long_nodo','bal_obs']));
 });
 
 /* =================== Características Nodo (dependiente) =================== */
@@ -1108,7 +1150,7 @@ function dataURLtoU8(dataURL){
 /* =================== pantallas =================== */
 let activeCD=null, activeCAP=null;
 function show(id){
-  ["screen1","screen2","screen3"].forEach(x=>$(x).style.display=(x===id)?"":"none");
+  ["screenHome","screenFotos","screenAcerca","screenRespaldo","screen1","screen2","screen3"].forEach(x=>{ const el=$(x); if(el) el.style.display=(x===id)?"":"none"; });
   window.scrollTo({top:0,behavior:"smooth"});
 }
 function updateActiveUI(){
@@ -1123,6 +1165,120 @@ function refreshModoCd(){
   const modo=document.querySelector('input[name="modoCd"]:checked').value;
   $("cdCapBlock").style.display = (modo==="continuar") ? "none" : "";
 }
+
+async function updateHomeDashboard(){
+  const [a,b,c,d,e]=await Promise.all([count("estructuras"),count("unc"),count("clientes"),count("susp"),count("baldios")]);
+  const total=a+b+c+d+e;
+  const all=[...(await getAll("estructuras")),...(await getAll("unc")),...(await getAll("clientes")),...(await getAll("susp")),...(await getAll("baldios"))];
+  let fotos=0;
+  all.forEach(r=>{ if(Array.isArray(r.Fotos)) fotos += r.Fotos.length; });
+  if($("summaryDiag")) $("summaryDiag").textContent=String(total);
+  if($("summaryPhotos")) $("summaryPhotos").textContent=String(fotos);
+  if($("summaryEstr")) $("summaryEstr").textContent=String(a);
+  if($("summaryPending")) $("summaryPending").textContent=String(total);
+  if($("homeDatePill")) $("homeDatePill").textContent=new Date().toLocaleDateString('es-CO',{day:'numeric',month:'long',year:'numeric'});
+}
+async function renderPhotosGallery(){
+  const holder=$("photosGallery"); if(!holder) return;
+  holder.innerHTML="";
+  const all=[...(await getAll("estructuras")),...(await getAll("unc")),...(await getAll("clientes")),...(await getAll("susp")),...(await getAll("baldios"))];
+  const items=[];
+  all.forEach(r=>{
+    (Array.isArray(r.Fotos)?r.Fotos:[]).forEach(f=>items.push({src:f.dataURL||"", label:(r.Transformador||"")+" "+(r.PuntoFisico||"")}));
+  });
+  if(!items.length){
+    holder.innerHTML='<div class="muted-p">No hay fotos almacenadas en este dispositivo todavía.</div>';
+    return;
+  }
+  items.slice(0,80).forEach(it=>{
+    const card=document.createElement('div');
+    card.className='thumb';
+    card.innerHTML=`<img src="${it.src}"><div class="muted-p" style="font-size:12px;margin-top:6px">${it.label||'Foto'}</div>`;
+    holder.appendChild(card);
+  });
+  if($("photosSummaryPill")) $("photosSummaryPill").textContent=`${items.length} foto(s)`;
+}
+
+async function updateFormCounters(){
+  const [u,c,s,b]=await Promise.all([count("unc"),count("clientes"),count("susp"),count("baldios")]);
+  if($("countUNCForm")) $("countUNCForm").textContent=`UNC: ${u}`;
+  if($("countCLIForm")) $("countCLIForm").textContent=`Clientes: ${c}`;
+  if($("countSUSForm")) $("countSUSForm").textContent=`Suspensiones: ${s}`;
+  if($("countBALForm")) $("countBALForm").textContent=`Baldíos: ${b}`;
+}
+async function showCountsModal(){
+  const [a,b,c,d,e]=await Promise.all([count("estructuras"),count("unc"),count("clientes"),count("susp"),count("baldios")]);
+  const total=a+b+c+d+e;
+  if($("countModalBody")) $("countModalBody").innerHTML = `Total general: <b>${total}</b><br>Estructuras: <b>${a}</b><br>UNC: <b>${b}</b><br>Clientes: <b>${c}</b><br>Suspensiones: <b>${d}</b><br>Baldíos: <b>${e}</b>`;
+  if($("countModal")) $("countModal").style.display='flex';
+}
+function sanitizeMeters(v){
+  return String(v||'').replace(/,/g,'.').replace(/[^0-9.]/g,'').trim();
+}
+async function serialExists(serial, currentId=null){
+  const normalized = onlyDigits(serial);
+  if(!normalized) return null;
+  const all = await getAll("clientes");
+  return all.find(r => onlyDigits(r.SerieMedidor)===normalized && String(r.id)!==String(currentId||'')) || null;
+}
+async function warnDuplicateSerie(){
+  const val = onlyDigits($("cli_serie")?.value||'');
+  if(!val) return;
+  const currentId = (editCtx && editCtx.store==="clientes") ? editCtx.id : null;
+  const match = await serialExists(val, currentId);
+  if(match){
+    toast(`Serie ya registrada en ${match.Transformador||'otro CD'} / ${match.PuntoFisico||'sin PF'}`);
+    $("cli_serie").style.borderColor = '#d40000';
+    $("cli_serie").style.boxShadow = '0 0 0 4px rgba(212,0,0,.12)';
+  }else{
+    $("cli_serie").style.borderColor = '';
+    $("cli_serie").style.boxShadow = '';
+  }
+}
+function composeUNCObservation(){
+  const parts=[];
+  const items=[];
+  if($("unc_ampliacion_redes")?.checked) parts.push('predio que para servicio requiere ampliación de redes');
+  if($("unc_requiere_muro")?.checked) items.push('construcción de muro');
+  if($("unc_arriostre")?.checked) items.push('arriostre');
+  if($("unc_acometida")?.checked) items.push('acometida');
+  if($("unc_ducto")?.checked) items.push('ducto galvanizado de 1 pulgada');
+  if($("unc_celda")?.checked) items.push('celda');
+  if($("unc_interruptor")?.checked) items.push('interruptor');
+  if($("unc_spt")?.checked) items.push('SPT');
+  if($("unc_inst_interna")?.checked) items.push('instalación interna');
+  const estado = $("unc_estado")?.value||'';
+  if(estado) parts.push(`estado general: ${estado.toLowerCase()}`);
+  if(items.length) parts.push(`requiere ${items.join(', ')}`);
+  if(!parts.length) return '';
+  let text = 'Durante la visita se identifica ' + parts.join('; ') + '.';
+  const doc = $("unc_doc_propiedad")?.value||'';
+  if(doc) text += ` Documento reportado: ${doc.toLowerCase()}.`;
+  return upperTextFinal(text);
+}
+function maybeAutofillUNCObservation(force=false){
+  const ta=$("unc_obs"); if(!ta) return;
+  const generated = composeUNCObservation();
+  if(!generated) return;
+  const autoFlag = ta.dataset.autoGenerated==='1';
+  if(force || !ta.value.trim() || autoFlag){
+    ta.value = generated;
+    ta.dataset.autoGenerated='1';
+    ta.dispatchEvent(new Event('input'));
+  }
+}
+function bindUNCObservationAuto(){
+  const ids=['unc_ampliacion_redes','unc_requiere_muro','unc_arriostre','unc_acometida','unc_ducto','unc_celda','unc_interruptor','unc_spt','unc_inst_interna','unc_estado','unc_doc_propiedad'];
+  ids.forEach(id=>$(id)?.addEventListener('change', ()=>maybeAutofillUNCObservation(false)));
+  $("unc_obs")?.addEventListener('input', ()=>{ $("unc_obs").dataset.autoGenerated='0'; });
+}
+
+function syncMetaMirror(){
+  const txt = $("syncDriveMeta") ? $("syncDriveMeta").textContent : "Aún no has sincronizado";
+  if($("syncDriveMetaHome")) $("syncDriveMetaHome").textContent=txt;
+  if($("syncDriveMetaPage")) $("syncDriveMetaPage").textContent=txt;
+}
+
 function resetForms(){
   ["formUNC","formCliente","formSusp","formBaldio"].forEach(id=>$(id).style.display="none");
 }
@@ -1248,6 +1404,7 @@ async function buildUNC(){
     Latitud:$("unc_lat").value||"",
     Longitud:$("unc_lon").value||"",
     Precision:$("unc_acc").value||"",
+    LongitudNodo:sanitizeMeters($("unc_long_nodo").value)||"",
     gpsISO:(($("unc_lat").dataset.gpsISO)||""),
     PredioHabitable:$("unc_predio_habitable").checked?"Sí":"No",
     AmpliacionRedes:$("unc_ampliacion_redes").checked?"Sí":"No",
@@ -1292,6 +1449,7 @@ async function buildCliente(){
     Latitud:$("cli_lat").value||"",
     Longitud:$("cli_lon").value||"",
     Precision:$("cli_acc").value||"",
+    LongitudNodo:sanitizeMeters($("cli_long_nodo").value)||"",
     gpsISO:(($("cli_lat").dataset.gpsISO)||""),
     EstadoMedidor:$("cli_estado_medidor").value||"",
     EstadoVisor:$("cli_estado_visor").value||"",
@@ -1316,6 +1474,7 @@ async function buildSusp(){
     Latitud:$("sus_lat").value||"",
     Longitud:$("sus_lon").value||"",
     Precision:$("sus_acc").value||"",
+    LongitudNodo:sanitizeMeters($("sus_long_nodo").value)||"",
     gpsISO:(($("sus_lat").dataset.gpsISO)||""),
     Observaciones:upperAlnum($("sus_obs").value),
     Fotos:[]
@@ -1337,6 +1496,7 @@ async function buildBaldio(){
     Latitud:$("bal_lat").value||"",
     Longitud:$("bal_lon").value||"",
     Precision:$("bal_acc").value||"",
+    LongitudNodo:sanitizeMeters($("bal_long_nodo").value)||"",
     gpsISO:(($("bal_lat").dataset.gpsISO)||""),
     Observaciones:upperAlnum($("bal_obs").value),
     Fotos:[]
@@ -1362,10 +1522,10 @@ function buildExcel(estr,unc,cli,sus,bal){
   };
 
   const hdrE=["Ítem","Transformador (CD)","Tipo Nodo","Material Nodo","Características Nodo","Punto Físico","Tipo de Redes BT","Luminarias (AP)","Latitud (Y)","Longitud (X)","Precisión (m)","FECHA_HORA","GPS_HORA","Observaciones"];
-  const hdrU=["Ítem","Transformador (CD)","Punto Físico","Nombres","Identificación","Contacto","Sede","Municipio","Dirección","Localidad","Tipo Zona","Tipo material","Tipo de población","¿Predio habitable?","Para servicio requiere ampliación de redes","Documento de propiedad","Formato E1","AR","DJ","E6","EC Particular","Doc. electricista","RETIE","EC Inmel","Estado","¿Requiere muro?","¿Requiere uso de arriostre?","Acometida","Ducto 1\" Galv.","Celda","Interruptor","SPT (Tierra)","Instalación interna","Latitud (Y)","Longitud (X)","Precisión (m)","FECHA_HORA","GPS_HORA","Observaciones"];
-  const hdrC=["Ítem","Transformador (CD)","Punto Físico","Serie de medidor","Marca de medidor","No. Fases","Estado de medidor","Estado de visor","¿Requiere inspección/Cambio?","Latitud (Y)","Longitud (X)","Precisión (m)","FECHA_HORA","GPS_HORA","Observaciones"];
-  const hdrS=["Ítem","Transformador (CD)","Punto Físico","Motivo de suspensión","Latitud (Y)","Longitud (X)","Precisión (m)","FECHA_HORA","GPS_HORA","Observaciones"];
-  const hdrB=["Ítem","Transformador (CD)","Punto Físico","Estado","Latitud (Y)","Longitud (X)","Precisión (m)","FECHA_HORA","GPS_HORA","Observaciones"];
+  const hdrU=["Ítem","Transformador (CD)","Punto Físico","Longitud al nodo (m)","Nombres","Identificación","Contacto","Sede","Municipio","Dirección","Localidad","Tipo Zona","Tipo material","Tipo de población","¿Predio habitable?","Para servicio requiere ampliación de redes","Documento de propiedad","Formato E1","AR","DJ","E6","EC Particular","Doc. electricista","RETIE","EC Inmel","Estado","¿Requiere muro?","¿Requiere uso de arriostre?","Acometida","Ducto 1\" Galv.","Celda","Interruptor","SPT (Tierra)","Instalación interna","Latitud (Y)","Longitud (X)","Precisión (m)","FECHA_HORA","GPS_HORA","Observaciones"];
+  const hdrC=["Ítem","Transformador (CD)","Punto Físico","Longitud al nodo (m)","Serie de medidor","Marca de medidor","No. Fases","Estado de medidor","Estado de visor","¿Requiere inspección/Cambio?","Latitud (Y)","Longitud (X)","Precisión (m)","FECHA_HORA","GPS_HORA","Observaciones"];
+  const hdrS=["Ítem","Transformador (CD)","Punto Físico","Longitud al nodo (m)","Motivo de suspensión","Latitud (Y)","Longitud (X)","Precisión (m)","FECHA_HORA","GPS_HORA","Observaciones"];
+  const hdrB=["Ítem","Transformador (CD)","Punto Físico","Longitud al nodo (m)","Estado","Latitud (Y)","Longitud (X)","Precisión (m)","FECHA_HORA","GPS_HORA","Observaciones"];
 
   const rowsE=estr.map(x=>({
     "Ítem":x.item,"Transformador (CD)":x.Transformador,
@@ -1375,7 +1535,7 @@ function buildExcel(estr,unc,cli,sus,bal){
     "FECHA_HORA":x.fechaISO||"","GPS_HORA":x.gpsISO||"","Observaciones":x.Observaciones||""
   }));
   const rowsU=unc.map(x=>({
-    "Ítem":x.item,"Transformador (CD)":x.Transformador,"Punto Físico":x.PuntoFisico||"",
+    "Ítem":x.item,"Transformador (CD)":x.Transformador,"Punto Físico":x.PuntoFisico||"","Longitud al nodo (m)":x.LongitudNodo||"",
     "Nombres":x.Nombres,"Identificación":x.Identificacion,"Contacto":x.Contacto,
     "Sede":x.Sede,"Municipio":x.Municipio,"Dirección":x.Direccion,"Localidad":x.Localidad,
     "Tipo Zona":x.TipoZona,"Tipo material":x.TipoMaterial,"Tipo de población":x.TipoPoblacion||"",
@@ -1389,20 +1549,20 @@ function buildExcel(estr,unc,cli,sus,bal){
     "FECHA_HORA":x.fechaISO||"","GPS_HORA":x.gpsISO||"","Observaciones":x.Observaciones||""
   }));
   const rowsC=cli.map(x=>({
-    "Ítem":x.item,"Transformador (CD)":x.Transformador,"Punto Físico":x.PuntoFisico||"",
+    "Ítem":x.item,"Transformador (CD)":x.Transformador,"Punto Físico":x.PuntoFisico||"","Longitud al nodo (m)":x.LongitudNodo||"",
     "Serie de medidor":x.SerieMedidor,"Marca de medidor":x.MarcaMedidor,"No. Fases":x.Fases,
     "Estado de medidor":x.EstadoMedidor,"Estado de visor":x.EstadoVisor,"¿Requiere inspección/Cambio?":x.ReqInspeccion,
     "Latitud (Y)":x.Latitud,"Longitud (X)":x.Longitud,"Precisión (m)":x.Precision||"",
     "FECHA_HORA":x.fechaISO||"","GPS_HORA":x.gpsISO||"","Observaciones":x.Observaciones||""
   }));
   const rowsS=sus.map(x=>({
-    "Ítem":x.item,"Transformador (CD)":x.Transformador,"Punto Físico":x.PuntoFisico||"",
+    "Ítem":x.item,"Transformador (CD)":x.Transformador,"Punto Físico":x.PuntoFisico||"","Longitud al nodo (m)":x.LongitudNodo||"",
     "Motivo de suspensión":x.Motivo,
     "Latitud (Y)":x.Latitud,"Longitud (X)":x.Longitud,"Precisión (m)":x.Precision||"",
     "FECHA_HORA":x.fechaISO||"","GPS_HORA":x.gpsISO||"","Observaciones":x.Observaciones||""
   }));
   const rowsB=bal.map(x=>({
-    "Ítem":x.item,"Transformador (CD)":x.Transformador,"Punto Físico":x.PuntoFisico||"",
+    "Ítem":x.item,"Transformador (CD)":x.Transformador,"Punto Físico":x.PuntoFisico||"","Longitud al nodo (m)":x.LongitudNodo||"",
     "Estado":x.Estado,
     "Latitud (Y)":x.Latitud,"Longitud (X)":x.Longitud,"Precisión (m)":x.Precision||"",
     "FECHA_HORA":x.fechaISO||"","GPS_HORA":x.gpsISO||"","Observaciones":x.Observaciones||""
@@ -1558,6 +1718,7 @@ function wireEvents(){
     updateActiveUI();
     await refreshPFSelectors();
     await updateSilentAutoBackup(editCtx && editCtx.store==="estructuras" ? "update_estructura" : "save_estructura");
+    await updateHomeDashboard();
     toast("Guardado ✅");
     editCtx=null;
     clearEstructuraForm();
@@ -1572,17 +1733,40 @@ function wireEvents(){
   });
   $("btnBack1").addEventListener("click", ()=>{ resetForms(); show("screen1"); });
   $("btnModificarExcel").addEventListener("click", ()=>show("screen3"));
-  $("btnBackModExcel").addEventListener("click", ()=>show("screen1"));
+  $("btnBackModExcel").addEventListener("click", ()=>show("screenHome"));
+  $("countModalClose").addEventListener("click", ()=>{ $("countModal").style.display="none"; });
+
+  $("homeRegistrar").addEventListener("click", async ()=>{
+    if(activeCD && activeCAP){
+      resetForms();
+      await refreshPFSelectors();
+      show("screen2");
+      await updateFormCounters();
+    }else{
+      show("screen1");
+    }
+  });
+  $("homeExportar").addEventListener("click", exportAll);
+  $("homeEditar").addEventListener("click", ()=>{ $("modalUpdate").style.display="flex"; $("updPick").style.display="flex"; $("updListWrap").style.display="none"; });
+  $("homeConteo").addEventListener("click", showCountsModal);
+  $("homeExcel").addEventListener("click", ()=>show("screen3"));
+  $("homeFotos").addEventListener("click", async ()=>{ await renderPhotosGallery(); show("screenFotos"); });
+  $("utilFotos").addEventListener("click", async ()=>{ await renderPhotosGallery(); show("screenFotos"); });
+  $("utilAcerca").addEventListener("click", ()=>show("screenAcerca"));
+  $("btnOpenRespaldo").addEventListener("click", ()=>{ syncMetaMirror(); show("screenRespaldo"); });
+  $("btnFotosBackHome").addEventListener("click", ()=>show("screenHome"));
+  $("btnAcercaBackHome").addEventListener("click", ()=>show("screenHome"));
+  $("btnRespaldoBackHome").addEventListener("click", ()=>show("screenHome"));
   $("btnCargarExcelMod").addEventListener("click", loadModExcelFile);
   $("btnExportarExcelMod").addEventListener("click", exportModExcelFile);
   $("btnGuardarFilaExcelMod").addEventListener("click", saveModExcelRecord);
   $("modExcelSearch").addEventListener("input", renderModExcelTable);
 
   // open forms
-  $("btnUNC").addEventListener("click", async ()=>{ resetForms(); await refreshPFSelectors(); $("formUNC").style.display=""; restoreLastLocalidad(); restoreDraft("unc", {unc_pf:$("unc_pf").value, unc_sede:$("unc_sede").value, unc_municipio:$("unc_municipio").value, unc_localidad:$("unc_localidad").value, unc_tipo_zona:$("unc_tipo_zona").value}); });
-  $("btnCliente").addEventListener("click", async ()=>{ resetForms(); await refreshPFSelectors(); $("formCliente").style.display=""; restoreDraft("cliente", {cli_pf:$("cli_pf").value}); });
-  $("btnSusp").addEventListener("click", async ()=>{ resetForms(); await refreshPFSelectors(); $("formSusp").style.display=""; restoreDraft("susp", {sus_pf:$("sus_pf").value}); });
-  $("btnBaldio").addEventListener("click", async ()=>{ resetForms(); await refreshPFSelectors(); $("formBaldio").style.display=""; restoreDraft("baldio", {bal_pf:$("bal_pf").value}); });
+  $("btnUNC").addEventListener("click", async ()=>{ resetForms(); await refreshPFSelectors(); await updateFormCounters(); $("formUNC").style.display=""; restoreLastLocalidad(); restoreDraft("unc", {unc_pf:$("unc_pf").value, unc_sede:$("unc_sede").value, unc_municipio:$("unc_municipio").value, unc_localidad:$("unc_localidad").value, unc_tipo_zona:$("unc_tipo_zona").value}); maybeAutofillUNCObservation(false); });
+  $("btnCliente").addEventListener("click", async ()=>{ resetForms(); await refreshPFSelectors(); await updateFormCounters(); $("formCliente").style.display=""; restoreDraft("cliente", {cli_pf:$("cli_pf").value}); });
+  $("btnSusp").addEventListener("click", async ()=>{ resetForms(); await refreshPFSelectors(); await updateFormCounters(); $("formSusp").style.display=""; restoreDraft("susp", {sus_pf:$("sus_pf").value}); });
+  $("btnBaldio").addEventListener("click", async ()=>{ resetForms(); await refreshPFSelectors(); await updateFormCounters(); $("formBaldio").style.display=""; restoreDraft("baldio", {bal_pf:$("bal_pf").value}); });
 
   // cancel
   $("btnCancelUNC").addEventListener("click", ()=>resetForms());
@@ -1602,6 +1786,8 @@ function wireEvents(){
     if(editCtx && editCtx.store==="unc"){ await putRec("unc",{...prev,...obj,id:editCtx.id,item}); editCtx=null; }
     else { await addRec("unc",{...obj,item}); }
     await updateSilentAutoBackup("save_unc");
+    await updateHomeDashboard();
+    await updateFormCounters();
     toast("Guardado ✅");
     clearUNCForm(true);
     resetForms();
@@ -1613,6 +1799,8 @@ function wireEvents(){
     if(!validateSection("formCliente")) return;
     if(!(activeCD&&activeCAP)) return toast("Sin CD activo");
     const obj=await buildCliente(); if(!obj) return;
+    const dup = await serialExists(obj.SerieMedidor, (editCtx && editCtx.store==="clientes") ? editCtx.id : null);
+    if(dup) return toast(`La serie ${obj.SerieMedidor} ya está registrada en ${dup.Transformador||'otro CD'} / ${dup.PuntoFisico||'sin PF'}`);
     const fotosNuevas=await readFiles($("cli_fotos"));
     const prev = (editCtx && editCtx.store==="clientes") ? await getById("clientes", editCtx.id) : null;
     obj.Fotos=fotosNuevas.length ? fotosNuevas : ((prev && prev.Fotos) || []);
@@ -1620,6 +1808,8 @@ function wireEvents(){
     if(editCtx && editCtx.store==="clientes"){ await putRec("clientes",{...prev,...obj,id:editCtx.id,item}); editCtx=null; }
     else { await addRec("clientes",{...obj,item}); }
     await updateSilentAutoBackup("save_cliente");
+    await updateHomeDashboard();
+    await updateFormCounters();
     toast("Guardado ✅");
     clearClienteForm(true);
     resetForms();
@@ -1638,6 +1828,8 @@ function wireEvents(){
     if(editCtx && editCtx.store==="susp"){ await putRec("susp",{...prev,...obj,id:editCtx.id,item}); editCtx=null; }
     else { await addRec("susp",{...obj,item}); }
     await updateSilentAutoBackup("save_susp");
+    await updateHomeDashboard();
+    await updateFormCounters();
     toast("Guardado ✅");
     clearSuspForm(true);
     resetForms();
@@ -1656,6 +1848,8 @@ function wireEvents(){
     if(editCtx && editCtx.store==="baldios"){ await putRec("baldios",{...prev,...obj,id:editCtx.id,item}); editCtx=null; }
     else { await addRec("baldios",{...obj,item}); }
     await updateSilentAutoBackup("save_baldio");
+    await updateHomeDashboard();
+    await updateFormCounters();
     toast("Guardado ✅");
     clearBaldioForm(true);
     resetForms();
@@ -1675,13 +1869,10 @@ function wireEvents(){
   $("dlClose").addEventListener("click", ()=>{ $("dlModal").style.display="none"; });
 
   // counts
-  $("btnConteo").addEventListener("click", async ()=>{
-    const a=await count("estructuras"), b=await count("unc"), c=await count("clientes"), d=await count("susp"), e=await count("baldios");
-    toast(`Estructuras: ${a} | UNC: ${b} | Clientes: ${c} | Susp: ${d} | Baldíos: ${e}`);
-  });
+  $("btnConteos").addEventListener("click", showCountsModal);
 
   // Update modal (TODOS LOS FORMULARIOS)
-  $("btnEditar").addEventListener("click", ()=>{ $("modalUpdate").style.display="flex"; $("updPick").style.display="flex"; $("updListWrap").style.display="none"; });
+  $("btnActualizar").addEventListener("click", ()=>{ $("modalUpdate").style.display="flex"; $("updPick").style.display="flex"; $("updListWrap").style.display="none"; });
   $("updClose").addEventListener("click", ()=>{ $("modalUpdate").style.display="none"; });
   $("updBack").addEventListener("click", ()=>{ $("updPick").style.display="flex"; $("updListWrap").style.display="none"; });
 
@@ -1746,7 +1937,7 @@ function wireEvents(){
       $("unc_tipo_material").value = rec.TipoMaterial||"";
       $("unc_tipo_poblacion").value = rec.TipoPoblacion||"";
       $("unc_estado").value = rec.Estado||"";
-      $("unc_lat").value = rec.Latitud||""; $("unc_lon").value = rec.Longitud||""; $("unc_acc").value = rec.Precision||"";
+      $("unc_lat").value = rec.Latitud||""; $("unc_lon").value = rec.Longitud||""; $("unc_acc").value = rec.Precision||""; $("unc_long_nodo").value = rec.LongitudNodo||"";
       $("unc_doc_propiedad").value = rec.DocPropiedad||"";
       $("unc_predio_habitable").checked = (rec.PredioHabitable==="Sí");
       $("unc_ampliacion_redes").checked = (rec.AmpliacionRedes==="Sí");
@@ -1777,21 +1968,21 @@ function wireEvents(){
       $("cli_estado_medidor").value = rec.EstadoMedidor||"";
       $("cli_estado_visor").value = rec.EstadoVisor||"";
       $("cli_req_inspeccion").checked = (rec.ReqInspeccion==="Sí");
-      $("cli_lat").value = rec.Latitud||""; $("cli_lon").value = rec.Longitud||""; $("cli_acc").value = rec.Precision||"";
+      $("cli_lat").value = rec.Latitud||""; $("cli_lon").value = rec.Longitud||""; $("cli_acc").value = rec.Precision||""; $("cli_long_nodo").value = rec.LongitudNodo||"";
       $("cli_obs").value = rec.Observaciones||"";
     } else if(updStore==="susp") {
       show("screen2");
       $("formSusp").style.display="";
       $("sus_pf").value = rec.PuntoFisico||"";
       $("sus_motivo").value = rec.Motivo||"";
-      $("sus_lat").value = rec.Latitud||""; $("sus_lon").value = rec.Longitud||""; $("sus_acc").value = rec.Precision||"";
+      $("sus_lat").value = rec.Latitud||""; $("sus_lon").value = rec.Longitud||""; $("sus_acc").value = rec.Precision||""; $("sus_long_nodo").value = rec.LongitudNodo||"";
       $("sus_obs").value = rec.Observaciones||"";
     } else if(updStore==="baldios") {
       show("screen2");
       $("formBaldio").style.display="";
       $("bal_pf").value = rec.PuntoFisico||"";
       $("bal_estado").value = rec.Estado||"";
-      $("bal_lat").value = rec.Latitud||""; $("bal_lon").value = rec.Longitud||""; $("bal_acc").value = rec.Precision||"";
+      $("bal_lat").value = rec.Latitud||""; $("bal_lon").value = rec.Longitud||""; $("bal_acc").value = rec.Precision||""; $("bal_long_nodo").value = rec.LongitudNodo||"";
       $("bal_obs").value = rec.Observaciones||"";
     }
     toast("Modo edición ✅");
@@ -1799,7 +1990,7 @@ function wireEvents(){
 }
 
 
-/* =================== Excel =================== */
+/* =================== Modificar Excel =================== */
 let modExcelWorkbook = null;
 let modExcelSheetName = "Modificar";
 let modExcelHeaders = [];
@@ -2055,6 +2246,9 @@ function loadModExcelFile(){
     await registerSW();
     await requestPersistentStorage();
     updateInstallStateUI();
+    await updateHomeDashboard();
+    syncMetaMirror();
+    show("screenHome");
     window.matchMedia('(display-mode: standalone)').addEventListener?.('change', updateInstallStateUI);
   }catch(e){
     console.error(e);
@@ -2062,12 +2256,14 @@ function loadModExcelFile(){
   }
 })();
 </script>
-  <!-- 🔴 BOTÓN DE RESPALDO -->
-<div class="card" id="autoBackupCard" style="display:none;margin:12px 14px 18px;">
+  <!-- ☁️ DRIVE + RESPALDO -->
+<div class="card hide" id="cloudSyncCard" style="margin:12px 14px 18px;display:none;">
   <div class="btnrow" style="margin-top:0;">
-    <button id="btnBackupGSX" type="button" style="width:100%;">📦 RESPALDO TOTAL GSX</button>
+    <button id="btnSyncDrive" type="button" style="flex:1 1 260px;">☁️ SINCRONIZAR DRIVE</button>
+    <button id="btnBackupGSX" class="secondary" type="button" style="flex:1 1 220px;">📦 RESPALDO TOTAL GSX</button>
   </div>
-  <div id="exportStatus" style="margin-top:8px;font-size:13px;color:#666;min-height:18px;font-weight:600;"></div>
+  <div id="syncDriveMeta" style="margin-top:8px;font-size:13px;color:#666;min-height:18px;font-weight:600;">Última sincronización: Nunca</div>
+  <div id="exportStatus" style="margin-top:6px;font-size:13px;color:#666;min-height:18px;font-weight:600;"></div>
 </div>
 
 <script>
@@ -2243,66 +2439,195 @@ document.getElementById("btnBackupGSX")?.addEventListener("click", respaldoTotal
 </script>
 
 <script>
-function fmtDateNice(iso){
-  if(!iso) return "Aún no has respaldado";
+const GOOGLE_CLIENT_ID = '143517126733-50aphh3cqhmqak0ug8m6658ob6u586f4.apps.googleusercontent.com';
+const DRIVE_ROOT_FOLDER_NAME = 'GS_Diagnosticos';
+const DRIVE_JSON_FOLDER_NAME = 'JSON';
+let driveTokenClient = null;
+let driveAccessToken = null;
+
+function fmtSyncDate(iso){
+  if(!iso) return 'Nunca';
   try{
-    return new Date(iso).toLocaleString('es-CO',{dateStyle:'medium', timeStyle:'short'});
+    const d = new Date(iso);
+    return d.toLocaleString('es-CO', {year:'numeric', month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit'});
   }catch(e){ return iso; }
 }
-async function refreshDashboardUI(){
+function slugCD(v){
+  const s = String(v||'GENERAL').trim();
+  return s.replace(/[^A-Z0-9_-]+/gi,'_').replace(/_+/g,'_').replace(/^_+|_+$/g,'') || 'GENERAL';
+}
+async function updateLastDriveSyncUI(){
+  const el = document.getElementById('syncDriveMeta');
+  if(!el) return;
+  const meta = await getMeta('drive_last_sync_meta');
+  if(meta && meta.when){
+    const name = meta.fileName ? ` · ${meta.fileName}` : '';
+    el.textContent = `Última sincronización: ${fmtSyncDate(meta.when)}${name}`;
+  }else{
+    el.textContent = 'Última sincronización: Nunca';
+  }
+}
+async function buildBackupPayload(){
+  const respaldo = { fecha:new Date().toISOString(), localStorage:{}, indexedDB:{}, activeCD:activeCD||'', activeCAP:activeCAP||'' };
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    respaldo.localStorage[key] = localStorage.getItem(key);
+  }
+  const posiblesDB = ['GSX','GSX_DB','Diagnosticos','DiagnosticosDB','AppDB','DB','database','localforage','keyval-store','gs_dx_db_v1'];
+  for (const nombre of posiblesDB) {
+    try {
+      await new Promise((resolve) => {
+        const req = indexedDB.open(nombre);
+        req.onsuccess = function (e) {
+          const db = e.target.result;
+          if (!db.objectStoreNames.length) { db.close(); return resolve(); }
+          respaldo.indexedDB[nombre] = {};
+          let pendientes = db.objectStoreNames.length;
+          for (let storeName of db.objectStoreNames) {
+            const tx = db.transaction(storeName, 'readonly');
+            const store = tx.objectStore(storeName);
+            const getAll = store.getAll();
+            getAll.onsuccess = function () {
+              respaldo.indexedDB[nombre][storeName] = getAll.result;
+              pendientes--;
+              if (pendientes === 0) { db.close(); resolve(); }
+            };
+            getAll.onerror = function () {
+              respaldo.indexedDB[nombre][storeName] = [];
+              pendientes--;
+              if (pendientes === 0) { db.close(); resolve(); }
+            };
+          }
+        };
+        req.onerror = function () { resolve(); };
+      });
+    } catch (e) { console.log('DB no accesible:', nombre); }
+  }
+  return respaldo;
+}
+function ensureDriveGIS(){
+  if(!(window.google && google.accounts && google.accounts.oauth2)){
+    throw new Error('Google Identity Services no cargó todavía');
+  }
+  if(!driveTokenClient){
+    driveTokenClient = google.accounts.oauth2.initTokenClient({
+      client_id: GOOGLE_CLIENT_ID,
+      scope: 'https://www.googleapis.com/auth/drive.file',
+      callback: () => {}
+    });
+  }
+}
+function getDriveAccessToken(interactive=true){
+  ensureDriveGIS();
+  return new Promise((resolve,reject)=>{
+    driveTokenClient.callback = (resp) => {
+      if(resp && resp.access_token){
+        driveAccessToken = resp.access_token;
+        resolve(resp.access_token);
+      }else{
+        reject(new Error('No se obtuvo token de Google'));
+      }
+    };
+    try{
+      driveTokenClient.requestAccessToken({ prompt: interactive ? 'consent' : '' });
+    }catch(err){ reject(err); }
+  });
+}
+function escDriveQuery(s){ return String(s||'').replace(/'/g, "\'"); }
+async function driveFetch(url, opts={}){
+  if(!driveAccessToken) await getDriveAccessToken(true);
+  const headers = new Headers(opts.headers || {});
+  headers.set('Authorization', `Bearer ${driveAccessToken}`);
+  const resp = await fetch(url, {...opts, headers});
+  if(resp.status === 401){
+    await getDriveAccessToken(true);
+    headers.set('Authorization', `Bearer ${driveAccessToken}`);
+    return fetch(url, {...opts, headers});
+  }
+  return resp;
+}
+async function ensureDriveFolder(name, parentId=null){
+  const qParts = ["mimeType='application/vnd.google-apps.folder'", `name='${escDriveQuery(name)}'`, 'trashed=false'];
+  if(parentId){ qParts.push(`'${parentId}' in parents`); }
+  const q = encodeURIComponent(qParts.join(' and '));
+  let resp = await driveFetch(`https://www.googleapis.com/drive/v3/files?q=${q}&fields=files(id,name)&pageSize=10&supportsAllDrives=false`);
+  const data = await resp.json();
+  if(data.files && data.files.length){ return data.files[0].id; }
+  resp = await driveFetch('https://www.googleapis.com/drive/v3/files', {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ name, mimeType:'application/vnd.google-apps.folder', parents: parentId ? [parentId] : undefined })
+  });
+  const created = await resp.json();
+  if(!created.id) throw new Error('No se pudo crear carpeta en Drive');
+  return created.id;
+}
+async function uploadJsonToDrive(fileName, jsonText){
+  const rootId = await ensureDriveFolder(DRIVE_ROOT_FOLDER_NAME);
+  const jsonFolderId = await ensureDriveFolder(DRIVE_JSON_FOLDER_NAME, rootId);
+  const boundary = 'gsdx_' + Math.random().toString(36).slice(2);
+  const metadata = { name:fileName, mimeType:'application/json', parents:[jsonFolderId] };
+  const body =
+    `--${boundary}
+Content-Type: application/json; charset=UTF-8
+
+${JSON.stringify(metadata)}
+` +
+    `--${boundary}
+Content-Type: application/json
+
+${jsonText}
+` +
+    `--${boundary}--`;
+  const resp = await driveFetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id,name,webViewLink', {
+    method:'POST',
+    headers:{'Content-Type':`multipart/related; boundary=${boundary}`},
+    body
+  });
+  const data = await resp.json();
+  if(!resp.ok || !data.id){
+    throw new Error(data.error?.message || 'No se pudo subir el respaldo a Drive');
+  }
+  return {fileId:data.id, fileName:data.name, webViewLink:data.webViewLink||'', folderId:jsonFolderId};
+}
+async function syncDriveManual(){
+  const btn = document.getElementById('btnSyncDrivePage') || document.getElementById('homeSyncDrive') || document.getElementById('btnSyncDrive');
+  const oldText = btn ? btn.textContent : '☁️ SINCRONIZAR DRIVE';
   try{
-    const [estr,unc,cli,sus,bal] = await Promise.all([getAll('estructuras'),getAll('unc'),getAll('clientes'),getAll('susp'),getAll('baldios')]);
-    const totalRegs = estr.length + unc.length + cli.length + sus.length + bal.length;
-    const photoCount = [...estr,...unc,...cli,...sus,...bal].reduce((n,r)=>n + ((Array.isArray(r.Fotos)? r.Fotos.length:0)), 0);
-    const lastBackup = await getMeta('auto_backup_latest_at');
-    $('dashTotalRegs').textContent = String(totalRegs);
-    $('dashTotalPhotos').textContent = String(photoCount);
-    $('dashCDActivo').textContent = activeCD || 'Sin CD';
-    $('dashBackupState').textContent = lastBackup ? 'Actualizado' : 'Local';
-    $('syncStatusMain').textContent = lastBackup ? fmtDateNice(lastBackup) : 'Aún no has respaldado';
-    $('syncStatusDesc').textContent = lastBackup ? 'Último respaldo local generado correctamente.' : 'Usa “Respaldo” para crear una copia local segura de la información.';
-    $('todayLabel').textContent = new Date().toLocaleDateString('es-CO',{day:'numeric', month:'long', year:'numeric'});
-  }catch(e){}
-}
-function clickIf(id){ const el=$(id); if(el) el.click(); }
-function wireDashboardActions(){
-  $('qaRegistrar')?.addEventListener('click',()=>clickIf('btnIrARegistro'));
-  $('qaExportar')?.addEventListener('click',()=>clickIf('btnExportar'));
-  $('qaEditar')?.addEventListener('click',()=>clickIf('btnActualizar'));
-  $('qaConteo')?.addEventListener('click',()=>clickIf('btnConteos'));
-  $('qaExcel')?.addEventListener('click',()=>clickIf('btnModificarExcel'));
-  $('qaFotos')?.addEventListener('click',()=>show('screen2'));
-  $('qaRespaldo')?.addEventListener('click',()=>clickIf('btnBackupGSX'));
-  $('qaSyncNow')?.addEventListener('click',()=>clickIf('btnBackupGSX'));
-  $('qaInicio')?.addEventListener('click',()=>show('screen1'));
-  $('utilDB')?.addEventListener('click',()=>clickIf('btnBackupGSX'));
-  $('utilEditar')?.addEventListener('click',()=>clickIf('btnActualizar'));
-  $('utilApp')?.addEventListener('click',()=>toast('GS Diagnósticos · Gestión Social'));
-}
-const _origUpdateSilentAutoBackup = typeof updateSilentAutoBackup === 'function' ? updateSilentAutoBackup : null;
-if(_origUpdateSilentAutoBackup){
-  updateSilentAutoBackup = async function(reason='auto'){
-    const r = await _origUpdateSilentAutoBackup(reason);
-    await refreshDashboardUI();
-    return r;
+    if(btn){ btn.disabled = true; btn.textContent = 'SINCRONIZANDO...'; }
+    setBadge('DRIVE… ☁️');
+    setExportStatus('Preparando conexión con Google Drive...');
+    await getDriveAccessToken(true);
+    setExportStatus('Leyendo datos locales...');
+    const payload = await buildBackupPayload();
+    const jsonText = JSON.stringify(payload, null, 2);
+    const stamp = new Date().toISOString().replace(/[:T]/g,'-').slice(0,19);
+    const fileName = `GSX_SYNC_${slugCD(activeCD)}_${stamp}.json`;
+    setExportStatus('Subiendo JSON a Drive...');
+    const info = await uploadJsonToDrive(fileName, jsonText);
+    const meta = { when:new Date().toISOString(), fileId:info.fileId, fileName:info.fileName, folderId:info.folderId, cd:activeCD||'' };
+    await setMeta('drive_last_sync_meta', meta);
+    await updateLastDriveSyncUI();
+    setBadge('LISTO ✅');
+    setExportStatus('✅ Sincronización completada con Drive');
+    toast('Sincronización Drive ✅');
+  }catch(err){
+    console.error(err);
+    setBadge('LISTO ✅');
+    setExportStatus(`❌ Error Drive: ${err.message || err}`);
+    toast('Error sincronizando Drive ❌');
+    alert('No se pudo sincronizar con Drive. Revisa el permiso de Google y vuelve a intentar.');
+  }finally{
+    if(btn){ btn.disabled = false; btn.textContent = oldText; }
   }
 }
-const _origUpdateActiveUI = typeof updateActiveUI === 'function' ? updateActiveUI : null;
-if(_origUpdateActiveUI){
-  updateActiveUI = function(){
-    _origUpdateActiveUI();
-    if($('dashCDActivo')) $('dashCDActivo').textContent = activeCD || 'Sin CD';
-  }
-}
-window.addEventListener('load', ()=>{
-  wireDashboardActions();
-  setTimeout(refreshDashboardUI, 600);
-  setTimeout(()=>{ if($('autoBackupCard')) $('autoBackupCard').style.display='none'; }, 300);
-});
+
+document.getElementById('btnSyncDrive')?.addEventListener('click', syncDriveManual);
+document.getElementById('btnSyncDrivePage')?.addEventListener('click', syncDriveManual);
+document.getElementById('homeSyncDrive')?.addEventListener('click', syncDriveManual);
+document.getElementById('btnBackupGSXSubtle')?.addEventListener('click', respaldoTotalGSX);
+updateLastDriveSyncUI();
 </script>
-
-
-<div class="footer-signature">Creado por Heidi Díaz para el proceso de Gestión Social.</div>
 
 </body>
 </html>
