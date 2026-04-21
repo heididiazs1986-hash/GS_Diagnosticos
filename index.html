@@ -10,7 +10,19 @@
   <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
   <link rel="apple-touch-icon" sizes="180x180" href="icon-180.png">
   <style>
-    :root{--rojo:#d40000;--gris:#f5f5f5;--borde:#dedede;--texto:#1f1f1f;--muted:#6a6a6a;--card:#fff;--shadow:0 10px 26px rgba(0,0,0,.08);--radius:18px;}
+    :root{
+      --rojo:#d40000;
+      --rojo-dark:#b10b0b;
+      --gris:#f3f4f6;
+      --gris-2:#f8fafc;
+      --borde:#e4e7ec;
+      --texto:#1f2937;
+      --muted:#667085;
+      --card:#ffffff;
+      --soft-red:#fff1f2;
+      --shadow:0 8px 24px rgba(15,23,42,.06);
+      --radius:20px;
+    }
     *{box-sizing:border-box;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;}
     body{margin:0;background:var(--gris);color:var(--texto);}
     header{position:sticky;top:0;z-index:10;background:linear-gradient(135deg,var(--rojo),#ff3a3a);color:#fff;padding:14px 16px;box-shadow:0 8px 18px rgba(0,0,0,.12);}
@@ -76,8 +88,71 @@
     .vBtns{display:flex;flex-direction:column;gap:10px;margin-top:12px;}
     .vBtns button{width:100%;padding:14px 12px;border-radius:14px;font-size:16px;}
     a.dl{display:inline-flex;justify-content:center;align-items:center;text-decoration:none;}
+  
+    .app-shell{padding-top:10px;}
+    header{background:linear-gradient(180deg,var(--rojo),var(--rojo-dark));padding:18px 16px;box-shadow:0 10px 28px rgba(178,17,17,.18);}
+    header h1{font-size:20px;font-weight:900;}
+    header .badge{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.18);font-weight:700;}
+    main{padding:14px;max-width:1180px;margin:0 auto;}
+    .card{border-radius:24px;box-shadow:var(--shadow);border:1px solid var(--borde);background:var(--card);}
+    label{font-size:12px;font-weight:700;letter-spacing:.2px;color:var(--muted);}
+    input,select,textarea{background:var(--gris-2);font-size:16px;border-radius:16px;border-color:var(--borde);color:var(--texto);}
+    input:focus,select:focus,textarea:focus{box-shadow:0 0 0 4px rgba(212,0,0,.08);}
+    .btnrow{gap:10px}
+    button{border-radius:16px;padding:12px 15px;font-size:14px;font-weight:800;letter-spacing:.2px;}
+    button.secondary{background:#fff;color:#344054;border:1px solid var(--borde);}
+    .chip.radioBig{background:var(--soft-red);color:#9f1239;border:1px solid #fecdd3;font-weight:800;}
+    .chip.radioBig:has(input:checked){background:linear-gradient(180deg,var(--rojo),var(--rojo-dark));color:#fff;box-shadow:0 10px 20px rgba(212,0,0,.15);}
+    .sectionLabel{border-top:0;padding-top:0;margin-top:14px}
+    .dashboard-wrap{display:grid;gap:16px;margin-bottom:16px;}
+    .summary-panel,.actions-panel,.sync-panel,.util-panel,.footer-signature{background:var(--card);border:1px solid var(--borde);border-radius:24px;box-shadow:var(--shadow);}
+    .summary-panel,.actions-panel,.sync-panel,.util-panel{padding:18px;}
+    .section-head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:14px;}
+    .section-head h3{margin:0;font-size:15px;font-weight:900;color:var(--texto);}
+    .section-sub{font-size:12px;color:var(--muted);}
+    .summary-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;}
+    .stat-tile{background:var(--gris-2);border:1px solid var(--borde);border-radius:18px;padding:14px;min-height:94px;display:flex;flex-direction:column;justify-content:center;}
+    .stat-tile .mini{font-size:12px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.35px;}
+    .stat-tile .big{font-size:16px;font-weight:900;margin-top:8px;color:var(--texto);}
+    .quick-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;}
+    .quick-btn{border:1px solid var(--borde);background:#fff;border-radius:20px;padding:14px 10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;min-height:92px;cursor:pointer;box-shadow:0 4px 12px rgba(15,23,42,.04);}
+    .quick-btn .icon{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--soft-red);color:var(--rojo);font-size:22px;font-weight:900;}
+    .quick-btn .txt{font-size:13px;font-weight:800;color:var(--texto);text-align:center;line-height:1.2;}
+    .sync-panel{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;}
+    .sync-left{display:flex;gap:14px;align-items:center;min-width:0;}
+    .sync-cloud{width:56px;height:56px;border-radius:18px;background:var(--soft-red);display:flex;align-items:center;justify-content:center;color:var(--rojo);font-size:30px;flex:0 0 auto;}
+    .sync-title{font-size:12px;color:var(--muted);font-weight:800;text-transform:uppercase;letter-spacing:.35px;}
+    .sync-main{font-size:16px;color:#d00000;font-weight:900;margin-top:4px;}
+    .sync-desc{font-size:12px;color:var(--muted);margin-top:6px;line-height:1.4;}
+    .sync-action{background:var(--soft-red);color:var(--rojo);border:1px solid #fecdd3;}
+    .util-list{display:flex;flex-direction:column;gap:0;}
+    .util-item{display:flex;align-items:center;justify-content:space-between;padding:14px 6px;border-top:1px solid var(--borde);}
+    .util-item:first-child{border-top:0;}
+    .util-left{display:flex;align-items:center;gap:12px;}
+    .util-icon{width:36px;height:36px;border-radius:12px;background:var(--soft-red);display:flex;align-items:center;justify-content:center;color:var(--rojo);font-size:18px;}
+    .util-name{font-size:14px;font-weight:800;color:var(--texto);}
+    .util-desc{font-size:12px;color:var(--muted);margin-top:2px;}
+    .util-arrow{color:#98a2b3;font-size:20px;padding-right:6px;}
+    .footer-signature{padding:12px 18px;margin:14px 0 8px;text-align:center;font-size:13px;color:#667085;font-style:italic;}
+    #autoBackupCard{display:none !important;}
+    @media(min-width:860px){
+      .dashboard-wrap{grid-template-columns:1.15fr 1fr;}
+      .summary-grid{grid-template-columns:repeat(4,minmax(0,1fr));}
+      .quick-grid{grid-template-columns:repeat(4,minmax(0,1fr));}
+      .dashboard-full{grid-column:1/-1;}
+    }
+    @media (prefers-color-scheme: dark){
+      :root{--gris:#101418;--gris-2:#161b22;--card:#11161d;--borde:#243041;--texto:#f2f4f7;--muted:#98a2b3;--soft-red:#281113;--shadow:0 8px 24px rgba(0,0,0,.35);}
+      body{background:var(--gris);}
+      header{box-shadow:0 10px 28px rgba(0,0,0,.35);}
+      button.secondary,.quick-btn,.stat-tile{background:var(--gris-2);color:var(--texto);}
+      input,select,textarea{background:var(--gris-2);color:var(--texto);}
+      .util-arrow{color:#667085;}
+      .sync-main{color:#ff6b6b;}
+      .footer-signature{background:var(--card);}
+    }
+
   </style>
-  <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
 <header>
@@ -88,6 +163,90 @@
 </header>
 
 <main>
+  <div class="app-shell">
+
+  <div class="dashboard-wrap">
+    <section class="summary-panel dashboard-full" id="dashboardTop">
+      <div class="section-head">
+        <div>
+          <h3>📊 Resumen general</h3>
+        </div>
+        <div class="section-sub" id="todayLabel"></div>
+      </div>
+      <div class="summary-grid">
+        <div class="stat-tile">
+          <div class="mini">Diagnósticos</div>
+          <div class="big"><span id="dashTotalRegs">0</span></div>
+        </div>
+        <div class="stat-tile">
+          <div class="mini">Fotos</div>
+          <div class="big"><span id="dashTotalPhotos">0</span></div>
+        </div>
+        <div class="stat-tile">
+          <div class="mini">CD activo</div>
+          <div class="big" id="dashCDActivo">Sin CD</div>
+        </div>
+        <div class="stat-tile">
+          <div class="mini">Respaldo</div>
+          <div class="big" id="dashBackupState">Local</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="actions-panel">
+      <div class="section-head"><h3>Acciones principales</h3></div>
+      <div class="quick-grid">
+        <button type="button" class="quick-btn" id="qaRegistrar"><span class="icon">＋</span><span class="txt">Registrar</span></button>
+        <button type="button" class="quick-btn" id="qaExportar"><span class="icon">⇪</span><span class="txt">Exportar</span></button>
+        <button type="button" class="quick-btn" id="qaEditar"><span class="icon">✎</span><span class="txt">Editar</span></button>
+        <button type="button" class="quick-btn" id="qaConteo"><span class="icon">◔</span><span class="txt">Conteo</span></button>
+        <button type="button" class="quick-btn" id="qaExcel"><span class="icon">▣</span><span class="txt">Excel</span></button>
+        <button type="button" class="quick-btn" id="qaFotos"><span class="icon">◫</span><span class="txt">Fotos</span></button>
+        <button type="button" class="quick-btn" id="qaRespaldo"><span class="icon">☁</span><span class="txt">Respaldo</span></button>
+        <button type="button" class="quick-btn" id="qaInicio"><span class="icon">⌂</span><span class="txt">Inicio</span></button>
+      </div>
+    </section>
+
+    <section class="sync-panel">
+      <div class="sync-left">
+        <div class="sync-cloud">☁</div>
+        <div>
+          <div class="sync-title">Último respaldo</div>
+          <div class="sync-main" id="syncStatusMain">Aún no has respaldado</div>
+          <div class="sync-desc" id="syncStatusDesc">Usa “Respaldo” para crear una copia local segura de la información.</div>
+        </div>
+      </div>
+      <button type="button" class="sync-action" id="qaSyncNow">☁ Respaldar ahora</button>
+    </section>
+
+    <section class="util-panel dashboard-full">
+      <div class="section-head"><h3>Utilidades</h3></div>
+      <div class="util-list">
+        <div class="util-item" id="utilDB">
+          <div class="util-left">
+            <div class="util-icon">⛁</div>
+            <div><div class="util-name">Base de datos</div><div class="util-desc">Exportar o respaldar la base local</div></div>
+          </div>
+          <div class="util-arrow">›</div>
+        </div>
+        <div class="util-item" id="utilEditar">
+          <div class="util-left">
+            <div class="util-icon">✎</div>
+            <div><div class="util-name">Edición</div><div class="util-desc">Editar estructuras, UNC, cliente, suspensión o baldíos</div></div>
+          </div>
+          <div class="util-arrow">›</div>
+        </div>
+        <div class="util-item" id="utilApp">
+          <div class="util-left">
+            <div class="util-icon">ⓘ</div>
+            <div><div class="util-name">Acerca de</div><div class="util-desc">GS Diagnósticos · proceso de Gestión Social</div></div>
+          </div>
+          <div class="util-arrow">›</div>
+        </div>
+      </div>
+    </section>
+  </div>
+
   <!-- SCREEN 1: ESTRUCTURAS + EXPORT -->
   <section class="card" id="screen1">
     <div class="title">
@@ -171,11 +330,11 @@
     </div>
 
     <div class="btnrow">
-      <button id="btnIrARegistro" type="button">Registrar diagnóstico</button>
-      <button class="secondary" id="btnExportar" type="button">Exportar (Excel + Fotos ZIP)</button>
-      <button class="secondary" id="btnActualizar" type="button">Actualizar</button>
-      <button class="secondary" id="btnConteos" type="button">Conteos</button>
-      <button class="secondary" id="btnModificarExcel" type="button">Modificar Excel</button>
+      <button id="btnIrARegistro" type="button">Registrar</button>
+      <button class="secondary" id="btnExportar" type="button">Exportar</button>
+      <button class="secondary" id="btnEditar" type="button">Editar</button>
+      <button class="secondary" id="btnConteo" type="button">Conteo</button>
+      <button class="secondary" id="btnModificarExcel" type="button">Excel</button>
     </div>
   </section>
 
@@ -525,7 +684,7 @@
 <!-- MODAL: UPDATE -->
 <div class="modalBack" id="modalUpdate">
   <div class="modalCard">
-    <div style="font-weight:900;font-size:16px;">Actualizar registro</div>
+    <div style="font-weight:900;font-size:16px;">Editar registro</div>
     <div class="vBtns" id="updPick">
       <button class="secondary" id="updEST" type="button">ESTRUCTURAS</button>
       <button class="secondary" id="updUNC" type="button">UNC</button>
@@ -1516,13 +1675,13 @@ function wireEvents(){
   $("dlClose").addEventListener("click", ()=>{ $("dlModal").style.display="none"; });
 
   // counts
-  $("btnConteos").addEventListener("click", async ()=>{
+  $("btnConteo").addEventListener("click", async ()=>{
     const a=await count("estructuras"), b=await count("unc"), c=await count("clientes"), d=await count("susp"), e=await count("baldios");
     toast(`Estructuras: ${a} | UNC: ${b} | Clientes: ${c} | Susp: ${d} | Baldíos: ${e}`);
   });
 
   // Update modal (TODOS LOS FORMULARIOS)
-  $("btnActualizar").addEventListener("click", ()=>{ $("modalUpdate").style.display="flex"; $("updPick").style.display="flex"; $("updListWrap").style.display="none"; });
+  $("btnEditar").addEventListener("click", ()=>{ $("modalUpdate").style.display="flex"; $("updPick").style.display="flex"; $("updListWrap").style.display="none"; });
   $("updClose").addEventListener("click", ()=>{ $("modalUpdate").style.display="none"; });
   $("updBack").addEventListener("click", ()=>{ $("updPick").style.display="flex"; $("updListWrap").style.display="none"; });
 
@@ -1640,7 +1799,7 @@ function wireEvents(){
 }
 
 
-/* =================== Modificar Excel =================== */
+/* =================== Excel =================== */
 let modExcelWorkbook = null;
 let modExcelSheetName = "Modificar";
 let modExcelHeaders = [];
@@ -1903,14 +2062,12 @@ function loadModExcelFile(){
   }
 })();
 </script>
-  <!-- ☁️ DRIVE + RESPALDO -->
-<div class="card" id="cloudSyncCard" style="margin:12px 14px 18px;">
+  <!-- 🔴 BOTÓN DE RESPALDO -->
+<div class="card" id="autoBackupCard" style="display:none;margin:12px 14px 18px;">
   <div class="btnrow" style="margin-top:0;">
-    <button id="btnSyncDrive" type="button" style="flex:1 1 260px;">☁️ SINCRONIZAR DRIVE</button>
-    <button id="btnBackupGSX" class="secondary" type="button" style="flex:1 1 220px;">📦 RESPALDO TOTAL GSX</button>
+    <button id="btnBackupGSX" type="button" style="width:100%;">📦 RESPALDO TOTAL GSX</button>
   </div>
-  <div id="syncDriveMeta" style="margin-top:8px;font-size:13px;color:#666;min-height:18px;font-weight:600;">Última sincronización: Nunca</div>
-  <div id="exportStatus" style="margin-top:6px;font-size:13px;color:#666;min-height:18px;font-weight:600;"></div>
+  <div id="exportStatus" style="margin-top:8px;font-size:13px;color:#666;min-height:18px;font-weight:600;"></div>
 </div>
 
 <script>
@@ -2086,192 +2243,66 @@ document.getElementById("btnBackupGSX")?.addEventListener("click", respaldoTotal
 </script>
 
 <script>
-const GOOGLE_CLIENT_ID = '143517126733-50aphh3cqhmqak0ug8m6658ob6u586f4.apps.googleusercontent.com';
-const DRIVE_ROOT_FOLDER_NAME = 'GS_Diagnosticos';
-const DRIVE_JSON_FOLDER_NAME = 'JSON';
-let driveTokenClient = null;
-let driveAccessToken = null;
-
-function fmtSyncDate(iso){
-  if(!iso) return 'Nunca';
+function fmtDateNice(iso){
+  if(!iso) return "Aún no has respaldado";
   try{
-    const d = new Date(iso);
-    return d.toLocaleString('es-CO', {year:'numeric', month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit'});
+    return new Date(iso).toLocaleString('es-CO',{dateStyle:'medium', timeStyle:'short'});
   }catch(e){ return iso; }
 }
-function slugCD(v){
-  const s = String(v||'GENERAL').trim();
-  return s.replace(/[^A-Z0-9_-]+/gi,'_').replace(/_+/g,'_').replace(/^_+|_+$/g,'') || 'GENERAL';
-}
-async function updateLastDriveSyncUI(){
-  const el = document.getElementById('syncDriveMeta');
-  if(!el) return;
-  const meta = await getMeta('drive_last_sync_meta');
-  if(meta && meta.when){
-    const name = meta.fileName ? ` · ${meta.fileName}` : '';
-    el.textContent = `Última sincronización: ${fmtSyncDate(meta.when)}${name}`;
-  }else{
-    el.textContent = 'Última sincronización: Nunca';
-  }
-}
-async function buildBackupPayload(){
-  const respaldo = { fecha:new Date().toISOString(), localStorage:{}, indexedDB:{}, activeCD:activeCD||'', activeCAP:activeCAP||'' };
-  for (let i = 0; i < localStorage.length; i++) {
-    const key = localStorage.key(i);
-    respaldo.localStorage[key] = localStorage.getItem(key);
-  }
-  const posiblesDB = ['GSX','GSX_DB','Diagnosticos','DiagnosticosDB','AppDB','DB','database','localforage','keyval-store','gs_dx_db_v1'];
-  for (const nombre of posiblesDB) {
-    try {
-      await new Promise((resolve) => {
-        const req = indexedDB.open(nombre);
-        req.onsuccess = function (e) {
-          const db = e.target.result;
-          if (!db.objectStoreNames.length) { db.close(); return resolve(); }
-          respaldo.indexedDB[nombre] = {};
-          let pendientes = db.objectStoreNames.length;
-          for (let storeName of db.objectStoreNames) {
-            const tx = db.transaction(storeName, 'readonly');
-            const store = tx.objectStore(storeName);
-            const getAll = store.getAll();
-            getAll.onsuccess = function () {
-              respaldo.indexedDB[nombre][storeName] = getAll.result;
-              pendientes--;
-              if (pendientes === 0) { db.close(); resolve(); }
-            };
-            getAll.onerror = function () {
-              respaldo.indexedDB[nombre][storeName] = [];
-              pendientes--;
-              if (pendientes === 0) { db.close(); resolve(); }
-            };
-          }
-        };
-        req.onerror = function () { resolve(); };
-      });
-    } catch (e) { console.log('DB no accesible:', nombre); }
-  }
-  return respaldo;
-}
-function ensureDriveGIS(){
-  if(!(window.google && google.accounts && google.accounts.oauth2)){
-    throw new Error('Google Identity Services no cargó todavía');
-  }
-  if(!driveTokenClient){
-    driveTokenClient = google.accounts.oauth2.initTokenClient({
-      client_id: GOOGLE_CLIENT_ID,
-      scope: 'https://www.googleapis.com/auth/drive.file',
-      callback: () => {}
-    });
-  }
-}
-function getDriveAccessToken(interactive=true){
-  ensureDriveGIS();
-  return new Promise((resolve,reject)=>{
-    driveTokenClient.callback = (resp) => {
-      if(resp && resp.access_token){
-        driveAccessToken = resp.access_token;
-        resolve(resp.access_token);
-      }else{
-        reject(new Error('No se obtuvo token de Google'));
-      }
-    };
-    try{
-      driveTokenClient.requestAccessToken({ prompt: interactive ? 'consent' : '' });
-    }catch(err){ reject(err); }
-  });
-}
-function escDriveQuery(s){ return String(s||'').replace(/'/g, "\'"); }
-async function driveFetch(url, opts={}){
-  if(!driveAccessToken) await getDriveAccessToken(true);
-  const headers = new Headers(opts.headers || {});
-  headers.set('Authorization', `Bearer ${driveAccessToken}`);
-  const resp = await fetch(url, {...opts, headers});
-  if(resp.status === 401){
-    await getDriveAccessToken(true);
-    headers.set('Authorization', `Bearer ${driveAccessToken}`);
-    return fetch(url, {...opts, headers});
-  }
-  return resp;
-}
-async function ensureDriveFolder(name, parentId=null){
-  const qParts = ["mimeType='application/vnd.google-apps.folder'", `name='${escDriveQuery(name)}'`, 'trashed=false'];
-  if(parentId){ qParts.push(`'${parentId}' in parents`); }
-  const q = encodeURIComponent(qParts.join(' and '));
-  let resp = await driveFetch(`https://www.googleapis.com/drive/v3/files?q=${q}&fields=files(id,name)&pageSize=10&supportsAllDrives=false`);
-  const data = await resp.json();
-  if(data.files && data.files.length){ return data.files[0].id; }
-  resp = await driveFetch('https://www.googleapis.com/drive/v3/files', {
-    method:'POST',
-    headers:{'Content-Type':'application/json'},
-    body: JSON.stringify({ name, mimeType:'application/vnd.google-apps.folder', parents: parentId ? [parentId] : undefined })
-  });
-  const created = await resp.json();
-  if(!created.id) throw new Error('No se pudo crear carpeta en Drive');
-  return created.id;
-}
-async function uploadJsonToDrive(fileName, jsonText){
-  const rootId = await ensureDriveFolder(DRIVE_ROOT_FOLDER_NAME);
-  const jsonFolderId = await ensureDriveFolder(DRIVE_JSON_FOLDER_NAME, rootId);
-  const boundary = 'gsdx_' + Math.random().toString(36).slice(2);
-  const metadata = { name:fileName, mimeType:'application/json', parents:[jsonFolderId] };
-  const body =
-    `--${boundary}
-Content-Type: application/json; charset=UTF-8
-
-${JSON.stringify(metadata)}
-` +
-    `--${boundary}
-Content-Type: application/json
-
-${jsonText}
-` +
-    `--${boundary}--`;
-  const resp = await driveFetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id,name,webViewLink', {
-    method:'POST',
-    headers:{'Content-Type':`multipart/related; boundary=${boundary}`},
-    body
-  });
-  const data = await resp.json();
-  if(!resp.ok || !data.id){
-    throw new Error(data.error?.message || 'No se pudo subir el respaldo a Drive');
-  }
-  return {fileId:data.id, fileName:data.name, webViewLink:data.webViewLink||'', folderId:jsonFolderId};
-}
-async function syncDriveManual(){
-  const btn = document.getElementById('btnSyncDrive');
-  const oldText = btn ? btn.textContent : '☁️ SINCRONIZAR DRIVE';
+async function refreshDashboardUI(){
   try{
-    if(btn){ btn.disabled = true; btn.textContent = 'SINCRONIZANDO...'; }
-    setBadge('DRIVE… ☁️');
-    setExportStatus('Preparando conexión con Google Drive...');
-    await getDriveAccessToken(true);
-    setExportStatus('Leyendo datos locales...');
-    const payload = await buildBackupPayload();
-    const jsonText = JSON.stringify(payload, null, 2);
-    const stamp = new Date().toISOString().replace(/[:T]/g,'-').slice(0,19);
-    const fileName = `GSX_SYNC_${slugCD(activeCD)}_${stamp}.json`;
-    setExportStatus('Subiendo JSON a Drive...');
-    const info = await uploadJsonToDrive(fileName, jsonText);
-    const meta = { when:new Date().toISOString(), fileId:info.fileId, fileName:info.fileName, folderId:info.folderId, cd:activeCD||'' };
-    await setMeta('drive_last_sync_meta', meta);
-    await updateLastDriveSyncUI();
-    setBadge('LISTO ✅');
-    setExportStatus('✅ Sincronización completada con Drive');
-    toast('Sincronización Drive ✅');
-  }catch(err){
-    console.error(err);
-    setBadge('LISTO ✅');
-    setExportStatus(`❌ Error Drive: ${err.message || err}`);
-    toast('Error sincronizando Drive ❌');
-    alert('No se pudo sincronizar con Drive. Revisa el permiso de Google y vuelve a intentar.');
-  }finally{
-    if(btn){ btn.disabled = false; btn.textContent = oldText; }
+    const [estr,unc,cli,sus,bal] = await Promise.all([getAll('estructuras'),getAll('unc'),getAll('clientes'),getAll('susp'),getAll('baldios')]);
+    const totalRegs = estr.length + unc.length + cli.length + sus.length + bal.length;
+    const photoCount = [...estr,...unc,...cli,...sus,...bal].reduce((n,r)=>n + ((Array.isArray(r.Fotos)? r.Fotos.length:0)), 0);
+    const lastBackup = await getMeta('auto_backup_latest_at');
+    $('dashTotalRegs').textContent = String(totalRegs);
+    $('dashTotalPhotos').textContent = String(photoCount);
+    $('dashCDActivo').textContent = activeCD || 'Sin CD';
+    $('dashBackupState').textContent = lastBackup ? 'Actualizado' : 'Local';
+    $('syncStatusMain').textContent = lastBackup ? fmtDateNice(lastBackup) : 'Aún no has respaldado';
+    $('syncStatusDesc').textContent = lastBackup ? 'Último respaldo local generado correctamente.' : 'Usa “Respaldo” para crear una copia local segura de la información.';
+    $('todayLabel').textContent = new Date().toLocaleDateString('es-CO',{day:'numeric', month:'long', year:'numeric'});
+  }catch(e){}
+}
+function clickIf(id){ const el=$(id); if(el) el.click(); }
+function wireDashboardActions(){
+  $('qaRegistrar')?.addEventListener('click',()=>clickIf('btnIrARegistro'));
+  $('qaExportar')?.addEventListener('click',()=>clickIf('btnExportar'));
+  $('qaEditar')?.addEventListener('click',()=>clickIf('btnActualizar'));
+  $('qaConteo')?.addEventListener('click',()=>clickIf('btnConteos'));
+  $('qaExcel')?.addEventListener('click',()=>clickIf('btnModificarExcel'));
+  $('qaFotos')?.addEventListener('click',()=>show('screen2'));
+  $('qaRespaldo')?.addEventListener('click',()=>clickIf('btnBackupGSX'));
+  $('qaSyncNow')?.addEventListener('click',()=>clickIf('btnBackupGSX'));
+  $('qaInicio')?.addEventListener('click',()=>show('screen1'));
+  $('utilDB')?.addEventListener('click',()=>clickIf('btnBackupGSX'));
+  $('utilEditar')?.addEventListener('click',()=>clickIf('btnActualizar'));
+  $('utilApp')?.addEventListener('click',()=>toast('GS Diagnósticos · Gestión Social'));
+}
+const _origUpdateSilentAutoBackup = typeof updateSilentAutoBackup === 'function' ? updateSilentAutoBackup : null;
+if(_origUpdateSilentAutoBackup){
+  updateSilentAutoBackup = async function(reason='auto'){
+    const r = await _origUpdateSilentAutoBackup(reason);
+    await refreshDashboardUI();
+    return r;
   }
 }
-
-document.getElementById('btnSyncDrive')?.addEventListener('click', syncDriveManual);
-updateLastDriveSyncUI();
+const _origUpdateActiveUI = typeof updateActiveUI === 'function' ? updateActiveUI : null;
+if(_origUpdateActiveUI){
+  updateActiveUI = function(){
+    _origUpdateActiveUI();
+    if($('dashCDActivo')) $('dashCDActivo').textContent = activeCD || 'Sin CD';
+  }
+}
+window.addEventListener('load', ()=>{
+  wireDashboardActions();
+  setTimeout(refreshDashboardUI, 600);
+  setTimeout(()=>{ if($('autoBackupCard')) $('autoBackupCard').style.display='none'; }, 300);
+});
 </script>
+
+
+<div class="footer-signature">Creado por Heidi Díaz para el proceso de Gestión Social.</div>
 
 </body>
 </html>
