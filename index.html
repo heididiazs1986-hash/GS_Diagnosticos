@@ -172,125 +172,34 @@
     .obs-auto-note{font-size:12px;color:#8a2430;margin-top:6px;}
 
 
-    /* ===== Apariencia manual + botones premium de caracterización ===== */
-    .header-actions{display:flex;align-items:center;gap:8px;justify-content:flex-end;}
-    .theme-toggle{
-      width:42px;height:42px;border-radius:999px;
-      display:inline-flex;align-items:center;justify-content:center;
-      padding:0;background:rgba(255,255,255,.16);
-      border:1px solid rgba(255,255,255,.25);
-      color:#fff;font-size:18px;box-shadow:none;
-    }
-    .theme-toggle:hover{transform:none;background:rgba(255,255,255,.24);}
-    body[data-theme="dark"]{
-      --gris:#10131a;
-      --card:#171b24;
-      --borde:#2a3240;
-      --texto:#eef2f7;
-      --muted:#b6c2d2;
-      --gris-soft:#141a23;
-      --shadow:0 12px 28px rgba(0,0,0,.22);
-      background:#10131a;color:#eef2f7;
-    }
-    body[data-theme="dark"] .card,
-    body[data-theme="dark"] .stat-card,
-    body[data-theme="dark"] .action-btn,
-    body[data-theme="dark"] .utility-item,
-    body[data-theme="dark"] .thumb,
-    body[data-theme="dark"] .floating-panel,
-    body[data-theme="dark"] .modalCard{
-      background:#171b24!important;border-color:#2a3240!important;color:#eef2f7!important;
-    }
-    body[data-theme="dark"] input,
-    body[data-theme="dark"] select,
-    body[data-theme="dark"] textarea{
-      background:#121722!important;color:#eef2f7!important;border-color:#2a3240!important;
-    }
-    body[data-theme="dark"] .muted-p,
-    body[data-theme="dark"] label,
-    body[data-theme="dark"] .l,
-    body[data-theme="dark"] .pill{
-      color:#b6c2d2!important;
-    }
-    body[data-theme="dark"] .pill{background:#141a23!important;border-color:#2a3240!important;}
-    body[data-theme="dark"] .action-btn .ico{background:#2a1518!important;}
-    body[data-theme="dark"] button.secondary,
-    body[data-theme="dark"] .soft-btn{
-      background:#161c26!important;color:#eef2f7!important;border-color:#2a3240!important;
-    }
-    body[data-theme="dark"] .sync-card{background:linear-gradient(180deg,#1a1e27,#171b24)!important;border-color:#3a2b2b!important;}
-    body[data-theme="dark"] .small-footer{color:#b6c2d2!important;}
-    body[data-theme="dark"] .utility-item span{color:#eef2f7!important;}
-
-    #screen2 > .btnrow{
-      display:grid;
-      grid-template-columns:repeat(2,minmax(0,1fr));
-      gap:12px;
-      margin-top:16px;
-    }
-    @media(min-width:680px){#screen2 > .btnrow{grid-template-columns:repeat(3,minmax(0,1fr));}}
-    #screen2 > .btnrow button{
-      min-height:88px;
-      border-radius:22px;
-      padding:12px 10px;
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      justify-content:center;
-      gap:9px;
-      background:#fff;
-      color:var(--texto);
-      border:1px solid var(--borde);
-      box-shadow:0 10px 24px rgba(16,24,40,.07);
-      font-size:15px;
-      font-weight:900;
-      letter-spacing:.1px;
-    }
-    #screen2 > .btnrow button::before{
-      width:42px;height:42px;border-radius:999px;
-      background:#fff1f2;color:var(--rojo);
-      display:flex;align-items:center;justify-content:center;
-      font-weight:900;font-size:18px;
-      box-shadow:inset 0 0 0 1px rgba(212,0,0,.06);
-    }
-    #btnUNC::before{content:"U";}
-    #btnCliente::before{content:"C";}
-    #btnSusp::before{content:"S";}
-    #btnBaldio::before{content:"B";}
-    #btnBack1::before{content:"⚡";}
-    #btnInicioFromRegistro::before{content:"⌂";}
-    #screen2 > .btnrow button:not(.secondary){
-      background:linear-gradient(180deg,#fff,#fffafa);
-      color:var(--texto);
-      border-color:#f0d9dc;
-    }
-    #screen2 > .btnrow button.secondary{
-      background:#f8fafc;
-      color:#344054;
-      border-color:var(--borde);
-    }
-    body[data-theme="dark"] #screen2 > .btnrow button{
-      background:#171b24!important;color:#eef2f7!important;border-color:#2a3240!important;
-      box-shadow:0 10px 24px rgba(0,0,0,.18);
-    }
-    body[data-theme="dark"] #screen2 > .btnrow button::before{background:#2a1518;color:#ff8a8a;}
+    /* ===== Modo oscuro manual y pantallas de formulario v10 ===== */
+    .header-actions{display:flex;align-items:center;gap:10px;}
+    .icon-toggle{width:54px;height:54px;border-radius:999px;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.18);color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:24px;padding:0;box-shadow:0 8px 18px rgba(0,0,0,.12);}
+    body.dark{background:#0f131b;color:#eef2f7;}
+    body.dark main{background:#0f131b;}
+    body.dark .card, body.dark .stat-card, body.dark .action-btn, body.dark .utility-item, body.dark .thumb, body.dark .floating-panel, body.dark .modalCard{background:#171c27!important;border-color:#2a3445!important;color:#eef2f7!important;}
+    body.dark input, body.dark select, body.dark textarea{background:#111827!important;color:#eef2f7!important;border-color:#2a3445!important;}
+    body.dark label, body.dark .muted-p, body.dark .pill, body.dark .l, body.dark .small-footer{color:#b8c4d6!important;}
+    body.dark .pill, body.dark .form-counter{background:#151b26!important;border-color:#2a3445!important;}
+    body.dark button.secondary, body.dark .soft-btn, body.dark .utility-item{background:#151b26!important;color:#eef2f7!important;border-color:#2a3445!important;}
+    body.dark .sync-card{background:linear-gradient(180deg,#171c27,#121722)!important;border-color:#3a2b2f!important;}
+    body.dark .action-btn .ico{background:#2a1518!important;color:#ff6b74!important;}
+    .registro-card-menu{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:14px;}
+    .registro-card-menu button{min-height:112px;border-radius:22px;background:#fff;color:var(--texto);border:1px solid #f0d3d6;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;font-size:18px;box-shadow:0 8px 18px rgba(16,24,40,.05);}
+    .registro-card-menu .reg-ico{width:52px;height:52px;border-radius:999px;background:#fff3f3;color:var(--rojo);display:flex;align-items:center;justify-content:center;font-size:26px;line-height:1;}
+    body.dark .registro-card-menu button{background:#171c27!important;color:#eef2f7!important;border-color:#2a3445!important;}
+    body.dark .registro-card-menu .reg-ico{background:#2a1518!important;color:#ff6b74!important;}
+    .form-local-nav{display:flex;gap:10px;flex-wrap:wrap;margin:0 0 14px 0;}
+    .form-local-nav button{font-size:14px;min-height:42px;padding:10px 14px;}
 
   </style>
-  <script src="https://accounts.google.com/gsi/client" async defer>
-// Apariencia manual: disponible aunque la app se abra instalada.
-document.addEventListener("DOMContentLoaded", ()=>{
-  applyThemePreference();
-  const btn = document.getElementById("btnThemeToggle");
-  if(btn) btn.addEventListener("click", toggleThemePreference);
-});
-
-</script>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
 <header>
   <div class="row">
     <h1>GS Diagnósticos</h1>
-    <div class="header-actions"><button id="btnThemeToggle" class="theme-toggle" type="button" aria-label="Cambiar apariencia">🌙</button><div class="badge" id="hdrBadge">INMEL INGENIERÍA SAS</div></div>
+    <div class="header-actions"><button class="icon-toggle" id="toggleDark" type="button" aria-label="Modo oscuro">🌙</button><div class="badge" id="hdrBadge">INMEL INGENIERÍA SAS</div></div>
   </div>
 </header>
 
@@ -399,6 +308,11 @@ document.addEventListener("DOMContentLoaded", ()=>{
       </div>
     </div>
 
+    <div class="form-headline" id="estructuraCounterBox" style="margin-top:10px;">
+      <div class="pill">Registro Estructura</div>
+      <div class="form-counter" id="countESTForm">Estructuras CD: 0</div>
+    </div>
+
     <div class="chips">
       <label class="chip radioBig"><input type="radio" name="modoCd" value="crear" checked> Crear nuevo CD</label>
       <label class="chip radioBig"><input type="radio" name="modoCd" value="continuar"> Continuar con CD activo</label>
@@ -485,17 +399,17 @@ document.addEventListener("DOMContentLoaded", ()=>{
 
   <!-- SCREEN 2: FORMULARIOS -->
   <section class="card floating-panel" id="screen2" style="display:none;">
-    <div class="title">
+    <div class="title" id="registroMenuTitle">
       <div><h2>Caracterización</h2></div>
       <div class="kpi"><div class="pill">⚡ <b id="cdPill"></b></div></div>
     </div>
 
-    <div class="btnrow">
-      <button id="btnUNC" type="button">UNC</button>
-      <button id="btnCliente" type="button">Cliente</button>
-      <button id="btnSusp" type="button">Suspensión</button>
-      <button id="btnBaldio" type="button">Baldíos</button>
-      <button class="secondary" id="btnBack1" type="button">Estructuras</button>
+    <div class="btnrow registro-card-menu" id="registroMenuButtons">
+      <button id="btnUNC" type="button"><span class="reg-ico">👤</span><span>UNC</span></button>
+      <button id="btnCliente" type="button"><span class="reg-ico">👷‍♂️🤝👤</span><span>Cliente</span></button>
+      <button id="btnSusp" type="button"><span class="reg-ico">✕</span><span>Suspensión</span></button>
+      <button id="btnBaldio" type="button"><span class="reg-ico">○</span><span>Baldíos</span></button>
+      <button class="secondary" id="btnBack1" type="button"><span class="reg-ico">⚡</span><span>Estructuras</span></button>
       <button class="secondary" id="btnInicioFromRegistro" type="button">Inicio</button>
     </div>
 
@@ -990,25 +904,6 @@ class TinyZip{
 
 /* =================== helpers UI =================== */
 const $ = (id)=>document.getElementById(id);
-
-function applyThemePreference(theme){
-  const chosen = theme || localStorage.getItem("gsdx_theme") || "auto";
-  document.body.removeAttribute("data-theme");
-  if(chosen === "dark") document.body.setAttribute("data-theme","dark");
-  if(chosen === "light") document.body.setAttribute("data-theme","light");
-  const btn = document.getElementById("btnThemeToggle");
-  if(btn){
-    btn.textContent = chosen === "dark" ? "☀️" : "🌙";
-    btn.title = chosen === "dark" ? "Cambiar a modo claro" : "Cambiar a modo oscuro";
-  }
-}
-function toggleThemePreference(){
-  const current = localStorage.getItem("gsdx_theme") || "auto";
-  const next = (current === "dark") ? "light" : "dark";
-  localStorage.setItem("gsdx_theme", next);
-  applyThemePreference(next);
-}
-
 const toastEl=$("toast");
 function toast(msg){toastEl.textContent=msg;toastEl.classList.add("show");setTimeout(()=>toastEl.classList.remove("show"),2400);}
 function setBadge(msg){$("hdrBadge").textContent=msg;}
@@ -1217,6 +1112,21 @@ function putRec(store,obj){ return new Promise((res,rej)=>{ const r=tx(store,"re
 function getById(store,id){ return new Promise(res=>{ const r=tx(store).get(id); r.onsuccess=()=>res(r.result||null); r.onerror=()=>res(null); }); }
 function getAll(store){ return new Promise(res=>{ const r=tx(store).getAll(); r.onsuccess=()=>res(r.result||[]); r.onerror=()=>res([]); }); }
 function count(store){ return new Promise(res=>{ const r=tx(store).count(); r.onsuccess=()=>res(r.result||0); r.onerror=()=>res(0); }); }
+async function countByCD(store, cd=activeCD){
+  const all = await getAll(store);
+  return all.filter(r=>String(r.Transformador||'')===String(cd||'')).length;
+}
+async function estructuraDuplicada(cd, puntoFisico, currentId=null){
+  const cdNorm = upperAlnum(cd);
+  const pfNorm = upperAlnum(puntoFisico);
+  if(!cdNorm || !pfNorm) return null;
+  const all = await getAll('estructuras');
+  return all.find(r =>
+    upperAlnum(r.Transformador||'') === cdNorm &&
+    upperAlnum(r.PuntoFisico||'') === pfNorm &&
+    String(r.id) !== String(currentId || '')
+  ) || null;
+}
 async function nextItem(storeKey){
   const key=`seq_${storeKey}`;
   const v=await getMeta(key);
@@ -1326,6 +1236,7 @@ function updateActiveUI(){
   $("cdPill").textContent=activeCD?`CD: ${activeCD}`:"CD: -";
   $("btnIrARegistro").disabled=!has;
   $("btnExportar").disabled=!has;
+  try{ updateFormCounters(); }catch(e){}
 }
 function refreshModoCd(){
   const modo=document.querySelector('input[name="modoCd"]:checked').value;
@@ -1366,16 +1277,35 @@ async function renderPhotosGallery(){
 }
 
 async function updateFormCounters(){
-  const [u,c,s,b]=await Promise.all([count("unc"),count("clientes"),count("susp"),count("baldios")]);
-  if($("countUNCForm")) $("countUNCForm").textContent=`UNC: ${u}`;
-  if($("countCLIForm")) $("countCLIForm").textContent=`Clientes: ${c}`;
-  if($("countSUSForm")) $("countSUSForm").textContent=`Suspensiones: ${s}`;
-  if($("countBALForm")) $("countBALForm").textContent=`Baldíos: ${b}`;
+  const [e,u,c,s,b,et,ut,ct,st,bt]=await Promise.all([
+    countByCD("estructuras"), countByCD("unc"), countByCD("clientes"), countByCD("susp"), countByCD("baldios"),
+    count("estructuras"), count("unc"), count("clientes"), count("susp"), count("baldios")
+  ]);
+  if($("countESTForm")) $("countESTForm").textContent=`Estructuras CD: ${e} / Total: ${et}`;
+  if($("countUNCForm")) $("countUNCForm").textContent=`UNC CD: ${u} / Total: ${ut}`;
+  if($("countCLIForm")) $("countCLIForm").textContent=`Clientes CD: ${c} / Total: ${ct}`;
+  if($("countSUSForm")) $("countSUSForm").textContent=`Susp. CD: ${s} / Total: ${st}`;
+  if($("countBALForm")) $("countBALForm").textContent=`Baldíos CD: ${b} / Total: ${bt}`;
 }
 async function showCountsModal(){
-  const [a,b,c,d,e]=await Promise.all([count("estructuras"),count("unc"),count("clientes"),count("susp"),count("baldios")]);
-  const total=a+b+c+d+e;
-  if($("countModalBody")) $("countModalBody").innerHTML = `Total general: <b>${total}</b><br>Estructuras: <b>${a}</b><br>UNC: <b>${b}</b><br>Clientes: <b>${c}</b><br>Suspensiones: <b>${d}</b><br>Baldíos: <b>${e}</b>`;
+  const [et,ut,ct,st,bt,ec,uc,cc,sc,bc]=await Promise.all([
+    count("estructuras"), count("unc"), count("clientes"), count("susp"), count("baldios"),
+    countByCD("estructuras"), countByCD("unc"), countByCD("clientes"), countByCD("susp"), countByCD("baldios")
+  ]);
+  const total=et+ut+ct+st+bt;
+  const totalCd=ec+uc+cc+sc+bc;
+  const cdLabel = activeCD ? activeCD : 'Sin CD activo';
+  if($("countModalBody")) $("countModalBody").innerHTML = `
+    <b>CD activo:</b> ${cdLabel}<br>
+    <b>Total del CD:</b> ${totalCd}<br>
+    Estructuras CD: <b>${ec}</b><br>
+    UNC CD: <b>${uc}</b><br>
+    Clientes CD: <b>${cc}</b><br>
+    Suspensiones CD: <b>${sc}</b><br>
+    Baldíos CD: <b>${bc}</b><br>
+    <hr style="border:0;border-top:1px solid var(--borde);margin:10px 0">
+    <b>Total general:</b> ${total}<br>
+    Estructuras: <b>${et}</b><br>UNC: <b>${ut}</b><br>Clientes: <b>${ct}</b><br>Suspensiones: <b>${st}</b><br>Baldíos: <b>${bt}</b>`;
   if($("countModal")) $("countModal").style.display='flex';
 }
 function sanitizeMeters(v){
@@ -1447,6 +1377,42 @@ function syncMetaMirror(){
 
 function resetForms(){
   ["formUNC","formCliente","formSusp","formBaldio"].forEach(id=>$(id).style.display="none");
+}
+function setRegistroMenuVisible(visible){
+  const t=$("registroMenuTitle"), b=$("registroMenuButtons");
+  if(t) t.style.display = visible ? "" : "none";
+  if(b) b.style.display = visible ? "grid" : "none";
+}
+function showRegistroMenu(){
+  resetForms();
+  setRegistroMenuVisible(true);
+  try{ localStorage.setItem("gsdx_last_form", ""); }catch(e){}
+}
+function ensureFormLocalNav(formId){
+  const form=$(formId); if(!form || form.querySelector('.form-local-nav')) return;
+  const nav=document.createElement('div');
+  nav.className='form-local-nav';
+  nav.innerHTML='<button class="secondary" type="button" data-nav="menu">← Menú registros</button><button class="secondary" type="button" data-nav="home">Inicio</button>';
+  form.insertBefore(nav, form.firstElementChild);
+  nav.querySelector('[data-nav="menu"]').addEventListener('click', ()=>showRegistroMenu());
+  nav.querySelector('[data-nav="home"]').addEventListener('click', ()=>show('screenHome'));
+}
+function showSingleRegistroForm(formId, formKey){
+  resetForms();
+  setRegistroMenuVisible(false);
+  ensureFormLocalNav(formId);
+  $(formId).style.display='';
+  try{ localStorage.setItem('gsdx_last_form', formKey); }catch(e){}
+}
+function applyDarkModeState(){
+  const dark = localStorage.getItem('gsdx_dark_mode') === '1';
+  document.body.classList.toggle('dark', dark);
+  const b=$('toggleDark'); if(b) b.textContent = dark ? '☀️' : '🌙';
+}
+function toggleDarkMode(){
+  const next = !document.body.classList.contains('dark');
+  localStorage.setItem('gsdx_dark_mode', next ? '1' : '0');
+  applyDarkModeState();
 }
 function validateSection(elOrId){
   const el = (typeof elOrId==="string") ? $(elOrId) : elOrId;
@@ -1877,9 +1843,33 @@ function wireEvents(){
     const built=await buildEstructura();
     if(!built) return;
     const {obj,isNew}=built;
-    obj.Fotos=await readFiles($("est_fotos"));
-    const item=await nextItem("estructuras");
-    await addRec("estructuras",{...obj,item});
+
+    const currentId = (editCtx && editCtx.store==="estructuras") ? editCtx.id : null;
+    const dup = await estructuraDuplicada(obj.Transformador, obj.PuntoFisico, currentId);
+    if(dup){
+      toast(`Estructura duplicada: ${obj.Transformador} / ${obj.PuntoFisico}`);
+      $("est_punto_fisico").focus();
+      $("est_punto_fisico").style.borderColor = '#d40000';
+      $("est_punto_fisico").style.boxShadow = '0 0 0 4px rgba(212,0,0,.12)';
+      return;
+    }else{
+      $("est_punto_fisico").style.borderColor = '';
+      $("est_punto_fisico").style.boxShadow = '';
+    }
+
+    const prev = currentId ? await getById("estructuras", currentId) : null;
+    const fotosNuevas = await readFiles($("est_fotos"));
+    const fotosFinales = fotosNuevas.length ? fotosNuevas : (prev && Array.isArray(prev.Fotos) ? prev.Fotos : []);
+    const item = prev ? (prev.item || await nextItem("estructuras")) : await nextItem("estructuras");
+
+    if(currentId && prev){
+      await putRec("estructuras", {...prev, ...obj, id:currentId, item, Fotos:fotosFinales, updatedISO:new Date().toISOString()});
+      toast("Estructura actualizada ✅");
+    }else{
+      await addRec("estructuras", {...obj, item, Fotos:fotosFinales});
+      toast("Estructura guardada ✅");
+    }
+
     if(isNew){
       activeCD=obj.Transformador; activeCAP=obj.Capacidad_kVA;
       await setMeta("activeCD",activeCD);
@@ -1887,17 +1877,34 @@ function wireEvents(){
     }
     updateActiveUI();
     await refreshPFSelectors();
-    await updateSilentAutoBackup(editCtx && editCtx.store==="estructuras" ? "update_estructura" : "save_estructura");
+    await updateFormCounters();
+    await updateSilentAutoBackup(currentId ? "update_estructura" : "save_estructura");
     await updateHomeDashboard();
-    toast("Guardado ✅");
     editCtx=null;
     clearEstructuraForm();
   });
 
+
+  if($("est_punto_fisico")){
+    $("est_punto_fisico").addEventListener("blur", async ()=>{
+      const cd = (document.querySelector('input[name="modoCd"]:checked')?.value === "crear") ? $("cdInput").value : activeCD;
+      const currentId = (editCtx && editCtx.store==="estructuras") ? editCtx.id : null;
+      const dup = await estructuraDuplicada(cd, $("est_punto_fisico").value, currentId);
+      if(dup){
+        toast(`Ese punto físico ya existe en el CD ${upperAlnum(cd)}`);
+        $("est_punto_fisico").style.borderColor = '#d40000';
+        $("est_punto_fisico").style.boxShadow = '0 0 0 4px rgba(212,0,0,.12)';
+      }else{
+        $("est_punto_fisico").style.borderColor = '';
+        $("est_punto_fisico").style.boxShadow = '';
+      }
+    });
+  }
+
   // nav
   $("btnIrARegistro").addEventListener("click", async ()=>{
     if(!(activeCD&&activeCAP)) return toast("Registra CD primero");
-    resetForms();
+    showRegistroMenu();
     await refreshPFSelectors();
     show("screen2");
   });
@@ -1907,10 +1914,11 @@ function wireEvents(){
   $("btnModificarExcel").addEventListener("click", ()=>show("screen3"));
   $("btnBackModExcel").addEventListener("click", ()=>show("screenHome"));
   $("countModalClose").addEventListener("click", ()=>{ $("countModal").style.display="none"; });
+  $("toggleDark")?.addEventListener("click", toggleDarkMode);
 
   $("homeRegistrar").addEventListener("click", async ()=>{
     if(activeCD && activeCAP){
-      resetForms();
+      showRegistroMenu();
       await refreshPFSelectors();
       show("screen2");
       await updateFormCounters();
@@ -1935,16 +1943,16 @@ function wireEvents(){
   $("modExcelSearch").addEventListener("input", renderModExcelTable);
 
   // open forms
-  $("btnUNC").addEventListener("click", async ()=>{ resetForms(); await refreshPFSelectors(); await updateFormCounters(); localStorage.setItem("gsdx_last_form","unc"); $("formUNC").style.display=""; restoreLastLocalidad(); restoreDraft("unc", {unc_pf:$("unc_pf").value, unc_sede:$("unc_sede").value, unc_municipio:$("unc_municipio").value, unc_localidad:$("unc_localidad").value, unc_tipo_zona:$("unc_tipo_zona").value}); maybeAutofillUNCObservation(false); });
-  $("btnCliente").addEventListener("click", async ()=>{ resetForms(); await refreshPFSelectors(); await updateFormCounters(); localStorage.setItem("gsdx_last_form","cliente"); $("formCliente").style.display=""; restoreDraft("cliente", {cli_pf:$("cli_pf").value}); });
-  $("btnSusp").addEventListener("click", async ()=>{ resetForms(); await refreshPFSelectors(); await updateFormCounters(); localStorage.setItem("gsdx_last_form","susp"); $("formSusp").style.display=""; restoreDraft("susp", {sus_pf:$("sus_pf").value}); });
-  $("btnBaldio").addEventListener("click", async ()=>{ resetForms(); await refreshPFSelectors(); await updateFormCounters(); localStorage.setItem("gsdx_last_form","baldio"); $("formBaldio").style.display=""; restoreDraft("baldio", {bal_pf:$("bal_pf").value}); });
+  $("btnUNC").addEventListener("click", async ()=>{ await refreshPFSelectors(); await updateFormCounters(); showSingleRegistroForm("formUNC","unc"); restoreLastLocalidad(); restoreDraft("unc", {unc_pf:$("unc_pf").value, unc_sede:$("unc_sede").value, unc_municipio:$("unc_municipio").value, unc_localidad:$("unc_localidad").value, unc_tipo_zona:$("unc_tipo_zona").value}); maybeAutofillUNCObservation(false); });
+  $("btnCliente").addEventListener("click", async ()=>{ await refreshPFSelectors(); await updateFormCounters(); showSingleRegistroForm("formCliente","cliente"); restoreDraft("cliente", {cli_pf:$("cli_pf").value}); });
+  $("btnSusp").addEventListener("click", async ()=>{ await refreshPFSelectors(); await updateFormCounters(); showSingleRegistroForm("formSusp","susp"); restoreDraft("susp", {sus_pf:$("sus_pf").value}); });
+  $("btnBaldio").addEventListener("click", async ()=>{ await refreshPFSelectors(); await updateFormCounters(); showSingleRegistroForm("formBaldio","baldio"); restoreDraft("baldio", {bal_pf:$("bal_pf").value}); });
 
   // cancel
-  $("btnCancelUNC").addEventListener("click", ()=>resetForms());
-  $("btnCancelCli").addEventListener("click", ()=>resetForms());
-  $("btnCancelSus").addEventListener("click", ()=>resetForms());
-  $("btnCancelBaldio").addEventListener("click", ()=>resetForms());
+  $("btnCancelUNC").addEventListener("click", ()=>showRegistroMenu());
+  $("btnCancelCli").addEventListener("click", ()=>showRegistroMenu());
+  $("btnCancelSus").addEventListener("click", ()=>showRegistroMenu());
+  $("btnCancelBaldio").addEventListener("click", ()=>showRegistroMenu());
 
   // save UNC
   $("btnGuardarUNC").addEventListener("click", async ()=>{
@@ -2418,6 +2426,7 @@ function loadModExcelFile(){
     await registerSW();
     await requestPersistentStorage();
     updateInstallStateUI();
+    applyDarkModeState();
     await updateHomeDashboard();
     syncMetaMirror();
     const lastScreen = localStorage.getItem("gsdx_last_screen") || "screenHome";
@@ -2426,10 +2435,11 @@ function loadModExcelFile(){
     if(safeLast === "screen2"){
       await refreshPFSelectors();
       const lastForm = localStorage.getItem("gsdx_last_form") || "";
-      if(lastForm === "unc") { resetForms(); $("formUNC").style.display=""; restoreDraft("unc"); }
-      if(lastForm === "cliente") { resetForms(); localStorage.setItem("gsdx_last_form","cliente"); $("formCliente").style.display=""; restoreDraft("cliente"); }
-      if(lastForm === "susp") { resetForms(); localStorage.setItem("gsdx_last_form","susp"); $("formSusp").style.display=""; restoreDraft("susp"); }
-      if(lastForm === "baldio") { resetForms(); localStorage.setItem("gsdx_last_form","baldio"); $("formBaldio").style.display=""; restoreDraft("baldio"); }
+      if(lastForm === "unc") { showSingleRegistroForm("formUNC","unc"); restoreDraft("unc"); }
+      else if(lastForm === "cliente") { showSingleRegistroForm("formCliente","cliente"); restoreDraft("cliente"); }
+      else if(lastForm === "susp") { showSingleRegistroForm("formSusp","susp"); restoreDraft("susp"); }
+      else if(lastForm === "baldio") { showSingleRegistroForm("formBaldio","baldio"); restoreDraft("baldio"); }
+      else { showRegistroMenu(); }
       await updateFormCounters();
     }
     window.matchMedia('(display-mode: standalone)').addEventListener?.('change', updateInstallStateUI);
