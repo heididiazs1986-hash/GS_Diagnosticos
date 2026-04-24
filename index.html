@@ -6,9 +6,9 @@
   <title>GS Diagnósticos</title>
   <meta name="theme-color" content="#d40000" />
   <link rel="manifest" href="manifest.json">
-  <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
-  <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="icon-180.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png?v=gsdx-red-2">
+  <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png?v=gsdx-red-2">
+  <link rel="apple-touch-icon" sizes="180x180" href="icon-180.png?v=gsdx-red-2">
   <style>
     :root{--rojo:#d40000;--gris:#f5f5f5;--borde:#dedede;--texto:#1f1f1f;--muted:#6a6a6a;--card:#fff;--shadow:0 10px 26px rgba(0,0,0,.08);--radius:18px;}
     *{box-sizing:border-box;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;}
@@ -149,27 +149,6 @@
     .form-headline{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:2px 0 10px;}
     .field-hint{font-size:12px;color:var(--muted);margin-top:4px;}
     .button-stack{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
-
-    .premium-structure-actions{
-      display:grid;
-      grid-template-columns:repeat(2,minmax(0,1fr));
-      gap:12px;
-      margin-top:16px;
-    }
-    .premium-structure-actions button{
-      min-height:64px;
-      border-radius:20px;
-      font-size:15px;
-      box-shadow:0 10px 24px rgba(16,24,40,.08);
-    }
-    .premium-structure-actions button.secondary{
-      background:#fff;
-      color:var(--texto);
-      border:1px solid var(--borde);
-    }
-    @media(max-width:520px){
-      .premium-structure-actions{grid-template-columns:1fr;}
-    }
     #screen2 .btnrow button,#screen1 .btnrow button,#screen3 .btnrow button,.vBtns button,.soft-btn{box-shadow:0 6px 18px rgba(135,19,33,.10);font-weight:800;min-height:46px;}
     #screen2 .btnrow button.secondary,#screen1 .btnrow button.secondary,#screen3 .btnrow button.secondary,.vBtns button.secondary,.soft-btn.secondary{box-shadow:none;}
     .floating-panel{background:linear-gradient(180deg,#ffffff,#fbfbfc);border:1px solid var(--borde);border-radius:24px;padding:18px;box-shadow:0 14px 32px rgba(16,24,40,.08);}
@@ -240,14 +219,25 @@
       <div><h2>Acerca de</h2></div>
       <div class="pill">Instructivo</div>
     </div>
+
     <div class="muted-p">
-      <b>GS Diagnósticos</b> permite registrar estructuras, usuarios no clientes, clientes, suspensiones y baldíos desde el celular, incluso en condiciones de trabajo prolongadas en campo. Recomendaciones de uso: primero cree o continúe un CD, luego registre estructuras, después avance a caracterización, exporte o sincronice cuando lo considere necesario y revise la galería de fotos antes de cerrar jornada.
+      <b>GS Diagnósticos</b> es una herramienta de apoyo para la gestión social en campo. Facilita la caracterización técnica y social de predios, organiza evidencia fotográfica y consolida información crítica para el seguimiento operativo del proceso.
     </div>
-    <div class="muted-p">
-      El botón <b>Excel</b> abre el módulo para cargar y modificar registros UNC a partir de un archivo. El botón <b>Editar</b> sirve para actualizar registros ya guardados de estructuras, UNC, clientes, suspensiones y baldíos. El botón <b>Fotos</b> abre la galería local de evidencia capturada.
+
+    <div class="utility-list" style="margin-top:14px;">
+      <div class="utility-item" style="display:block;"><b>Estructuras</b><div class="muted-p">Permite registrar el centro de distribución, punto físico, tipo de nodo, material, características, red BT, luminarias, coordenadas y observaciones técnicas del punto inspeccionado.</div></div>
+      <div class="utility-item" style="display:block;"><b>UNC</b><div class="muted-p">Permite caracterizar usuarios no clientes, datos sociales, documento de propiedad, condición del predio, revisión de norma técnica y necesidades como acometida, ducto, celda, SPT, muro, arriostre o ampliación de redes.</div></div>
+      <div class="utility-item" style="display:block;"><b>Cliente</b><div class="muted-p">Registra información del usuario con medidor, serie, marca, fases, estado del medidor, visor, necesidad de inspección, ubicación, fotos y observaciones de campo.</div></div>
+      <div class="utility-item" style="display:block;"><b>Suspensión</b><div class="muted-p">Documenta predios con servicio directo que requieren suspensión o gestión por riesgo, incluyendo motivo, punto físico, longitud al nodo, coordenadas, fotos y observaciones.</div></div>
+      <div class="utility-item" style="display:block;"><b>Baldíos</b><div class="muted-p">Registra lotes o predios sin habitabilidad plena, con estado, punto físico, longitud al nodo, coordenadas, fotografías y observaciones para trazabilidad del diagnóstico.</div></div>
     </div>
+
+    <div class="muted-p" style="margin-top:14px;">
+      <b>Botones principales:</b> <b>Editar</b> actualiza registros guardados dentro de la app. <b>Excel</b> abre el módulo para cargar/modificar información desde archivo. <b>Fotos</b> muestra la galería local cuando la evidencia quedó almacenada en la base del dispositivo.
+    </div>
+
     <div class="nav-mini">
-      <button class="secondary" id="btnAcercaBackHome" type="button">Inicio</button>
+      <button class="secondary" id="btnAcercaBackHome" type="button">Volver a inicio</button>
     </div>
     <div class="small-footer">Creado por Heidi Díaz para el proceso de Gestión Social.</div>
   </section>
@@ -355,9 +345,13 @@
       </div>
     </div>
 
-    <div class="btnrow premium-structure-actions">
-      <button id="btnIrARegistro" type="button">Registrar diagnóstico</button>
-      <button class="secondary" id="btnHomeFromEstructuras" type="button">Volver a inicio</button>
+    <div class="btnrow action-grid" style="grid-template-columns:repeat(2,minmax(0,1fr));">
+      <button class="action-btn" id="btnIrARegistro" type="button"><span class="ico">＋</span><span>Registrar</span></button>
+      <button class="action-btn" id="btnInicioFromEstructuras" type="button"><span class="ico">⌂</span><span>Volver a inicio</span></button>
+      <button class="secondary hide" id="btnExportar" type="button">Exportar (Excel + Fotos ZIP)</button>
+      <button class="secondary hide" id="btnActualizar" type="button">Actualizar</button>
+      <button class="secondary hide" id="btnConteos" type="button">Conteos</button>
+      <button class="secondary hide" id="btnModificarExcel" type="button">Modificar Excel</button>
     </div>
   </section>
 
@@ -374,6 +368,7 @@
       <button id="btnSusp" type="button">Suspensión</button>
       <button id="btnBaldio" type="button">Baldíos</button>
       <button class="secondary" id="btnBack1" type="button">Estructuras</button>
+      <button class="secondary" id="btnInicioFromRegistro" type="button">Inicio</button>
     </div>
 
     <!-- UNC -->
@@ -685,7 +680,7 @@
       <input id="modExcelInput" type="file" accept=".xlsx,.xls,.csv" />
       <button class="secondary" id="btnCargarExcelMod" type="button">Cargar hoja Modificar</button>
       <button class="secondary" id="btnExportarExcelMod" type="button">Exportar Excel actualizado</button>
-      <button class="secondary" id="btnBackModExcel" type="button">Volver</button>
+      <button class="secondary" id="btnBackModExcel" type="button">Inicio</button>
     </div>
 
     <div class="modToolbar">
@@ -938,26 +933,6 @@ function bindDraftAutosave(formKey, selectors){
 function restoreDraft(formKey, defaults={}){
   applyFormValues({...defaults, ...getDraft(formKey)});
 }
-function restoreUNCDraftSmart(defaults={}){
-  const data = {...defaults, ...getDraft("unc")};
-  const municipio = data.unc_municipio || "";
-  delete data.unc_municipio;
-  applyFormValues(data);
-  if(data.unc_sede && $("unc_sede")){
-    $("unc_sede").dispatchEvent(new Event("change"));
-    if(municipio) $("unc_municipio").value = municipio;
-  }
-  restoreLastLocalidad();
-  maybeAutofillUNCObservation(false);
-}
-function restoreEstructuraDraftSmart(){
-  const data = getDraft("estructuras");
-  if(!data || !Object.keys(data).length) return;
-  if(data.est_tipo_nodo) $("est_tipo_nodo").value = data.est_tipo_nodo;
-  if(data.est_material_nodo) $("est_material_nodo").value = data.est_material_nodo;
-  fillCaracteristicas($("est_tipo_nodo"),$("est_material_nodo"),$("est_caracteristicas"));
-  applyFormValues(data);
-}
 function clearEstructuraForm(){
   setSelectIfExists('est_tipo_nodo','');
   setSelectIfExists('est_material_nodo','');
@@ -1186,28 +1161,24 @@ function dataURLtoU8(dataURL){
 
 /* =================== pantallas =================== */
 let activeCD=null, activeCAP=null;
-function rememberScreen(id){
+function show(id){
+  ["screenHome","screenFotos","screenAcerca","screenRespaldo","screen1","screen2","screen3"].forEach(x=>{
+    const el=$(x);
+    if(!el) return;
+    const active = (x===id);
+    el.style.display = active ? "block" : "none";
+    el.classList.toggle("active", active);
+  });
   try{ localStorage.setItem("gsdx_last_screen", id); }catch(e){}
-}
-function rememberForm(formKey){
-  try{ localStorage.setItem("gsdx_last_form", formKey || ""); }catch(e){}
-}
-function show(id, remember=true){
-  ["screenHome","screenFotos","screenAcerca","screenRespaldo","screen1","screen2","screen3"].forEach(x=>{ const el=$(x); if(el) el.style.display=(x===id)?"":"none"; });
-  if(remember) rememberScreen(id);
   window.scrollTo({top:0,behavior:"smooth"});
-}
-async function goHome(){
-  resetForms();
-  await updateHomeDashboard();
-  show("screenHome");
 }
 function updateActiveUI(){
   const has=!!(activeCD&&activeCAP);
   $("activeBox").style.display=has?"":"none";
   $("activeCdTxt").textContent=`CD: ${activeCD||""}`;
   $("cdPill").textContent=activeCD?`CD: ${activeCD}`:"CD: -";
-  if($("btnIrARegistro")) $("btnIrARegistro").disabled=!has;
+  $("btnIrARegistro").disabled=!has;
+  $("btnExportar").disabled=!has;
 }
 function refreshModoCd(){
   const modo=document.querySelector('input[name="modoCd"]:checked').value;
@@ -1232,22 +1203,16 @@ async function renderPhotosGallery(){
   const all=[...(await getAll("estructuras")),...(await getAll("unc")),...(await getAll("clientes")),...(await getAll("susp")),...(await getAll("baldios"))];
   const items=[];
   all.forEach(r=>{
-    (Array.isArray(r.Fotos)?r.Fotos:[]).forEach(f=>{
-      const src = (typeof f === "string") ? f : (f && (f.dataURL || f.src || f.url)) || "";
-      if(src && src.startsWith("data:image")){
-        items.push({src, label:(r.Transformador||"")+" "+(r.PuntoFisico||"")});
-      }
-    });
+    (Array.isArray(r.Fotos)?r.Fotos:[]).forEach(f=>items.push({src:f.dataURL||"", label:(r.Transformador||"")+" "+(r.PuntoFisico||"")}));
   });
   if(!items.length){
-    holder.innerHTML='<div class="muted-p">No hay fotos visibles almacenadas en este dispositivo. Algunas fotos antiguas pueden contar en el resumen, pero no tener vista previa válida.</div>';
-    if($("photosSummaryPill")) $("photosSummaryPill").textContent="0 foto(s) visibles";
+    holder.innerHTML='<div class="muted-p">No hay fotos almacenadas en este dispositivo todavía.</div>';
     return;
   }
   items.slice(0,80).forEach(it=>{
     const card=document.createElement('div');
     card.className='thumb';
-    card.innerHTML=`<img src="${it.src}" alt="Foto de diagnóstico"><div class="muted-p" style="font-size:12px;margin-top:6px">${it.label||'Foto'}</div>`;
+    card.innerHTML=`<img src="${it.src}"><div class="muted-p" style="font-size:12px;margin-top:6px">${it.label||'Foto'}</div>`;
     holder.appendChild(card);
   });
   if($("photosSummaryPill")) $("photosSummaryPill").textContent=`${items.length} foto(s)`;
@@ -1785,10 +1750,11 @@ function wireEvents(){
     await refreshPFSelectors();
     show("screen2");
   });
-  $("btnBack1").addEventListener("click", ()=>{ resetForms(); show("screen1"); restoreEstructuraDraftSmart(); });
-  $("btnHomeFromEstructuras").addEventListener("click", goHome);
-  if($("btnModificarExcel")) $("btnModificarExcel").addEventListener("click", ()=>show("screen3"));
-  $("btnBackModExcel").addEventListener("click", goHome);
+  $("btnBack1").addEventListener("click", ()=>{ resetForms(); show("screen1"); });
+  $("btnInicioFromRegistro")?.addEventListener("click", ()=>show("screenHome"));
+  $("btnInicioFromEstructuras")?.addEventListener("click", ()=>show("screenHome"));
+  $("btnModificarExcel").addEventListener("click", ()=>show("screen3"));
+  $("btnBackModExcel").addEventListener("click", ()=>show("screenHome"));
   $("countModalClose").addEventListener("click", ()=>{ $("countModal").style.display="none"; });
 
   $("homeRegistrar").addEventListener("click", async ()=>{
@@ -1809,19 +1775,19 @@ function wireEvents(){
   $("utilFotos").addEventListener("click", async ()=>{ await renderPhotosGallery(); show("screenFotos"); });
   $("utilAcerca").addEventListener("click", ()=>show("screenAcerca"));
   $("btnOpenRespaldo").addEventListener("click", ()=>{ syncMetaMirror(); show("screenRespaldo"); });
-  $("btnFotosBackHome").addEventListener("click", goHome);
-  $("btnAcercaBackHome").addEventListener("click", goHome);
-  $("btnRespaldoBackHome").addEventListener("click", goHome);
+  $("btnFotosBackHome").addEventListener("click", ()=>show("screenHome"));
+  $("btnAcercaBackHome").addEventListener("click", ()=>show("screenHome"));
+  $("btnRespaldoBackHome").addEventListener("click", ()=>show("screenHome"));
   $("btnCargarExcelMod").addEventListener("click", loadModExcelFile);
   $("btnExportarExcelMod").addEventListener("click", exportModExcelFile);
   $("btnGuardarFilaExcelMod").addEventListener("click", saveModExcelRecord);
   $("modExcelSearch").addEventListener("input", renderModExcelTable);
 
   // open forms
-  $("btnUNC").addEventListener("click", async ()=>{ rememberForm("unc"); resetForms(); await refreshPFSelectors(); await updateFormCounters(); $("formUNC").style.display=""; restoreUNCDraftSmart({unc_pf:$("unc_pf").value, unc_sede:$("unc_sede").value, unc_municipio:$("unc_municipio").value, unc_localidad:$("unc_localidad").value, unc_tipo_zona:$("unc_tipo_zona").value}); });
-  $("btnCliente").addEventListener("click", async ()=>{ rememberForm("cliente"); resetForms(); await refreshPFSelectors(); await updateFormCounters(); $("formCliente").style.display=""; restoreDraft("cliente", {cli_pf:$("cli_pf").value}); });
-  $("btnSusp").addEventListener("click", async ()=>{ rememberForm("susp"); resetForms(); await refreshPFSelectors(); await updateFormCounters(); $("formSusp").style.display=""; restoreDraft("susp", {sus_pf:$("sus_pf").value}); });
-  $("btnBaldio").addEventListener("click", async ()=>{ rememberForm("baldio"); resetForms(); await refreshPFSelectors(); await updateFormCounters(); $("formBaldio").style.display=""; restoreDraft("baldio", {bal_pf:$("bal_pf").value}); });
+  $("btnUNC").addEventListener("click", async ()=>{ resetForms(); await refreshPFSelectors(); await updateFormCounters(); localStorage.setItem("gsdx_last_form","unc"); $("formUNC").style.display=""; restoreLastLocalidad(); restoreDraft("unc", {unc_pf:$("unc_pf").value, unc_sede:$("unc_sede").value, unc_municipio:$("unc_municipio").value, unc_localidad:$("unc_localidad").value, unc_tipo_zona:$("unc_tipo_zona").value}); maybeAutofillUNCObservation(false); });
+  $("btnCliente").addEventListener("click", async ()=>{ resetForms(); await refreshPFSelectors(); await updateFormCounters(); localStorage.setItem("gsdx_last_form","cliente"); $("formCliente").style.display=""; restoreDraft("cliente", {cli_pf:$("cli_pf").value}); });
+  $("btnSusp").addEventListener("click", async ()=>{ resetForms(); await refreshPFSelectors(); await updateFormCounters(); localStorage.setItem("gsdx_last_form","susp"); $("formSusp").style.display=""; restoreDraft("susp", {sus_pf:$("sus_pf").value}); });
+  $("btnBaldio").addEventListener("click", async ()=>{ resetForms(); await refreshPFSelectors(); await updateFormCounters(); localStorage.setItem("gsdx_last_form","baldio"); $("formBaldio").style.display=""; restoreDraft("baldio", {bal_pf:$("bal_pf").value}); });
 
   // cancel
   $("btnCancelUNC").addEventListener("click", ()=>resetForms());
@@ -1913,21 +1879,21 @@ function wireEvents(){
   });
 
   // after save modal
-  $("goUNC").addEventListener("click", async ()=>{ rememberForm("unc"); $("modalAfterSave").style.display="none"; resetForms(); await refreshPFSelectors(); show("screen2"); $("formUNC").style.display=""; restoreUNCDraftSmart({unc_pf:$("unc_pf").value, unc_sede:$("unc_sede").value, unc_municipio:$("unc_municipio").value, unc_localidad:$("unc_localidad").value, unc_tipo_zona:$("unc_tipo_zona").value}); });
-  $("goCLI").addEventListener("click", async ()=>{ rememberForm("cliente"); $("modalAfterSave").style.display="none"; resetForms(); await refreshPFSelectors(); show("screen2"); $("formCliente").style.display=""; restoreDraft("cliente", {cli_pf:$("cli_pf").value}); });
-  $("goSUS").addEventListener("click", async ()=>{ rememberForm("susp"); $("modalAfterSave").style.display="none"; resetForms(); await refreshPFSelectors(); show("screen2"); $("formSusp").style.display=""; restoreDraft("susp", {sus_pf:$("sus_pf").value}); });
-  $("goBAL").addEventListener("click", async ()=>{ rememberForm("baldio"); $("modalAfterSave").style.display="none"; resetForms(); await refreshPFSelectors(); show("screen2"); $("formBaldio").style.display=""; restoreDraft("baldio", {bal_pf:$("bal_pf").value}); });
-  $("goNO").addEventListener("click", ()=>{ $("modalAfterSave").style.display="none"; resetForms(); show("screen1"); restoreEstructuraDraftSmart(); });
+  $("goUNC").addEventListener("click", async ()=>{ $("modalAfterSave").style.display="none"; resetForms(); await refreshPFSelectors(); show("screen2"); localStorage.setItem("gsdx_last_form","unc"); $("formUNC").style.display=""; restoreLastLocalidad(); restoreDraft("unc", {unc_pf:$("unc_pf").value, unc_sede:$("unc_sede").value, unc_municipio:$("unc_municipio").value, unc_localidad:$("unc_localidad").value, unc_tipo_zona:$("unc_tipo_zona").value}); });
+  $("goCLI").addEventListener("click", async ()=>{ $("modalAfterSave").style.display="none"; resetForms(); await refreshPFSelectors(); show("screen2"); localStorage.setItem("gsdx_last_form","cliente"); $("formCliente").style.display=""; restoreDraft("cliente", {cli_pf:$("cli_pf").value}); });
+  $("goSUS").addEventListener("click", async ()=>{ $("modalAfterSave").style.display="none"; resetForms(); await refreshPFSelectors(); show("screen2"); localStorage.setItem("gsdx_last_form","susp"); $("formSusp").style.display=""; restoreDraft("susp", {sus_pf:$("sus_pf").value}); });
+  $("goBAL").addEventListener("click", async ()=>{ $("modalAfterSave").style.display="none"; resetForms(); await refreshPFSelectors(); show("screen2"); localStorage.setItem("gsdx_last_form","baldio"); $("formBaldio").style.display=""; restoreDraft("baldio", {bal_pf:$("bal_pf").value}); });
+  $("goNO").addEventListener("click", ()=>{ $("modalAfterSave").style.display="none"; resetForms(); show("screen1"); });
 
   // export
-  if($("btnExportar")) $("btnExportar").addEventListener("click", exportAll);
+  $("btnExportar").addEventListener("click", exportAll);
   $("dlClose").addEventListener("click", ()=>{ $("dlModal").style.display="none"; });
 
   // counts
-  if($("btnConteos")) $("btnConteos").addEventListener("click", showCountsModal);
+  $("btnConteos").addEventListener("click", showCountsModal);
 
   // Update modal (TODOS LOS FORMULARIOS)
-  if($("btnActualizar")) $("btnActualizar").addEventListener("click", ()=>{ $("modalUpdate").style.display="flex"; $("updPick").style.display="flex"; $("updListWrap").style.display="none"; });
+  $("btnActualizar").addEventListener("click", ()=>{ $("modalUpdate").style.display="flex"; $("updPick").style.display="flex"; $("updListWrap").style.display="none"; });
   $("updClose").addEventListener("click", ()=>{ $("modalUpdate").style.display="none"; });
   $("updBack").addEventListener("click", ()=>{ $("updPick").style.display="flex"; $("updListWrap").style.display="none"; });
 
@@ -2284,45 +2250,6 @@ function loadModExcelFile(){
   reader.readAsArrayBuffer(file);
 }
 
-
-async function restoreLastWorkspace(){
-  const last = localStorage.getItem("gsdx_last_screen") || "screenHome";
-  const form = localStorage.getItem("gsdx_last_form") || "";
-  try{
-    if(last==="screen1"){
-      show("screen1");
-      restoreEstructuraDraftSmart();
-      return;
-    }
-    if(last==="screen2" && activeCD && activeCAP){
-      await refreshPFSelectors();
-      await updateFormCounters();
-      show("screen2");
-      resetForms();
-      if(form==="unc"){
-        $("formUNC").style.display="";
-        restoreUNCDraftSmart({unc_pf:$("unc_pf").value, unc_sede:$("unc_sede").value, unc_municipio:$("unc_municipio").value, unc_localidad:$("unc_localidad").value, unc_tipo_zona:$("unc_tipo_zona").value});
-      }else if(form==="cliente"){
-        $("formCliente").style.display="";
-        restoreDraft("cliente", {cli_pf:$("cli_pf").value});
-      }else if(form==="susp"){
-        $("formSusp").style.display="";
-        restoreDraft("susp", {sus_pf:$("sus_pf").value});
-      }else if(form==="baldio"){
-        $("formBaldio").style.display="";
-        restoreDraft("baldio", {bal_pf:$("bal_pf").value});
-      }
-      return;
-    }
-    if(last==="screen3"){ show("screen3"); return; }
-    if(last==="screenRespaldo"){ syncMetaMirror(); show("screenRespaldo"); return; }
-    if(last==="screenAcerca"){ show("screenAcerca"); return; }
-  }catch(e){
-    console.warn("No se pudo restaurar el último punto de trabajo", e);
-  }
-  show("screenHome");
-}
-
 /* =================== init =================== */
 (async function init(){
   try{
@@ -2342,7 +2269,18 @@ async function restoreLastWorkspace(){
     updateInstallStateUI();
     await updateHomeDashboard();
     syncMetaMirror();
-    await restoreLastWorkspace();
+    const lastScreen = localStorage.getItem("gsdx_last_screen") || "screenHome";
+    const safeLast = ["screen1","screen2","screen3"].includes(lastScreen) ? lastScreen : "screenHome";
+    show(safeLast);
+    if(safeLast === "screen2"){
+      await refreshPFSelectors();
+      const lastForm = localStorage.getItem("gsdx_last_form") || "";
+      if(lastForm === "unc") { resetForms(); $("formUNC").style.display=""; restoreDraft("unc"); }
+      if(lastForm === "cliente") { resetForms(); localStorage.setItem("gsdx_last_form","cliente"); $("formCliente").style.display=""; restoreDraft("cliente"); }
+      if(lastForm === "susp") { resetForms(); localStorage.setItem("gsdx_last_form","susp"); $("formSusp").style.display=""; restoreDraft("susp"); }
+      if(lastForm === "baldio") { resetForms(); localStorage.setItem("gsdx_last_form","baldio"); $("formBaldio").style.display=""; restoreDraft("baldio"); }
+      await updateFormCounters();
+    }
     window.matchMedia('(display-mode: standalone)').addEventListener?.('change', updateInstallStateUI);
   }catch(e){
     console.error(e);
