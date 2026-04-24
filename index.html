@@ -149,6 +149,27 @@
     .form-headline{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:2px 0 10px;}
     .field-hint{font-size:12px;color:var(--muted);margin-top:4px;}
     .button-stack{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+
+    .premium-structure-actions{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:12px;
+      margin-top:16px;
+    }
+    .premium-structure-actions button{
+      min-height:64px;
+      border-radius:20px;
+      font-size:15px;
+      box-shadow:0 10px 24px rgba(16,24,40,.08);
+    }
+    .premium-structure-actions button.secondary{
+      background:#fff;
+      color:var(--texto);
+      border:1px solid var(--borde);
+    }
+    @media(max-width:520px){
+      .premium-structure-actions{grid-template-columns:1fr;}
+    }
     #screen2 .btnrow button,#screen1 .btnrow button,#screen3 .btnrow button,.vBtns button,.soft-btn{box-shadow:0 6px 18px rgba(135,19,33,.10);font-weight:800;min-height:46px;}
     #screen2 .btnrow button.secondary,#screen1 .btnrow button.secondary,#screen3 .btnrow button.secondary,.vBtns button.secondary,.soft-btn.secondary{box-shadow:none;}
     .floating-panel{background:linear-gradient(180deg,#ffffff,#fbfbfc);border:1px solid var(--borde);border-radius:24px;padding:18px;box-shadow:0 14px 32px rgba(16,24,40,.08);}
@@ -199,7 +220,6 @@
       <button class="utility-item" id="utilAcerca" type="button"><span>Acerca de</span><span>›</span></button>
     </div>
 
-    <p class="muted-p">GS Diagnósticos es una herramienta de apoyo para la gestión social en campo. Facilita la caracterización técnica y social de predios, organiza la evidencia fotográfica y consolida información crítica para el seguimiento operativo del proceso.</p>
     <div class="small-footer">Creado por Heidi Díaz para el proceso de Gestión Social.</div>
   </section>
 
@@ -335,12 +355,9 @@
       </div>
     </div>
 
-    <div class="btnrow">
+    <div class="btnrow premium-structure-actions">
       <button id="btnIrARegistro" type="button">Registrar diagnóstico</button>
-      <button class="secondary" id="btnExportar" type="button">Exportar (Excel + Fotos ZIP)</button>
-      <button class="secondary" id="btnActualizar" type="button">Actualizar</button>
-      <button class="secondary" id="btnConteos" type="button">Conteos</button>
-      <button class="secondary" id="btnModificarExcel" type="button">Modificar Excel</button>
+      <button class="secondary" id="btnHomeFromEstructuras" type="button">Volver a inicio</button>
     </div>
   </section>
 
@@ -921,6 +938,26 @@ function bindDraftAutosave(formKey, selectors){
 function restoreDraft(formKey, defaults={}){
   applyFormValues({...defaults, ...getDraft(formKey)});
 }
+function restoreUNCDraftSmart(defaults={}){
+  const data = {...defaults, ...getDraft("unc")};
+  const municipio = data.unc_municipio || "";
+  delete data.unc_municipio;
+  applyFormValues(data);
+  if(data.unc_sede && $("unc_sede")){
+    $("unc_sede").dispatchEvent(new Event("change"));
+    if(municipio) $("unc_municipio").value = municipio;
+  }
+  restoreLastLocalidad();
+  maybeAutofillUNCObservation(false);
+}
+function restoreEstructuraDraftSmart(){
+  const data = getDraft("estructuras");
+  if(!data || !Object.keys(data).length) return;
+  if(data.est_tipo_nodo) $("est_tipo_nodo").value = data.est_tipo_nodo;
+  if(data.est_material_nodo) $("est_material_nodo").value = data.est_material_nodo;
+  fillCaracteristicas($("est_tipo_nodo"),$("est_material_nodo"),$("est_caracteristicas"));
+  applyFormValues(data);
+}
 function clearEstructuraForm(){
   setSelectIfExists('est_tipo_nodo','');
   setSelectIfExists('est_material_nodo','');
@@ -1149,17 +1186,28 @@ function dataURLtoU8(dataURL){
 
 /* =================== pantallas =================== */
 let activeCD=null, activeCAP=null;
-function show(id){
+function rememberScreen(id){
+  try{ localStorage.setItem("gsdx_last_screen", id); }catch(e){}
+}
+function rememberForm(formKey){
+  try{ localStorage.setItem("gsdx_last_form", formKey || ""); }catch(e){}
+}
+function show(id, remember=true){
   ["screenHome","screenFotos","screenAcerca","screenRespaldo","screen1","screen2","screen3"].forEach(x=>{ const el=$(x); if(el) el.style.display=(x===id)?"":"none"; });
+  if(remember) rememberScreen(id);
   window.scrollTo({top:0,behavior:"smooth"});
+}
+async function goHome(){
+  resetForms();
+  await updateHomeDashboard();
+  show("screenHome");
 }
 function updateActiveUI(){
   const has=!!(activeCD&&activeCAP);
   $("activeBox").style.display=has?"":"none";
   $("activeCdTxt").textContent=`CD: ${activeCD||""}`;
   $("cdPill").textContent=activeCD?`CD: ${activeCD}`:"CD: -";
-  $("btnIrARegistro").disabled=!has;
-  $("btnExportar").disabled=!has;
+  if($("btnIrARegistro")) $("btnIrARegistro").disabled=!has;
 }
 function refreshModoCd(){
   const modo=document.querySelector('input[name="modoCd"]:checked').value;
@@ -1184,16 +1232,22 @@ async function renderPhotosGallery(){
   const all=[...(await getAll("estructuras")),...(await getAll("unc")),...(await getAll("clientes")),...(await getAll("susp")),...(await getAll("baldios"))];
   const items=[];
   all.forEach(r=>{
-    (Array.isArray(r.Fotos)?r.Fotos:[]).forEach(f=>items.push({src:f.dataURL||"", label:(r.Transformador||"")+" "+(r.PuntoFisico||"")}));
+    (Array.isArray(r.Fotos)?r.Fotos:[]).forEach(f=>{
+      const src = (typeof f === "string") ? f : (f && (f.dataURL || f.src || f.url)) || "";
+      if(src && src.startsWith("data:image")){
+        items.push({src, label:(r.Transformador||"")+" "+(r.PuntoFisico||"")});
+      }
+    });
   });
   if(!items.length){
-    holder.innerHTML='<div class="muted-p">No hay fotos almacenadas en este dispositivo todavía.</div>';
+    holder.innerHTML='<div class="muted-p">No hay fotos visibles almacenadas en este dispositivo. Algunas fotos antiguas pueden contar en el resumen, pero no tener vista previa válida.</div>';
+    if($("photosSummaryPill")) $("photosSummaryPill").textContent="0 foto(s) visibles";
     return;
   }
   items.slice(0,80).forEach(it=>{
     const card=document.createElement('div');
     card.className='thumb';
-    card.innerHTML=`<img src="${it.src}"><div class="muted-p" style="font-size:12px;margin-top:6px">${it.label||'Foto'}</div>`;
+    card.innerHTML=`<img src="${it.src}" alt="Foto de diagnóstico"><div class="muted-p" style="font-size:12px;margin-top:6px">${it.label||'Foto'}</div>`;
     holder.appendChild(card);
   });
   if($("photosSummaryPill")) $("photosSummaryPill").textContent=`${items.length} foto(s)`;
@@ -1731,9 +1785,10 @@ function wireEvents(){
     await refreshPFSelectors();
     show("screen2");
   });
-  $("btnBack1").addEventListener("click", ()=>{ resetForms(); show("screen1"); });
-  $("btnModificarExcel").addEventListener("click", ()=>show("screen3"));
-  $("btnBackModExcel").addEventListener("click", ()=>show("screenHome"));
+  $("btnBack1").addEventListener("click", ()=>{ resetForms(); show("screen1"); restoreEstructuraDraftSmart(); });
+  $("btnHomeFromEstructuras").addEventListener("click", goHome);
+  if($("btnModificarExcel")) $("btnModificarExcel").addEventListener("click", ()=>show("screen3"));
+  $("btnBackModExcel").addEventListener("click", goHome);
   $("countModalClose").addEventListener("click", ()=>{ $("countModal").style.display="none"; });
 
   $("homeRegistrar").addEventListener("click", async ()=>{
@@ -1754,19 +1809,19 @@ function wireEvents(){
   $("utilFotos").addEventListener("click", async ()=>{ await renderPhotosGallery(); show("screenFotos"); });
   $("utilAcerca").addEventListener("click", ()=>show("screenAcerca"));
   $("btnOpenRespaldo").addEventListener("click", ()=>{ syncMetaMirror(); show("screenRespaldo"); });
-  $("btnFotosBackHome").addEventListener("click", ()=>show("screenHome"));
-  $("btnAcercaBackHome").addEventListener("click", ()=>show("screenHome"));
-  $("btnRespaldoBackHome").addEventListener("click", ()=>show("screenHome"));
+  $("btnFotosBackHome").addEventListener("click", goHome);
+  $("btnAcercaBackHome").addEventListener("click", goHome);
+  $("btnRespaldoBackHome").addEventListener("click", goHome);
   $("btnCargarExcelMod").addEventListener("click", loadModExcelFile);
   $("btnExportarExcelMod").addEventListener("click", exportModExcelFile);
   $("btnGuardarFilaExcelMod").addEventListener("click", saveModExcelRecord);
   $("modExcelSearch").addEventListener("input", renderModExcelTable);
 
   // open forms
-  $("btnUNC").addEventListener("click", async ()=>{ resetForms(); await refreshPFSelectors(); await updateFormCounters(); $("formUNC").style.display=""; restoreLastLocalidad(); restoreDraft("unc", {unc_pf:$("unc_pf").value, unc_sede:$("unc_sede").value, unc_municipio:$("unc_municipio").value, unc_localidad:$("unc_localidad").value, unc_tipo_zona:$("unc_tipo_zona").value}); maybeAutofillUNCObservation(false); });
-  $("btnCliente").addEventListener("click", async ()=>{ resetForms(); await refreshPFSelectors(); await updateFormCounters(); $("formCliente").style.display=""; restoreDraft("cliente", {cli_pf:$("cli_pf").value}); });
-  $("btnSusp").addEventListener("click", async ()=>{ resetForms(); await refreshPFSelectors(); await updateFormCounters(); $("formSusp").style.display=""; restoreDraft("susp", {sus_pf:$("sus_pf").value}); });
-  $("btnBaldio").addEventListener("click", async ()=>{ resetForms(); await refreshPFSelectors(); await updateFormCounters(); $("formBaldio").style.display=""; restoreDraft("baldio", {bal_pf:$("bal_pf").value}); });
+  $("btnUNC").addEventListener("click", async ()=>{ rememberForm("unc"); resetForms(); await refreshPFSelectors(); await updateFormCounters(); $("formUNC").style.display=""; restoreUNCDraftSmart({unc_pf:$("unc_pf").value, unc_sede:$("unc_sede").value, unc_municipio:$("unc_municipio").value, unc_localidad:$("unc_localidad").value, unc_tipo_zona:$("unc_tipo_zona").value}); });
+  $("btnCliente").addEventListener("click", async ()=>{ rememberForm("cliente"); resetForms(); await refreshPFSelectors(); await updateFormCounters(); $("formCliente").style.display=""; restoreDraft("cliente", {cli_pf:$("cli_pf").value}); });
+  $("btnSusp").addEventListener("click", async ()=>{ rememberForm("susp"); resetForms(); await refreshPFSelectors(); await updateFormCounters(); $("formSusp").style.display=""; restoreDraft("susp", {sus_pf:$("sus_pf").value}); });
+  $("btnBaldio").addEventListener("click", async ()=>{ rememberForm("baldio"); resetForms(); await refreshPFSelectors(); await updateFormCounters(); $("formBaldio").style.display=""; restoreDraft("baldio", {bal_pf:$("bal_pf").value}); });
 
   // cancel
   $("btnCancelUNC").addEventListener("click", ()=>resetForms());
@@ -1858,21 +1913,21 @@ function wireEvents(){
   });
 
   // after save modal
-  $("goUNC").addEventListener("click", async ()=>{ $("modalAfterSave").style.display="none"; resetForms(); await refreshPFSelectors(); show("screen2"); $("formUNC").style.display=""; restoreLastLocalidad(); restoreDraft("unc", {unc_pf:$("unc_pf").value, unc_sede:$("unc_sede").value, unc_municipio:$("unc_municipio").value, unc_localidad:$("unc_localidad").value, unc_tipo_zona:$("unc_tipo_zona").value}); });
-  $("goCLI").addEventListener("click", async ()=>{ $("modalAfterSave").style.display="none"; resetForms(); await refreshPFSelectors(); show("screen2"); $("formCliente").style.display=""; restoreDraft("cliente", {cli_pf:$("cli_pf").value}); });
-  $("goSUS").addEventListener("click", async ()=>{ $("modalAfterSave").style.display="none"; resetForms(); await refreshPFSelectors(); show("screen2"); $("formSusp").style.display=""; restoreDraft("susp", {sus_pf:$("sus_pf").value}); });
-  $("goBAL").addEventListener("click", async ()=>{ $("modalAfterSave").style.display="none"; resetForms(); await refreshPFSelectors(); show("screen2"); $("formBaldio").style.display=""; restoreDraft("baldio", {bal_pf:$("bal_pf").value}); });
-  $("goNO").addEventListener("click", ()=>{ $("modalAfterSave").style.display="none"; resetForms(); show("screen1"); });
+  $("goUNC").addEventListener("click", async ()=>{ rememberForm("unc"); $("modalAfterSave").style.display="none"; resetForms(); await refreshPFSelectors(); show("screen2"); $("formUNC").style.display=""; restoreUNCDraftSmart({unc_pf:$("unc_pf").value, unc_sede:$("unc_sede").value, unc_municipio:$("unc_municipio").value, unc_localidad:$("unc_localidad").value, unc_tipo_zona:$("unc_tipo_zona").value}); });
+  $("goCLI").addEventListener("click", async ()=>{ rememberForm("cliente"); $("modalAfterSave").style.display="none"; resetForms(); await refreshPFSelectors(); show("screen2"); $("formCliente").style.display=""; restoreDraft("cliente", {cli_pf:$("cli_pf").value}); });
+  $("goSUS").addEventListener("click", async ()=>{ rememberForm("susp"); $("modalAfterSave").style.display="none"; resetForms(); await refreshPFSelectors(); show("screen2"); $("formSusp").style.display=""; restoreDraft("susp", {sus_pf:$("sus_pf").value}); });
+  $("goBAL").addEventListener("click", async ()=>{ rememberForm("baldio"); $("modalAfterSave").style.display="none"; resetForms(); await refreshPFSelectors(); show("screen2"); $("formBaldio").style.display=""; restoreDraft("baldio", {bal_pf:$("bal_pf").value}); });
+  $("goNO").addEventListener("click", ()=>{ $("modalAfterSave").style.display="none"; resetForms(); show("screen1"); restoreEstructuraDraftSmart(); });
 
   // export
-  $("btnExportar").addEventListener("click", exportAll);
+  if($("btnExportar")) $("btnExportar").addEventListener("click", exportAll);
   $("dlClose").addEventListener("click", ()=>{ $("dlModal").style.display="none"; });
 
   // counts
-  $("btnConteos").addEventListener("click", showCountsModal);
+  if($("btnConteos")) $("btnConteos").addEventListener("click", showCountsModal);
 
   // Update modal (TODOS LOS FORMULARIOS)
-  $("btnActualizar").addEventListener("click", ()=>{ $("modalUpdate").style.display="flex"; $("updPick").style.display="flex"; $("updListWrap").style.display="none"; });
+  if($("btnActualizar")) $("btnActualizar").addEventListener("click", ()=>{ $("modalUpdate").style.display="flex"; $("updPick").style.display="flex"; $("updListWrap").style.display="none"; });
   $("updClose").addEventListener("click", ()=>{ $("modalUpdate").style.display="none"; });
   $("updBack").addEventListener("click", ()=>{ $("updPick").style.display="flex"; $("updListWrap").style.display="none"; });
 
@@ -2229,6 +2284,45 @@ function loadModExcelFile(){
   reader.readAsArrayBuffer(file);
 }
 
+
+async function restoreLastWorkspace(){
+  const last = localStorage.getItem("gsdx_last_screen") || "screenHome";
+  const form = localStorage.getItem("gsdx_last_form") || "";
+  try{
+    if(last==="screen1"){
+      show("screen1");
+      restoreEstructuraDraftSmart();
+      return;
+    }
+    if(last==="screen2" && activeCD && activeCAP){
+      await refreshPFSelectors();
+      await updateFormCounters();
+      show("screen2");
+      resetForms();
+      if(form==="unc"){
+        $("formUNC").style.display="";
+        restoreUNCDraftSmart({unc_pf:$("unc_pf").value, unc_sede:$("unc_sede").value, unc_municipio:$("unc_municipio").value, unc_localidad:$("unc_localidad").value, unc_tipo_zona:$("unc_tipo_zona").value});
+      }else if(form==="cliente"){
+        $("formCliente").style.display="";
+        restoreDraft("cliente", {cli_pf:$("cli_pf").value});
+      }else if(form==="susp"){
+        $("formSusp").style.display="";
+        restoreDraft("susp", {sus_pf:$("sus_pf").value});
+      }else if(form==="baldio"){
+        $("formBaldio").style.display="";
+        restoreDraft("baldio", {bal_pf:$("bal_pf").value});
+      }
+      return;
+    }
+    if(last==="screen3"){ show("screen3"); return; }
+    if(last==="screenRespaldo"){ syncMetaMirror(); show("screenRespaldo"); return; }
+    if(last==="screenAcerca"){ show("screenAcerca"); return; }
+  }catch(e){
+    console.warn("No se pudo restaurar el último punto de trabajo", e);
+  }
+  show("screenHome");
+}
+
 /* =================== init =================== */
 (async function init(){
   try{
@@ -2248,7 +2342,7 @@ function loadModExcelFile(){
     updateInstallStateUI();
     await updateHomeDashboard();
     syncMetaMirror();
-    show("screenHome");
+    await restoreLastWorkspace();
     window.matchMedia('(display-mode: standalone)').addEventListener?.('change', updateInstallStateUI);
   }catch(e){
     console.error(e);
