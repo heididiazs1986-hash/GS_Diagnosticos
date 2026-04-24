@@ -131,11 +131,6 @@
     .thumb{background:#fff;border:1px solid var(--borde);border-radius:18px;padding:8px}
     .thumb img{width:100%;height:132px;object-fit:cover;border-radius:12px;display:block;background:#f4f4f4}
     .nav-mini{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
-    .title-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-    .mini-action-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:14px}
-    .mini-action-grid .action-btn{min-height:88px;border-radius:18px;box-shadow:var(--shadow)}
-    .mini-action-grid .action-btn .ico{font-size:20px}
-    .tiny-home{background:#f9fafb;color:#344054;border:1px solid var(--borde);padding:10px 14px;border-radius:14px;font-weight:700}
     .hide{display:none!important}
     @media (prefers-color-scheme: dark){
       body{background:#10131a;color:#eef2f7}
@@ -261,11 +256,8 @@
   <section class="card" id="screen1" style="display:none;">
     <div class="title">
       <div><h2>Centro de distribución</h2></div>
-      <div class="title-actions">
-        <div class="kpi" id="activeBox" style="display:none;">
-          <div class="pill">⚡ <b id="activeCdTxt"></b></div>
-        </div>
-        <button class="tiny-home" id="btnHomeFromEstructuras" type="button">Resumen</button>
+      <div class="kpi" id="activeBox" style="display:none;">
+        <div class="pill">⚡ <b id="activeCdTxt"></b></div>
       </div>
     </div>
 
@@ -343,9 +335,12 @@
       </div>
     </div>
 
-    <div class="mini-action-grid">
-      <button class="action-btn" id="btnIrARegistro" type="button"><span class="ico">＋</span><span>Registrar</span></button>
-      <button class="action-btn" id="btnExportar" type="button"><span class="ico">⇪</span><span>Exportar</span></button>
+    <div class="btnrow">
+      <button id="btnIrARegistro" type="button">Registrar diagnóstico</button>
+      <button class="secondary" id="btnExportar" type="button">Exportar (Excel + Fotos ZIP)</button>
+      <button class="secondary" id="btnActualizar" type="button">Actualizar</button>
+      <button class="secondary" id="btnConteos" type="button">Conteos</button>
+      <button class="secondary" id="btnModificarExcel" type="button">Modificar Excel</button>
     </div>
   </section>
 
@@ -353,10 +348,7 @@
   <section class="card floating-panel" id="screen2" style="display:none;">
     <div class="title">
       <div><h2>Caracterización</h2></div>
-      <div class="title-actions">
-        <div class="kpi"><div class="pill">⚡ <b id="cdPill"></b></div></div>
-        <button class="tiny-home" id="btnHomeFromCaracterizacion" type="button">Resumen</button>
-      </div>
+      <div class="kpi"><div class="pill">⚡ <b id="cdPill"></b></div></div>
     </div>
 
     <div class="btnrow">
@@ -669,10 +661,7 @@
   <section class="card" id="screen3" style="display:none;">
     <div class="title">
       <div><h2>Modificar registros UNC desde Excel</h2></div>
-      <div class="title-actions">
-        <div class="kpi"><div class="pill">📄 <b id="modExcelFileName">Sin archivo</b></div></div>
-        <button class="tiny-home" id="btnHomeFromExcel" type="button">Resumen</button>
-      </div>
+      <div class="kpi"><div class="pill">📄 <b id="modExcelFileName">Sin archivo</b></div></div>
     </div>
 
     <div class="modToolbar">
@@ -1768,9 +1757,6 @@ function wireEvents(){
   $("btnFotosBackHome").addEventListener("click", ()=>show("screenHome"));
   $("btnAcercaBackHome").addEventListener("click", ()=>show("screenHome"));
   $("btnRespaldoBackHome").addEventListener("click", ()=>show("screenHome"));
-  $("btnHomeFromEstructuras").addEventListener("click", ()=>show("screenHome"));
-  $("btnHomeFromCaracterizacion").addEventListener("click", ()=>show("screenHome"));
-  $("btnHomeFromExcel").addEventListener("click", ()=>show("screenHome"));
   $("btnCargarExcelMod").addEventListener("click", loadModExcelFile);
   $("btnExportarExcelMod").addEventListener("click", exportModExcelFile);
   $("btnGuardarFilaExcelMod").addEventListener("click", saveModExcelRecord);
