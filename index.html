@@ -192,6 +192,27 @@
     .form-local-nav{display:flex;gap:10px;flex-wrap:wrap;margin:0 0 14px 0;}
     .form-local-nav button{font-size:14px;min-height:42px;padding:10px 14px;}
 
+  
+
+    /* ===== Dark mode PRO v12: contraste corregido ===== */
+    body.dark{--gris:#0f131b;--card:#171c27;--borde:#2a3445;--texto:#eef2f7;--muted:#c9d3e3;--shadow:0 12px 32px rgba(0,0,0,.35);background:#0f131b!important;color:#eef2f7!important;}
+    body.dark main{background:#0f131b!important;color:#eef2f7!important;}
+    body.dark .card,body.dark .floating-panel,body.dark .modalCard,body.dark .stat-card,body.dark .action-btn,body.dark .utility-item,body.dark .thumb{background:#171c27!important;border-color:#2a3445!important;color:#eef2f7!important;box-shadow:0 10px 26px rgba(0,0,0,.28)!important;}
+    body.dark .title,body.dark .title h2,body.dark h1,body.dark h2,body.dark h3,body.dark b,body.dark strong{color:#f8fafc!important;}
+    body.dark .stat-card .n,body.dark #summaryDiag,body.dark #summaryPhotos,body.dark #summaryEstr,body.dark #summaryPending{color:#f8fafc!important;text-shadow:0 0 18px rgba(255,255,255,.08);}
+    body.dark .stat-card .l,body.dark .l,body.dark label,body.dark .muted-p,body.dark .small-footer,body.dark .field-hint{color:#c9d3e3!important;}
+    body.dark .pill,body.dark .form-counter{background:#111827!important;color:#dbe4f0!important;border-color:#2a3445!important;}
+    body.dark .action-btn span,body.dark .utility-item span,body.dark .registro-card-menu button span{color:#f8fafc!important;}
+    body.dark .action-btn .ico,body.dark .registro-card-menu .reg-ico{background:#341417!important;color:#ff7a83!important;}
+    body.dark input,body.dark select,body.dark textarea,body.dark .modField input[type="text"],body.dark .modField input[type="number"],body.dark .modField select,body.dark .modField textarea{background:#111827!important;color:#eef2f7!important;border-color:#2a3445!important;}
+    body.dark input::placeholder,body.dark textarea::placeholder{color:#94a3b8!important;}
+    body.dark button.secondary,body.dark .soft-btn,body.dark .utility-item{background:#111827!important;color:#eef2f7!important;border-color:#2a3445!important;}
+    body.dark .sync-card{background:linear-gradient(180deg,#171c27,#111827)!important;border-color:#3a2b2f!important;}
+    body.dark .miniTableWrap,body.dark .miniTable th,body.dark .miniTable td{background:#171c27!important;color:#eef2f7!important;border-color:#2a3445!important;}
+    body.dark .checkItem,body.dark .chip{color:#eef2f7!important;}
+    body.dark .chip.radioBig{background:#171c27!important;border-color:#2a3445!important;color:#eef2f7!important;}
+    body.dark .chip.radioBig:has(input:checked){background:#23161b!important;box-shadow:0 0 0 3px rgba(255,122,131,.12) inset!important;}
+
   </style>
   <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
@@ -2650,15 +2671,15 @@ function slugCD(v){
   return s.replace(/[^A-Z0-9_-]+/gi,'_').replace(/_+/g,'_').replace(/^_+|_+$/g,'') || 'GENERAL';
 }
 async function updateLastDriveSyncUI(){
-  const el = document.getElementById('syncDriveMeta');
-  if(!el) return;
+  const targets = ['syncDriveMeta','syncDriveMetaPage']
+    .map(id => document.getElementById(id))
+    .filter(Boolean);
+  if(!targets.length) return;
   const meta = await getMeta('drive_last_sync_meta');
-  if(meta && meta.when){
-    const name = meta.fileName ? ` · ${meta.fileName}` : '';
-    el.textContent = `Última sincronización: ${fmtSyncDate(meta.when)}${name}`;
-  }else{
-    el.textContent = 'Última sincronización: Nunca';
-  }
+  const text = (meta && meta.when)
+    ? `Última sincronización: ${fmtSyncDate(meta.when)}${meta.fileName ? ' · ' + meta.fileName : ''}`
+    : 'Última sincronización: Nunca';
+  targets.forEach(el => { el.textContent = text; });
 }
 async function buildBackupPayload(){
   const respaldo = { fecha:new Date().toISOString(), localStorage:{}, indexedDB:{}, activeCD:activeCD||'', activeCAP:activeCAP||'' };
@@ -2726,7 +2747,7 @@ function getDriveAccessToken(interactive=true){
     }catch(err){ reject(err); }
   });
 }
-function escDriveQuery(s){ return String(s||'').replace(/'/g, "\'"); }
+function escDriveQuery(s){ return String(s||'').replace(/'/g, "\\'"); }
 async function driveFetch(url, opts={}){
   if(!driveAccessToken) await getDriveAccessToken(true);
   const headers = new Headers(opts.headers || {});
@@ -2758,30 +2779,41 @@ async function ensureDriveFolder(name, parentId=null){
 async function uploadJsonToDrive(fileName, jsonText){
   const rootId = await ensureDriveFolder(DRIVE_ROOT_FOLDER_NAME);
   const jsonFolderId = await ensureDriveFolder(DRIVE_JSON_FOLDER_NAME, rootId);
-  const boundary = 'gsdx_' + Math.random().toString(36).slice(2);
-  const metadata = { name:fileName, mimeType:'application/json', parents:[jsonFolderId] };
-  const body =
-    `--${boundary}
-Content-Type: application/json; charset=UTF-8
 
-${JSON.stringify(metadata)}
-` +
-    `--${boundary}
-Content-Type: application/json
+  const metadata = {
+    name: fileName,
+    mimeType: 'application/json',
+    parents: [jsonFolderId]
+  };
 
-${jsonText}
-` +
-    `--${boundary}--`;
-  const resp = await driveFetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id,name,webViewLink', {
+  const form = new FormData();
+  form.append('metadata', new Blob([JSON.stringify(metadata)], {type:'application/json'}));
+  form.append('file', new Blob([jsonText], {type:'application/json'}));
+
+  const resp = await driveFetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id,name,webViewLink,parents', {
     method:'POST',
-    headers:{'Content-Type':`multipart/related; boundary=${boundary}`},
-    body
+    body: form
   });
-  const data = await resp.json();
+  const data = await resp.json().catch(() => ({}));
+  console.log('RESPUESTA DRIVE UPLOAD:', data);
+
   if(!resp.ok || !data.id){
     throw new Error(data.error?.message || 'No se pudo subir el respaldo a Drive');
   }
-  return {fileId:data.id, fileName:data.name, webViewLink:data.webViewLink||'', folderId:jsonFolderId};
+
+  const verifyResp = await driveFetch(`https://www.googleapis.com/drive/v3/files/${data.id}?fields=id,name,parents,webViewLink,createdTime`);
+  const verified = await verifyResp.json().catch(() => ({}));
+  console.log('VERIFICACIÓN DRIVE:', verified);
+  if(!verifyResp.ok || !verified.id){
+    throw new Error(verified.error?.message || 'Drive respondió, pero no se pudo verificar el archivo creado');
+  }
+
+  return {
+    fileId: verified.id,
+    fileName: verified.name || data.name,
+    webViewLink: verified.webViewLink || data.webViewLink || '',
+    folderId: jsonFolderId
+  };
 }
 async function syncDriveManual(){
   const btn = document.getElementById('btnSyncDrivePage') || document.getElementById('homeSyncDrive') || document.getElementById('btnSyncDrive');
@@ -2798,18 +2830,19 @@ async function syncDriveManual(){
     const fileName = `GSX_SYNC_${slugCD(activeCD)}_${stamp}.json`;
     setExportStatus('Subiendo JSON a Drive...');
     const info = await uploadJsonToDrive(fileName, jsonText);
-    const meta = { when:new Date().toISOString(), fileId:info.fileId, fileName:info.fileName, folderId:info.folderId, cd:activeCD||'' };
+    const meta = { when:new Date().toISOString(), fileId:info.fileId, fileName:info.fileName, folderId:info.folderId, webViewLink:info.webViewLink||'', cd:activeCD||'' };
     await setMeta('drive_last_sync_meta', meta);
     await updateLastDriveSyncUI();
     setBadge('LISTO ✅');
-    setExportStatus('✅ Sincronización completada con Drive');
+    setExportStatus(`✅ Sincronización completada con Drive: ${info.fileName}`);
     toast('Sincronización Drive ✅');
+    if(info.webViewLink){ console.log('Archivo Drive:', info.webViewLink); }
   }catch(err){
     console.error(err);
     setBadge('LISTO ✅');
     setExportStatus(`❌ Error Drive: ${err.message || err}`);
     toast('Error sincronizando Drive ❌');
-    alert('No se pudo sincronizar con Drive. Revisa el permiso de Google y vuelve a intentar.');
+    alert('No se pudo sincronizar con Drive: ' + (err.message || err));
   }finally{
     if(btn){ btn.disabled = false; btn.textContent = oldText; }
   }
