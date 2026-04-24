@@ -125,7 +125,23 @@
     .screen-shell.active{display:block}
     .floating-panel{max-width:620px;margin:0 auto;background:linear-gradient(180deg,#fff,#fffafb);border:1px solid var(--borde);border-radius:26px;padding:18px;box-shadow:var(--shadow)}
     .utility-list{display:grid;gap:10px;margin-top:10px}
-    .utility-item{display:flex;align-items:center;justify-content:space-between;background:#fff;border:1px solid var(--borde);padding:14px 16px;border-radius:18px}
+    .utility-item{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  background:#fff;
+  border:1px solid var(--borde);
+  padding:14px 16px;
+  border-radius:18px;
+  color:var(--texto) !important;
+  font-weight:800;
+  width:100%;
+  text-align:left;
+}
+
+.utility-item span{
+  color:var(--texto) !important;
+}
     .gallery-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
     @media(min-width:760px){.gallery-grid{grid-template-columns:repeat(4,minmax(0,1fr));}}
     .thumb{background:#fff;border:1px solid var(--borde);border-radius:18px;padding:8px}
@@ -195,7 +211,7 @@
 
     <div class="title" style="margin-top:18px;"><div><h2>Utilidades</h2></div></div>
     <div class="utility-list">
-      <button class="utility-item" id="utilFotos" type="button"><span>Fotos</span><span>›</span></button>
+      
       <button class="utility-item" id="utilAcerca" type="button"><span>Acerca de</span><span>›</span></button>
     </div>
 
