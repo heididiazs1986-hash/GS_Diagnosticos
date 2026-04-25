@@ -2866,20 +2866,38 @@ function dataURLToBlobSafe(dataURL){
   for(let i=0;i<bin.length;i++) u8[i]=bin.charCodeAt(i);
   return new Blob([u8], {type:mime});
 }
-async function buildCurrentCDExport(){
-  const cdAct = (activeCD||'').toString();
-  const estr=await getAll('estructuras');
-  const unc=await getAll('unc');
-  const cli=await getAll('clientes');
-  const sus=await getAll('susp');
-  const bal=await getAll('baldios');
-  const f=(arr)=> cdAct ? arr.filter(r=> String(r.Transformador||'')===cdAct) : arr;
-  const estrF=f(estr), uncF=f(unc), cliF=f(cli), susF=f(sus), balF=f(bal);
-  const d=new Date();
+
+function getUniqueCDsFromStores(estr, unc, cli, sus, bal){
+  const set = new Set();
+  const add = (v)=>{ const s = String(v||'').trim(); if(s) set.add(s); };
+  [estr,unc,cli,sus,bal].forEach(arr => (arr||[]).forEach(r => add(r.Transformador)));
+  return Array.from(set).sort((a,b)=>a.localeCompare(b,'es'));
+}
+function buildExportPackageForCD(cdAct, datasets, fixedDate){
+  const estr = datasets.estr || [];
+  const unc = datasets.unc || [];
+  const cli = datasets.cli || [];
+  const sus = datasets.sus || [];
+  const bal = datasets.bal || [];
+
+  const f = (arr)=> arr.filter(r => String(r.Transformador||'').trim() === String(cdAct||'').trim());
+  const estrF = f(estr), uncF = f(unc), cliF = f(cli), susF = f(sus), balF = f(bal);
+
+  const d = fixedDate || new Date();
   const stamp = d.toISOString().slice(0,10).replace(/-/g,'');
   const hm = d.toTimeString().slice(0,5).replace(':','');
   const baseName = `GS_Diagnostico_${slugCD(cdAct||'GENERAL')}_${stamp}_${hm}`;
   return {baseName, cdAct, estrF, uncF, cliF, susF, balF, excelU8:buildExcel(estrF,uncF,cliF,susF,balF)};
+}
+async function buildCurrentCDExport(){
+  const datasets = {
+    estr: await getAll('estructuras'),
+    unc: await getAll('unc'),
+    cli: await getAll('clientes'),
+    sus: await getAll('susp'),
+    bal: await getAll('baldios')
+  };
+  return buildExportPackageForCD(activeCD || 'GENERAL', datasets, new Date());
 }
 function collectDrivePhotoJobs(pkg){
   const jobs=[];
@@ -2899,27 +2917,92 @@ function collectDrivePhotoJobs(pkg){
   for(const r of pkg.balF)  add('BALDIOS', r, `${r.Transformador}_${r.PuntoFisico||('ITEM_'+r.item)}_BALDIO_${r.item}`);
   return jobs;
 }
-async function uploadCurrentExcelAndPhotosToDrive(){
-  const pkg = await buildCurrentCDExport();
+async function uploadExcelAndPhotosPackageToDrive(pkg){
   const excelName = `${pkg.baseName}.xls`;
   const excelBlob = new Blob([pkg.excelU8], {type:'application/vnd.ms-excel'});
   const excelInfo = await uploadBlobToDrive(DRIVE_FOLDERS.EXCEL, excelName, excelBlob, 'application/vnd.ms-excel');
 
-  const photoJobs = collectDrivePhotoJobs(pkg);
-  let uploaded = 0;
-  let failed = 0;
-  for(const job of photoJobs){
-    try{
-      const blob = dataURLToBlobSafe(job.dataURL);
-      await uploadBlobToDrive(DRIVE_FOLDERS.FOTOS, job.name, blob, blob.type || 'image/jpeg');
-      uploaded++;
-      if(uploaded % 3 === 0) setExportStatus(`Subiendo fotos a Drive... ${uploaded}/${photoJobs.length}`);
-    }catch(e){
-      console.warn('Foto no subida:', job.name, e);
-      failed++;
-    }
+  const zip = new TinyZip();
+  let photosTotal = 0;
+  let photosFailed = 0;
+
+  const addFotosToZip = (grupo, r, folderBase) => {
+    const folder = safeName(folderBase || 'SIN_DATO') || 'SIN_DATO';
+    (r.Fotos || []).forEach((f, i) => {
+      try{
+        if(!f || !f.dataURL) return;
+        zip.add(`FOTOS/${grupo}/${folder}/foto_${i+1}.jpg`, dataURLtoU8(f.dataURL));
+        photosTotal++;
+      }catch(e){
+        console.warn('Foto no agregada al ZIP:', grupo, folder, i+1, e);
+        photosFailed++;
+      }
+    });
+  };
+
+  for(const r of pkg.estrF) addFotosToZip('ESTRUCTURAS', r, `${r.Transformador}_${r.PuntoFisico || ('ITEM_'+r.item)}`);
+  for(const r of pkg.uncF)  addFotosToZip('UNC', r, `${r.Transformador}_${r.PuntoFisico || ('ITEM_'+r.item)}`);
+  for(const r of pkg.cliF)  addFotosToZip('CLIENTES', r, `${r.Transformador}_${r.SerieMedidor || ('ITEM_'+r.item)}`);
+  for(const r of pkg.susF)  addFotosToZip('SUSPENSIONES', r, `${r.Transformador}_${r.PuntoFisico || ('ITEM_'+r.item)}`);
+  for(const r of pkg.balF)  addFotosToZip('BALDIOS', r, `${r.Transformador}_${r.PuntoFisico || ('ITEM_'+r.item)}_BALDIO_${r.item}`);
+
+  let photosZipInfo = null;
+  let photosZipName = '';
+  if(photosTotal > 0 || photosFailed > 0){
+    setExportStatus(`Comprimiendo fotos del CD ${pkg.cdAct} en ZIP... ${photosTotal} foto(s)`);
+    const zipU8 = zip.finalize();
+    photosZipName = `${pkg.baseName}_FOTOS.zip`;
+    const zipBlob = new Blob([zipU8], {type:'application/zip'});
+    setExportStatus(`Subiendo ZIP de fotos del CD ${pkg.cdAct} a Drive... ${photosTotal} foto(s)`);
+    photosZipInfo = await uploadBlobToDrive(DRIVE_FOLDERS.FOTOS, photosZipName, zipBlob, 'application/zip');
+  }else{
+    setExportStatus(`CD ${pkg.cdAct}: sin fotos para comprimir.`);
   }
-  return {excelInfo, excelName, photosUploaded:uploaded, photosFailed:failed, photosTotal:photoJobs.length};
+
+  return {
+    cd: pkg.cdAct,
+    excelInfo,
+    excelName,
+    photosZipInfo,
+    photosZipName,
+    photosUploaded: photosTotal,
+    photosFailed,
+    photosTotal
+  };
+}
+async function uploadCurrentExcelAndPhotosToDrive(){
+  const pkg = await buildCurrentCDExport();
+  return uploadExcelAndPhotosPackageToDrive(pkg);
+}
+async function uploadAllCDsExcelAndPhotosToDrive(){
+  const datasets = {
+    estr: await getAll('estructuras'),
+    unc: await getAll('unc'),
+    cli: await getAll('clientes'),
+    sus: await getAll('susp'),
+    bal: await getAll('baldios')
+  };
+  const cds = getUniqueCDsFromStores(datasets.estr, datasets.unc, datasets.cli, datasets.sus, datasets.bal);
+  if(!cds.length){
+    return {cds:[], results:[], totals:{excel:0, photos:0, failed:0}};
+  }
+
+  const fixedDate = new Date();
+  const results = [];
+  let totalPhotos = 0;
+  let totalFailed = 0;
+
+  for(let i=0; i<cds.length; i++){
+    const cd = cds[i];
+    setExportStatus(`Procesando CD ${i+1}/${cds.length}: ${cd}`);
+    const pkg = buildExportPackageForCD(cd, datasets, fixedDate);
+    const info = await uploadExcelAndPhotosPackageToDrive(pkg);
+    results.push(info);
+    totalPhotos += Number(info.photosUploaded || 0);
+    totalFailed += Number(info.photosFailed || 0);
+  }
+
+  return {cds, results, totals:{excel:results.length, photos:totalPhotos, failed:totalFailed}};
 }
 async function syncDriveManual(){
   const btn = document.getElementById('btnSyncDrivePage') || document.getElementById('homeSyncDrive') || document.getElementById('btnSyncDrive');
@@ -2930,36 +3013,46 @@ async function syncDriveManual(){
     setExportStatus('Preparando conexión con Google Drive...');
     await getDriveAccessToken(true);
 
-    setExportStatus('Leyendo datos locales...');
+    setExportStatus('Leyendo datos locales completos...');
     const payload = await buildBackupPayload();
     const jsonText = JSON.stringify(payload, null, 2);
     const stamp = new Date().toISOString().replace(/[:T]/g,'-').slice(0,19);
-    const fileName = `GSX_SYNC_${slugCD(activeCD)}_${stamp}.json`;
+    const fileName = `GSX_BACKUP_TODOS_LOS_CDS_${stamp}.json`;
 
-    setExportStatus('Subiendo JSON a Drive...');
+    setExportStatus('Subiendo JSON maestro completo a Drive...');
     const jsonInfo = await uploadJsonToDrive(fileName, jsonText);
 
-    setExportStatus('Creando respaldo adicional en Drive...');
+    setExportStatus('Creando copia adicional en Respaldos...');
     let respaldoInfo = null;
     try{ respaldoInfo = await uploadBackupJsonToDrive(`RESPALDO_${fileName}`, jsonText); }catch(e){ console.warn('No se pudo subir copia a Respaldos:', e); }
 
-    setExportStatus('Generando y subiendo Excel...');
-    const exportInfo = await uploadCurrentExcelAndPhotosToDrive();
+    setExportStatus('Generando Excel y ZIP de fotos por cada CD...');
+    const exportInfo = await uploadAllCDsExcelAndPhotosToDrive();
 
     const meta = {
       when:new Date().toISOString(),
-      fileId:jsonInfo.id, fileName:jsonInfo.name, folderId:DRIVE_FOLDERS.JSON,
+      fileId:jsonInfo.id,
+      fileName:jsonInfo.name,
+      folderId:DRIVE_FOLDERS.JSON,
       backupFileId:respaldoInfo?.id || '',
-      excelFileId:exportInfo.excelInfo?.id || '', excelName:exportInfo.excelName,
-      photosUploaded:exportInfo.photosUploaded, photosFailed:exportInfo.photosFailed, photosTotal:exportInfo.photosTotal,
-      cd:activeCD||''
+      cds: exportInfo.cds,
+      cdCount: exportInfo.cds.length,
+      excelCount: exportInfo.totals.excel,
+      photosUploaded: exportInfo.totals.photos,
+      photosFailed: exportInfo.totals.failed,
+      mode:'todos_los_cds'
     };
     await setMeta('drive_last_sync_meta', meta);
     await updateLastDriveSyncUI();
     setBadge('LISTO ✅');
-    setExportStatus(`✅ Drive listo: JSON + Excel + fotos (${exportInfo.photosUploaded}/${exportInfo.photosTotal})`);
-    toast('Sincronización Drive ✅');
-    if(exportInfo.photosFailed){ alert(`Sincronización terminada, pero ${exportInfo.photosFailed} foto(s) no se pudieron subir. Revisa conexión y vuelve a intentar.`); }
+    setExportStatus(`✅ Drive listo: JSON completo + ${exportInfo.totals.excel} Excel + ZIP por CD (${exportInfo.totals.photos} foto(s))`);
+    toast('Sincronización Drive completa ✅');
+    if(exportInfo.totals.failed){
+      alert(`Sincronización terminada, pero ${exportInfo.totals.failed} foto(s) no se pudieron comprimir. Revisa conexión y vuelve a intentar.`);
+    }
+    if(!exportInfo.cds.length){
+      alert('Se subió el JSON maestro, pero no se detectaron CDs para generar Excel/Fotos.');
+    }
   }catch(err){
     console.error(err);
     setBadge('LISTO ✅');
@@ -2970,7 +3063,6 @@ async function syncDriveManual(){
     if(btn){ btn.disabled = false; btn.textContent = oldText; }
   }
 }
-
 document.getElementById('btnSyncDrive')?.addEventListener('click', syncDriveManual);
 document.getElementById('btnSyncDrivePage')?.addEventListener('click', syncDriveManual);
 document.getElementById('homeSyncDrive')?.addEventListener('click', syncDriveManual);
