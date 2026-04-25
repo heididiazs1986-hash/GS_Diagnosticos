@@ -192,26 +192,76 @@
     .form-local-nav{display:flex;gap:10px;flex-wrap:wrap;margin:0 0 14px 0;}
     .form-local-nav button{font-size:14px;min-height:42px;padding:10px 14px;}
 
-  
 
-    /* ===== Dark mode PRO v12: contraste corregido ===== */
-    body.dark{--gris:#0f131b;--card:#171c27;--borde:#2a3445;--texto:#eef2f7;--muted:#c9d3e3;--shadow:0 12px 32px rgba(0,0,0,.35);background:#0f131b!important;color:#eef2f7!important;}
-    body.dark main{background:#0f131b!important;color:#eef2f7!important;}
-    body.dark .card,body.dark .floating-panel,body.dark .modalCard,body.dark .stat-card,body.dark .action-btn,body.dark .utility-item,body.dark .thumb{background:#171c27!important;border-color:#2a3445!important;color:#eef2f7!important;box-shadow:0 10px 26px rgba(0,0,0,.28)!important;}
-    body.dark .title,body.dark .title h2,body.dark h1,body.dark h2,body.dark h3,body.dark b,body.dark strong{color:#f8fafc!important;}
-    body.dark .stat-card .n,body.dark #summaryDiag,body.dark #summaryPhotos,body.dark #summaryEstr,body.dark #summaryPending{color:#f8fafc!important;text-shadow:0 0 18px rgba(255,255,255,.08);}
-    body.dark .stat-card .l,body.dark .l,body.dark label,body.dark .muted-p,body.dark .small-footer,body.dark .field-hint{color:#c9d3e3!important;}
-    body.dark .pill,body.dark .form-counter{background:#111827!important;color:#dbe4f0!important;border-color:#2a3445!important;}
-    body.dark .action-btn span,body.dark .utility-item span,body.dark .registro-card-menu button span{color:#f8fafc!important;}
-    body.dark .action-btn .ico,body.dark .registro-card-menu .reg-ico{background:#341417!important;color:#ff7a83!important;}
-    body.dark input,body.dark select,body.dark textarea,body.dark .modField input[type="text"],body.dark .modField input[type="number"],body.dark .modField select,body.dark .modField textarea{background:#111827!important;color:#eef2f7!important;border-color:#2a3445!important;}
-    body.dark input::placeholder,body.dark textarea::placeholder{color:#94a3b8!important;}
-    body.dark button.secondary,body.dark .soft-btn,body.dark .utility-item{background:#111827!important;color:#eef2f7!important;border-color:#2a3445!important;}
-    body.dark .sync-card{background:linear-gradient(180deg,#171c27,#111827)!important;border-color:#3a2b2f!important;}
-    body.dark .miniTableWrap,body.dark .miniTable th,body.dark .miniTable td{background:#171c27!important;color:#eef2f7!important;border-color:#2a3445!important;}
-    body.dark .checkItem,body.dark .chip{color:#eef2f7!important;}
-    body.dark .chip.radioBig{background:#171c27!important;border-color:#2a3445!important;color:#eef2f7!important;}
-    body.dark .chip.radioBig:has(input:checked){background:#23161b!important;box-shadow:0 0 0 3px rgba(255,122,131,.12) inset!important;}
+
+    /* ===== FIX FINAL MODO OSCURO PRO v13 ===== */
+    body.dark .stat-card .n,
+    body.dark #summaryDiag,
+    body.dark #summaryPhotos,
+    body.dark #summaryEstr,
+    body.dark #summaryPending{
+      color:#f8fafc !important;
+      text-shadow:0 0 18px rgba(255,255,255,.10);
+    }
+    body.dark .stat-card .l{
+      color:#cbd5e1 !important;
+    }
+    body.dark .stat-card{
+      background:linear-gradient(180deg,#182031,#121826) !important;
+      border-color:#334155 !important;
+      box-shadow:0 12px 28px rgba(0,0,0,.24) !important;
+    }
+    body.dark .action-btn,
+    body.dark .utility-item,
+    body.dark .soft-btn,
+    body.dark button.secondary{
+      color:#f8fafc !important;
+      background:#151d2b !important;
+      border-color:#334155 !important;
+    }
+    body.dark .action-btn span,
+    body.dark .utility-item span,
+    body.dark .soft-btn span,
+    body.dark button.secondary span{
+      color:#f8fafc !important;
+    }
+    body.dark .utility-item .muted-p,
+    body.dark .modalCard .muted-p,
+    body.dark .form-counter,
+    body.dark .obs-auto-note{
+      color:#cbd5e1 !important;
+    }
+    body.dark .title h2,
+    body.dark h2,
+    body.dark b{
+      color:#f8fafc !important;
+    }
+    body.dark .pill{
+      color:#dbeafe !important;
+      background:#111827 !important;
+      border-color:#334155 !important;
+    }
+    body.dark .checkItem,
+    body.dark .chip{
+      color:#e5e7eb !important;
+    }
+    body.dark .modalBack{
+      background:rgba(0,0,0,.68) !important;
+    }
+
+
+    /* ===== Dark PRO fix v14: contraste total en tarjetas y botones ===== */
+    body.dark .stat-card .n{color:#ffffff!important;text-shadow:0 0 12px rgba(255,255,255,.08);}
+    body.dark .stat-card .l{color:#cbd5e1!important;}
+    body.dark .title h2, body.dark .modalCard b, body.dark .utility-item b{color:#f8fafc!important;}
+    body.dark .utility-item, body.dark .utility-item span, body.dark .utility-item div{color:#eef2f7!important;}
+    body.dark .action-btn, body.dark .registro-card-menu button{color:#eef2f7!important;background:#171c27!important;border-color:#2a3445!important;}
+    body.dark .action-btn span:not(.ico), body.dark .registro-card-menu button span:not(.reg-ico){color:#eef2f7!important;}
+    body.dark .form-counter{color:#fecdd3!important;background:#2a1518!important;border-color:#53313a!important;}
+    body.dark .checkItem, body.dark .checkItem span, body.dark .chip{color:#e5e7eb!important;}
+    body.dark .miniTableWrap, body.dark .miniTable th{background:#171c27!important;border-color:#2a3445!important;color:#eef2f7!important;}
+    body.dark .miniTable td{border-color:#2a3445!important;color:#e5e7eb!important;}
+    body.dark .obs-auto-note{color:#fecdd3!important;}
 
   </style>
   <script src="https://accounts.google.com/gsi/client" async defer></script>
@@ -2654,8 +2704,18 @@ document.getElementById("btnBackupGSX")?.addEventListener("click", respaldoTotal
 
 <script>
 const GOOGLE_CLIENT_ID = '143517126733-50aphh3cqhmqak0ug8m6658ob6u586f4.apps.googleusercontent.com';
-const DRIVE_ROOT_FOLDER_NAME = 'GS_Diagnosticos';
-const DRIVE_JSON_FOLDER_NAME = 'JSON';
+
+/* Carpetas existentes en Drive central g.social.documental@gmail.com.
+   La app NO crea carpetas nuevas: sube cada archivo al ID correspondiente. */
+const DRIVE_FOLDERS = {
+  ROOT: '1nm55kRZCz_iBA1WYlPOF6SiaBYTQmdoA',
+  DOCUMENTOS: 'HdQ-teA8O1jwKIWP0N4_0yv6qaUMaKg4',
+  EXCEL: '1llRWfbRpC4cL4iz3ayLyHLoAeOSRlqWb',
+  FOTOS: '1qyrgLBDwnKRTVDlgAUH2-1LkqM_4SM_Z',
+  JSON: '19wwQns87LYqH16Gdu_WUvMKa2yuLfF0t',
+  RESPALDOS: '1Tgu-tjcxuV8JlEuWjcmDyRHdhwV9DaTs'
+};
+
 let driveTokenClient = null;
 let driveAccessToken = null;
 
@@ -2671,18 +2731,21 @@ function slugCD(v){
   return s.replace(/[^A-Z0-9_-]+/gi,'_').replace(/_+/g,'_').replace(/^_+|_+$/g,'') || 'GENERAL';
 }
 async function updateLastDriveSyncUI(){
-  const targets = ['syncDriveMeta','syncDriveMetaPage']
-    .map(id => document.getElementById(id))
-    .filter(Boolean);
-  if(!targets.length) return;
+  const el = document.getElementById('syncDriveMeta');
+  const page = document.getElementById('syncDriveMetaPage');
   const meta = await getMeta('drive_last_sync_meta');
-  const text = (meta && meta.when)
-    ? `Última sincronización: ${fmtSyncDate(meta.when)}${meta.fileName ? ' · ' + meta.fileName : ''}`
-    : 'Última sincronización: Nunca';
-  targets.forEach(el => { el.textContent = text; });
+  let txt = 'Última sincronización: Nunca';
+  if(meta && meta.when){
+    const name = meta.fileName ? ` · ${meta.fileName}` : '';
+    const extra = meta.excelName ? ` · Excel: ${meta.excelName}` : '';
+    const fotos = Number(meta.photosUploaded || 0);
+    txt = `Última sincronización: ${fmtSyncDate(meta.when)}${name}${extra} · Fotos: ${fotos}`;
+  }
+  if(el) el.textContent = txt;
+  if(page) page.textContent = txt;
 }
 async function buildBackupPayload(){
-  const respaldo = { fecha:new Date().toISOString(), localStorage:{}, indexedDB:{}, activeCD:activeCD||'', activeCAP:activeCAP||'' };
+  const respaldo = { fecha:new Date().toISOString(), app:'GS Diagnósticos', version:'v14-drive-central', localStorage:{}, indexedDB:{}, activeCD:activeCD||'', activeCAP:activeCAP||'' };
   for (let i = 0; i < localStorage.length; i++) {
     const key = localStorage.key(i);
     respaldo.localStorage[key] = localStorage.getItem(key);
@@ -2693,23 +2756,23 @@ async function buildBackupPayload(){
       await new Promise((resolve) => {
         const req = indexedDB.open(nombre);
         req.onsuccess = function (e) {
-          const db = e.target.result;
-          if (!db.objectStoreNames.length) { db.close(); return resolve(); }
+          const dbx = e.target.result;
+          if (!dbx.objectStoreNames.length) { dbx.close(); return resolve(); }
           respaldo.indexedDB[nombre] = {};
-          let pendientes = db.objectStoreNames.length;
-          for (let storeName of db.objectStoreNames) {
-            const tx = db.transaction(storeName, 'readonly');
-            const store = tx.objectStore(storeName);
-            const getAll = store.getAll();
-            getAll.onsuccess = function () {
-              respaldo.indexedDB[nombre][storeName] = getAll.result;
+          let pendientes = dbx.objectStoreNames.length;
+          for (let storeName of dbx.objectStoreNames) {
+            const trx = dbx.transaction(storeName, 'readonly');
+            const store = trx.objectStore(storeName);
+            const getAllReq = store.getAll();
+            getAllReq.onsuccess = function () {
+              respaldo.indexedDB[nombre][storeName] = getAllReq.result;
               pendientes--;
-              if (pendientes === 0) { db.close(); resolve(); }
+              if (pendientes === 0) { dbx.close(); resolve(); }
             };
-            getAll.onerror = function () {
+            getAllReq.onerror = function () {
               respaldo.indexedDB[nombre][storeName] = [];
               pendientes--;
-              if (pendientes === 0) { db.close(); resolve(); }
+              if (pendientes === 0) { dbx.close(); resolve(); }
             };
           }
         };
@@ -2721,7 +2784,7 @@ async function buildBackupPayload(){
 }
 function ensureDriveGIS(){
   if(!(window.google && google.accounts && google.accounts.oauth2)){
-    throw new Error('Google Identity Services no cargó todavía');
+    throw new Error('Google Identity Services no cargó todavía. Espera unos segundos y vuelve a intentar.');
   }
   if(!driveTokenClient){
     driveTokenClient = google.accounts.oauth2.initTokenClient({
@@ -2739,15 +2802,13 @@ function getDriveAccessToken(interactive=true){
         driveAccessToken = resp.access_token;
         resolve(resp.access_token);
       }else{
-        reject(new Error('No se obtuvo token de Google'));
+        reject(new Error(resp?.error || 'No se obtuvo token de Google'));
       }
     };
-    try{
-      driveTokenClient.requestAccessToken({ prompt: interactive ? 'consent' : '' });
-    }catch(err){ reject(err); }
+    try{ driveTokenClient.requestAccessToken({ prompt: interactive ? 'consent' : '' }); }
+    catch(err){ reject(err); }
   });
 }
-function escDriveQuery(s){ return String(s||'').replace(/'/g, "\\'"); }
 async function driveFetch(url, opts={}){
   if(!driveAccessToken) await getDriveAccessToken(true);
   const headers = new Headers(opts.headers || {});
@@ -2760,60 +2821,91 @@ async function driveFetch(url, opts={}){
   }
   return resp;
 }
-async function ensureDriveFolder(name, parentId=null){
-  const qParts = ["mimeType='application/vnd.google-apps.folder'", `name='${escDriveQuery(name)}'`, 'trashed=false'];
-  if(parentId){ qParts.push(`'${parentId}' in parents`); }
-  const q = encodeURIComponent(qParts.join(' and '));
-  let resp = await driveFetch(`https://www.googleapis.com/drive/v3/files?q=${q}&fields=files(id,name)&pageSize=10&supportsAllDrives=false`);
-  const data = await resp.json();
-  if(data.files && data.files.length){ return data.files[0].id; }
-  resp = await driveFetch('https://www.googleapis.com/drive/v3/files', {
-    method:'POST',
-    headers:{'Content-Type':'application/json'},
-    body: JSON.stringify({ name, mimeType:'application/vnd.google-apps.folder', parents: parentId ? [parentId] : undefined })
-  });
-  const created = await resp.json();
-  if(!created.id) throw new Error('No se pudo crear carpeta en Drive');
-  return created.id;
-}
-async function uploadJsonToDrive(fileName, jsonText){
-  const rootId = await ensureDriveFolder(DRIVE_ROOT_FOLDER_NAME);
-  const jsonFolderId = await ensureDriveFolder(DRIVE_JSON_FOLDER_NAME, rootId);
-
-  const metadata = {
-    name: fileName,
-    mimeType: 'application/json',
-    parents: [jsonFolderId]
-  };
-
+async function uploadBlobToDrive(folderId, fileName, blob, mimeType){
+  const metadata = { name:fileName, mimeType:mimeType || blob.type || 'application/octet-stream', parents:[folderId] };
   const form = new FormData();
   form.append('metadata', new Blob([JSON.stringify(metadata)], {type:'application/json'}));
-  form.append('file', new Blob([jsonText], {type:'application/json'}));
-
-  const resp = await driveFetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id,name,webViewLink,parents', {
-    method:'POST',
-    body: form
-  });
-  const data = await resp.json().catch(() => ({}));
-  console.log('RESPUESTA DRIVE UPLOAD:', data);
-
+  form.append('file', blob);
+  const resp = await driveFetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id,name,webViewLink,parents,mimeType', { method:'POST', body:form });
+  let data = {};
+  try{ data = await resp.json(); }catch(e){ data = {}; }
+  console.log('RESPUESTA DRIVE UPLOAD:', fileName, data);
   if(!resp.ok || !data.id){
-    throw new Error(data.error?.message || 'No se pudo subir el respaldo a Drive');
+    const msg = data.error?.message || `No se pudo subir ${fileName}`;
+    throw new Error(msg + ' · Verifica que hayas autorizado con g.social.documental@gmail.com o que la cuenta usada tenga permiso de editor en esa carpeta.');
   }
-
-  const verifyResp = await driveFetch(`https://www.googleapis.com/drive/v3/files/${data.id}?fields=id,name,parents,webViewLink,createdTime`);
-  const verified = await verifyResp.json().catch(() => ({}));
-  console.log('VERIFICACIÓN DRIVE:', verified);
-  if(!verifyResp.ok || !verified.id){
-    throw new Error(verified.error?.message || 'Drive respondió, pero no se pudo verificar el archivo creado');
-  }
-
-  return {
-    fileId: verified.id,
-    fileName: verified.name || data.name,
-    webViewLink: verified.webViewLink || data.webViewLink || '',
-    folderId: jsonFolderId
+  return data;
+}
+async function uploadJsonToDrive(fileName, jsonText){
+  return uploadBlobToDrive(DRIVE_FOLDERS.JSON, fileName, new Blob([jsonText], {type:'application/json'}), 'application/json');
+}
+async function uploadBackupJsonToDrive(fileName, jsonText){
+  return uploadBlobToDrive(DRIVE_FOLDERS.RESPALDOS, fileName, new Blob([jsonText], {type:'application/json'}), 'application/json');
+}
+function dataURLToBlobSafe(dataURL){
+  const parts = String(dataURL||'').split(',');
+  if(parts.length < 2) throw new Error('Foto sin dataURL válido');
+  const header = parts[0];
+  const mime = (header.match(/data:(.*?);base64/) || [])[1] || 'image/jpeg';
+  const bin = atob(parts[1]);
+  const u8 = new Uint8Array(bin.length);
+  for(let i=0;i<bin.length;i++) u8[i]=bin.charCodeAt(i);
+  return new Blob([u8], {type:mime});
+}
+async function buildCurrentCDExport(){
+  const cdAct = (activeCD||'').toString();
+  const estr=await getAll('estructuras');
+  const unc=await getAll('unc');
+  const cli=await getAll('clientes');
+  const sus=await getAll('susp');
+  const bal=await getAll('baldios');
+  const f=(arr)=> cdAct ? arr.filter(r=> String(r.Transformador||'')===cdAct) : arr;
+  const estrF=f(estr), uncF=f(unc), cliF=f(cli), susF=f(sus), balF=f(bal);
+  const d=new Date();
+  const stamp = d.toISOString().slice(0,10).replace(/-/g,'');
+  const hm = d.toTimeString().slice(0,5).replace(':','');
+  const baseName = `GS_Diagnostico_${slugCD(cdAct||'GENERAL')}_${stamp}_${hm}`;
+  return {baseName, cdAct, estrF, uncF, cliF, susF, balF, excelU8:buildExcel(estrF,uncF,cliF,susF,balF)};
+}
+function collectDrivePhotoJobs(pkg){
+  const jobs=[];
+  const add=(grupo, r, base)=>{
+    const folder=safeName(base || 'SIN_DATO') || 'SIN_DATO';
+    (r.Fotos||[]).forEach((f,i)=>{
+      if(!f || !f.dataURL) return;
+      const item = r.item || r.id || (i+1);
+      const name = `${pkg.baseName}_${grupo}_${folder}_ITEM_${item}_FOTO_${i+1}.jpg`.replace(/[^A-Z0-9_\.\-]+/gi,'_');
+      jobs.push({name, dataURL:f.dataURL});
+    });
   };
+  for(const r of pkg.estrF) add('ESTRUCTURAS', r, `${r.Transformador}_${r.PuntoFisico||('ITEM_'+r.item)}`);
+  for(const r of pkg.uncF)  add('UNC', r, `${r.Transformador}_${r.PuntoFisico||('ITEM_'+r.item)}`);
+  for(const r of pkg.cliF)  add('CLIENTES', r, `${r.Transformador}_${r.SerieMedidor||('ITEM_'+r.item)}`);
+  for(const r of pkg.susF)  add('SUSPENSIONES', r, `${r.Transformador}_${r.PuntoFisico||('ITEM_'+r.item)}`);
+  for(const r of pkg.balF)  add('BALDIOS', r, `${r.Transformador}_${r.PuntoFisico||('ITEM_'+r.item)}_BALDIO_${r.item}`);
+  return jobs;
+}
+async function uploadCurrentExcelAndPhotosToDrive(){
+  const pkg = await buildCurrentCDExport();
+  const excelName = `${pkg.baseName}.xls`;
+  const excelBlob = new Blob([pkg.excelU8], {type:'application/vnd.ms-excel'});
+  const excelInfo = await uploadBlobToDrive(DRIVE_FOLDERS.EXCEL, excelName, excelBlob, 'application/vnd.ms-excel');
+
+  const photoJobs = collectDrivePhotoJobs(pkg);
+  let uploaded = 0;
+  let failed = 0;
+  for(const job of photoJobs){
+    try{
+      const blob = dataURLToBlobSafe(job.dataURL);
+      await uploadBlobToDrive(DRIVE_FOLDERS.FOTOS, job.name, blob, blob.type || 'image/jpeg');
+      uploaded++;
+      if(uploaded % 3 === 0) setExportStatus(`Subiendo fotos a Drive... ${uploaded}/${photoJobs.length}`);
+    }catch(e){
+      console.warn('Foto no subida:', job.name, e);
+      failed++;
+    }
+  }
+  return {excelInfo, excelName, photosUploaded:uploaded, photosFailed:failed, photosTotal:photoJobs.length};
 }
 async function syncDriveManual(){
   const btn = document.getElementById('btnSyncDrivePage') || document.getElementById('homeSyncDrive') || document.getElementById('btnSyncDrive');
@@ -2823,26 +2915,62 @@ async function syncDriveManual(){
     setBadge('DRIVE… ☁️');
     setExportStatus('Preparando conexión con Google Drive...');
     await getDriveAccessToken(true);
+
     setExportStatus('Leyendo datos locales...');
     const payload = await buildBackupPayload();
     const jsonText = JSON.stringify(payload, null, 2);
     const stamp = new Date().toISOString().replace(/[:T]/g,'-').slice(0,19);
     const fileName = `GSX_SYNC_${slugCD(activeCD)}_${stamp}.json`;
+
     setExportStatus('Subiendo JSON a Drive...');
-    const info = await uploadJsonToDrive(fileName, jsonText);
-    const meta = { when:new Date().toISOString(), fileId:info.fileId, fileName:info.fileName, folderId:info.folderId, webViewLink:info.webViewLink||'', cd:activeCD||'' };
+    const jsonInfo = await uploadJsonToDrive(fileName, jsonText);
+
+    setExportStatus('Creando respaldo adicional en Drive...');
+    let respaldoInfo = null;
+    try{ respaldoInfo = await uploadBackupJsonToDrive(`RESPALDO_${fileName}`, jsonText); }catch(e){ console.warn('No se pudo subir copia a Respaldos:', e); }
+
+    setExportStatus('Generando y subiendo Excel...');
+    const exportInfo = await uploadCurrentExcelAndPhotosToDrive();
+
+    const meta = {
+      when:new Date().toISOString(),
+      fileId:jsonInfo.id, fileName:jsonInfo.name, folderId:DRIVE_FOLDERS.JSON,
+      backupFileId:respaldoInfo?.id || '',
+      excelFileId:exportInfo.excelInfo?.id || '', excelName:exportInfo.excelName,
+      photosUploaded:exportInfo.photosUploaded, photosFailed:exportInfo.photosFailed, photosTotal:exportInfo.photosTotal,
+      cd:activeCD||''
+    };
     await setMeta('drive_last_sync_meta', meta);
     await updateLastDriveSyncUI();
     setBadge('LISTO ✅');
-    setExportStatus(`✅ Sincronización completada con Drive: ${info.fileName}`);
+    setExportStatus(`✅ Drive listo: JSON + Excel + fotos (${exportInfo.photosUploaded}/${exportInfo.photosTotal})`);
     toast('Sincronización Drive ✅');
-    if(info.webViewLink){ console.log('Archivo Drive:', info.webViewLink); }
+    if(exportInfo.photosFailed){ alert(`Sincronización terminada, pero ${exportInfo.photosFailed} foto(s) no se pudieron subir. Revisa conexión y vuelve a intentar.`); }
   }catch(err){
     console.error(err);
     setBadge('LISTO ✅');
     setExportStatus(`❌ Error Drive: ${err.message || err}`);
     toast('Error sincronizando Drive ❌');
     alert('No se pudo sincronizar con Drive: ' + (err.message || err));
+  }finally{
+    if(btn){ btn.disabled = false; btn.textContent = oldText; }
+  }
+}
+
+document.getElementById('btnSyncDrive')?.addEventListener('click', syncDriveManual);
+document.getElementById('btnSyncDrivePage')?.addEventListener('click', syncDriveManual);
+document.getElementById('homeSyncDrive')?.addEventListener('click', syncDriveManual);
+document.getElementById('btnBackupGSXSubtle')?.addEventListener('click', respaldoTotalGSX);
+updateLastDriveSyncUI();
+    setBadge('LISTO ✅');
+    setExportStatus('✅ JSON enviado a la carpeta central de Drive');
+    toast('Sincronización Drive ✅');
+  }catch(err){
+    console.error(err);
+    setBadge('LISTO ✅');
+    setExportStatus(`❌ Error Drive: ${err.message || err}`);
+    toast('Error sincronizando Drive ❌');
+    alert('No se pudo sincronizar con Drive. Revisa el permiso de Google y vuelve a intentar.');
   }finally{
     if(btn){ btn.disabled = false; btn.textContent = oldText; }
   }
