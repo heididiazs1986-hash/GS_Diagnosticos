@@ -263,6 +263,20 @@
     body.dark .miniTable td{border-color:#2a3445!important;color:#e5e7eb!important;}
     body.dark .obs-auto-note{color:#fecdd3!important;}
 
+
+    /* ===== Dark mode PRO fix v15: KPIs, botones y utilidades legibles ===== */
+    body.dark .stat-card{background:#151b26!important;border-color:#2d3748!important;box-shadow:0 14px 32px rgba(0,0,0,.22)!important;}
+    body.dark .stat-card .n, body.dark #summaryDiag, body.dark #summaryPhotos, body.dark #summaryEstr, body.dark #summaryPending{color:#f8fafc!important;text-shadow:0 1px 0 rgba(0,0,0,.25);}
+    body.dark .stat-card .l{color:#cbd5e1!important;}
+    body.dark .action-btn span:not(.ico), body.dark .registro-card-menu button span:not(.reg-ico){color:#f8fafc!important;}
+    body.dark .utility-item, body.dark .utility-item span, body.dark .utility-item b{color:#f8fafc!important;}
+    body.dark .utility-item .muted-p{color:#cbd5e1!important;}
+    body.dark .title h2, body.dark h2, body.dark .form-headline .pill, body.dark .sectionLabel{color:#f8fafc!important;}
+    body.dark .form-counter{color:#ffd6dc!important;}
+    body.dark .modalCard, body.dark .modalCard div, body.dark .modalCard .muted-p{color:#f8fafc!important;}
+    body.dark .miniTableWrap, body.dark .miniTable th, body.dark .miniTable td{background:#151b26!important;color:#f8fafc!important;border-color:#2d3748!important;}
+    body.dark button.secondary, body.dark .soft-btn{color:#f8fafc!important;background:#151b26!important;border-color:#2d3748!important;}
+
   </style>
   <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
@@ -2745,7 +2759,7 @@ async function updateLastDriveSyncUI(){
   if(page) page.textContent = txt;
 }
 async function buildBackupPayload(){
-  const respaldo = { fecha:new Date().toISOString(), app:'GS Diagnósticos', version:'v14-drive-central', localStorage:{}, indexedDB:{}, activeCD:activeCD||'', activeCAP:activeCAP||'' };
+  const respaldo = { fecha:new Date().toISOString(), app:'GS Diagnósticos', version:'v15-drive-central-folders', localStorage:{}, indexedDB:{}, activeCD:activeCD||'', activeCAP:activeCAP||'' };
   for (let i = 0; i < localStorage.length; i++) {
     const key = localStorage.key(i);
     respaldo.localStorage[key] = localStorage.getItem(key);
@@ -2952,25 +2966,6 @@ async function syncDriveManual(){
     setExportStatus(`❌ Error Drive: ${err.message || err}`);
     toast('Error sincronizando Drive ❌');
     alert('No se pudo sincronizar con Drive: ' + (err.message || err));
-  }finally{
-    if(btn){ btn.disabled = false; btn.textContent = oldText; }
-  }
-}
-
-document.getElementById('btnSyncDrive')?.addEventListener('click', syncDriveManual);
-document.getElementById('btnSyncDrivePage')?.addEventListener('click', syncDriveManual);
-document.getElementById('homeSyncDrive')?.addEventListener('click', syncDriveManual);
-document.getElementById('btnBackupGSXSubtle')?.addEventListener('click', respaldoTotalGSX);
-updateLastDriveSyncUI();
-    setBadge('LISTO ✅');
-    setExportStatus('✅ JSON enviado a la carpeta central de Drive');
-    toast('Sincronización Drive ✅');
-  }catch(err){
-    console.error(err);
-    setBadge('LISTO ✅');
-    setExportStatus(`❌ Error Drive: ${err.message || err}`);
-    toast('Error sincronizando Drive ❌');
-    alert('No se pudo sincronizar con Drive. Revisa el permiso de Google y vuelve a intentar.');
   }finally{
     if(btn){ btn.disabled = false; btn.textContent = oldText; }
   }
