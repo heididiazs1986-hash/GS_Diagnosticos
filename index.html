@@ -165,6 +165,17 @@
     .form-counter{display:inline-flex;align-items:center;gap:8px;background:#fff7f7;border:1px solid #f0d3d6;color:#8a2430;padding:8px 12px;border-radius:999px;font-size:13px;font-weight:700;}
     .form-headline{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:2px 0 10px;}
     .field-hint{font-size:12px;color:var(--muted);margin-top:4px;}
+    input[readonly][id$="_long_nodo"]{
+      background:#f3f6fa!important;
+      color:#344054!important;
+      font-weight:900;
+      border-style:dashed;
+    }
+    body.dark input[readonly][id$="_long_nodo"]{
+      background:#101724!important;
+      color:#f8fafc!important;
+      border-color:#40506a!important;
+    }
     .button-stack{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
     #screen2 .btnrow button,#screen1 .btnrow button,#screen3 .btnrow button,.vBtns button,.soft-btn{box-shadow:0 6px 18px rgba(135,19,33,.10);font-weight:800;min-height:46px;}
     #screen2 .btnrow button.secondary,#screen1 .btnrow button.secondary,#screen3 .btnrow button.secondary,.vBtns button.secondary,.soft-btn.secondary{box-shadow:none;}
@@ -308,7 +319,7 @@
       <button class="action-btn" id="homeExportar"><span class="ico">⇪</span><span>Exportar</span></button>
       <button class="action-btn" id="homeEditar"><span class="ico">✎</span><span>Editar</span></button>
       <button class="action-btn" id="homeConteo"><span class="ico">◔</span><span>Conteo</span></button>
-      <button class="action-btn" id="homeExcel"><span class="ico">⌗</span><span>Modificar</span></button>
+      <button class="action-btn" id="homeExcel"><span class="ico">⌗</span><span>Excel</span></button>
       <button class="action-btn" id="homeFotos"><span class="ico">▣</span><span>Fotos</span></button>
     </div>
 
@@ -355,7 +366,7 @@
     </div>
 
     <div class="muted-p" style="margin-top:14px;">
-      <b>Botones principales:</b> <b>Editar</b> actualiza registros guardados dentro de la app. <b>Modificar</b> abre el módulo para cargar/modificar información desde archivo. <b>Fotos</b> muestra la galería local cuando la evidencia quedó almacenada en la base del dispositivo.
+      <b>Botones principales:</b> <b>Editar</b> actualiza registros guardados dentro de la app. <b>Excel</b> abre el módulo para cargar/modificar información desde archivo. <b>Fotos</b> muestra la galería local cuando la evidencia quedó almacenada en la base del dispositivo.
     </div>
 
     <div class="nav-mini">
@@ -490,11 +501,11 @@
     </div>
 
     <div class="btnrow registro-card-menu" id="registroMenuButtons">
-      <button class="secondary" id="btnBack1" type="button"><span class="reg-ico">⚡</span><span>Estructuras</span></button>
       <button id="btnUNC" type="button"><span class="reg-ico">👷‍♂️</span><span>UNC</span></button>
       <button id="btnCliente" type="button"><span class="reg-ico">🤝</span><span>Cliente</span></button>
       <button id="btnSusp" type="button"><span class="reg-ico">✕</span><span>Suspensión</span></button>
       <button id="btnBaldio" type="button"><span class="reg-ico">○</span><span>Baldíos</span></button>
+      <button class="secondary" id="btnBack1" type="button"><span class="reg-ico">⚡</span><span>Estructuras</span></button>
       <button class="secondary" id="btnInicioFromRegistro" type="button">Inicio</button>
     </div>
 
@@ -565,7 +576,7 @@
       </div>
 
       <div class="grid two">
-        <div><label>Longitud al nodo amarrado (m)</label><input id="unc_long_nodo" inputmode="decimal" placeholder="0"></div>
+        <div><label>Longitud al nodo amarrado (m)</label><input id="unc_long_nodo" inputmode="decimal" placeholder="Calculado por GPS" readonly><div class="field-hint">Calculado automáticamente desde el punto físico seleccionado hasta la coordenada capturada.</div></div>
         <div></div>
       </div>
 
@@ -604,14 +615,14 @@
 
       <div class="sectionLabel">Documentos requeridos</div>
       <div class="checklist">
-        <label class="checkItem"><input type="checkbox" id="unc_e1"> <span>FORMATO E1</span></label>
-        <label class="checkItem"><input type="checkbox" id="unc_ar"> <span>AR</span></label>
-        <label class="checkItem"><input type="checkbox" id="unc_dj"> <span>DJ</span></label>
-        <label class="checkItem"><input type="checkbox" id="unc_e6"> <span>E6</span></label>
-        <label class="checkItem"><input type="checkbox" id="unc_ec_part"> <span>EC PARTICULAR</span></label>
+        <label class="checkItem"><input type="checkbox" id="unc_e1"> <span>FORMATO DE SOLICITUD(E1)</span></label>
+        <label class="checkItem"><input type="checkbox" id="unc_ar"> <span>ACEPTACIÓN DE REQUISITOS</span></label>
+        <label class="checkItem"><input type="checkbox" id="unc_dj"> <span>DECLARACIÓN JURAMENTADA</span></label>
+        <label class="checkItem"><input type="checkbox" id="unc_e6"> <span>RECIBO TÉCNICO(E6)</span></label>
+        <label class="checkItem"><input type="checkbox" id="unc_ec_part"> <span>ESQUEMA CONSTRUCTIVO PARTICULAR</span></label>
         <label class="checkItem"><input type="checkbox" id="unc_doc_elec"> <span>DOC. ELECTRICISTA</span></label>
         <label class="checkItem"><input type="checkbox" id="unc_retie"> <span>RETIE</span></label>
-        <label class="checkItem"><input type="checkbox" id="unc_ec_inmel"> <span>EC INMEL</span></label>
+        <label class="checkItem"><input type="checkbox" id="unc_ec_inmel"> <span>ESQUEMA CONSTRUCTIVO INMEL</span></label>
       </div>
 
       <div class="sectionLabel">Revisión norma técnica</div>
@@ -659,7 +670,7 @@
       </div>
 
       <div class="grid two">
-        <div><label>Longitud al nodo amarrado (m)</label><input id="cli_long_nodo" inputmode="decimal" placeholder="0"></div>
+        <div><label>Longitud al nodo amarrado (m)</label><input id="cli_long_nodo" inputmode="decimal" placeholder="Calculado por GPS" readonly><div class="field-hint">Calculado automáticamente desde el punto físico seleccionado hasta la coordenada capturada.</div></div>
         <div></div>
       </div>
 
@@ -706,7 +717,7 @@
       </div>
 
       <div class="grid two">
-        <div><label>Longitud al nodo amarrado (m)</label><input id="sus_long_nodo" inputmode="decimal" placeholder="0"></div>
+        <div><label>Longitud al nodo amarrado (m)</label><input id="sus_long_nodo" inputmode="decimal" placeholder="Calculado por GPS" readonly><div class="field-hint">Calculado automáticamente desde el punto físico seleccionado hasta la coordenada capturada.</div></div>
         <div></div>
       </div>
 
@@ -764,7 +775,7 @@
       </div>
 
       <div class="grid two">
-        <div><label>Longitud al nodo amarrado (m)</label><input id="bal_long_nodo" inputmode="decimal" placeholder="0"></div>
+        <div><label>Longitud al nodo amarrado (m)</label><input id="bal_long_nodo" inputmode="decimal" placeholder="Calculado por GPS" readonly><div class="field-hint">Calculado automáticamente desde el punto físico seleccionado hasta la coordenada capturada.</div></div>
         <div></div>
       </div>
 
@@ -799,7 +810,7 @@
   <!-- SCREEN 3: MODIFICAR EXCEL -->
   <section class="card" id="screen3" style="display:none;">
     <div class="title">
-      <div><h2>Modificar registros desde Excel</h2></div>
+      <div><h2>Modificar registros UNC desde Excel</h2></div>
       <div class="kpi"><div class="pill">📄 <b id="modExcelFileName">Sin archivo</b></div></div>
     </div>
 
@@ -1259,6 +1270,7 @@ function captureGPS(latEl, lonEl, accEl){
     if(latEl) latEl.dataset.gpsISO = iso;
     if(lonEl) lonEl.dataset.gpsISO = iso;
     if(accEl) accEl.dataset.gpsISO = iso;
+    [latEl, lonEl, accEl].forEach(el=>{ if(el) el.dispatchEvent(new Event("gpsupdated")); });
     setBadge("LISTO ✅"); toast("Coordenadas ✅");
     if(watchId!=null) navigator.geolocation.clearWatch(watchId);
   };
@@ -1395,6 +1407,81 @@ async function showCountsModal(){
 }
 function sanitizeMeters(v){
   return String(v||'').replace(/,/g,'.').replace(/[^0-9.]/g,'').trim();
+}
+
+function parseCoord(v){
+  const n = Number(String(v||'').replace(",", ".").trim());
+  return Number.isFinite(n) ? n : null;
+}
+function haversineMeters(lat1, lon1, lat2, lon2){
+  const R = 6371000;
+  const toRad = d => d * Math.PI / 180;
+  const aLat = toRad(lat2 - lat1);
+  const aLon = toRad(lon2 - lon1);
+  const a = Math.sin(aLat/2)**2 + Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(aLon/2)**2;
+  return 2 * R * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+}
+function formatMeters(m){
+  if(!Number.isFinite(m)) return "";
+  return String(Math.round(m * 10) / 10);
+}
+async function calcularLongitudNodo(formKey){
+  const cfg = {
+    unc:{pf:"unc_pf", lat:"unc_lat", lon:"unc_lon", out:"unc_long_nodo"},
+    cli:{pf:"cli_pf", lat:"cli_lat", lon:"cli_lon", out:"cli_long_nodo"},
+    sus:{pf:"sus_pf", lat:"sus_lat", lon:"sus_lon", out:"sus_long_nodo"},
+    bal:{pf:"bal_pf", lat:"bal_lat", lon:"bal_lon", out:"bal_long_nodo"}
+  }[formKey];
+  if(!cfg) return "";
+  const pf = ($(cfg.pf)?.value || "").trim();
+  const lat2 = parseCoord($(cfg.lat)?.value);
+  const lon2 = parseCoord($(cfg.lon)?.value);
+  const out = $(cfg.out);
+  if(!out) return "";
+  if(!pf || lat2===null || lon2===null || !activeCD){
+    out.value = "";
+    return "";
+  }
+  const estructuras = await getAll("estructuras");
+  const nodo = estructuras.find(r => 
+    String(r.Transformador||"").trim() === String(activeCD||"").trim() &&
+    String(r.PuntoFisico||"").trim() === pf
+  );
+  if(!nodo){
+    out.value = "";
+    return "";
+  }
+  const lat1 = parseCoord(nodo.Latitud);
+  const lon1 = parseCoord(nodo.Longitud);
+  if(lat1===null || lon1===null){
+    out.value = "";
+    return "";
+  }
+  const metros = formatMeters(haversineMeters(lat1, lon1, lat2, lon2));
+  out.value = metros;
+  saveDraft(formKey, collectFormValues({
+    unc:['unc_pf','unc_nombres','unc_identificacion','unc_contacto','unc_sede','unc_municipio','unc_direccion','unc_localidad','unc_tipo_zona','unc_tipo_material','unc_tipo_poblacion','unc_estado','unc_lat','unc_lon','unc_acc','unc_long_nodo','unc_doc_propiedad','unc_predio_habitable','unc_ampliacion_redes','unc_e1','unc_ar','unc_dj','unc_e6','unc_ec_part','unc_doc_elec','unc_retie','unc_ec_inmel','unc_requiere_muro','unc_arriostre','unc_acometida','unc_ducto','unc_celda','unc_interruptor','unc_spt','unc_inst_interna','unc_obs'],
+    cli:['cli_pf','cli_serie','cli_marca','cli_fases','cli_lat','cli_lon','cli_acc','cli_long_nodo','cli_estado_medidor','cli_req_inspeccion','cli_estado_visor','cli_obs'],
+    sus:['sus_pf','sus_lat','sus_lon','sus_acc','sus_long_nodo','sus_motivo','sus_obs'],
+    bal:['bal_pf','bal_estado','bal_lat','bal_lon','bal_acc','bal_long_nodo','bal_obs']
+  }[formKey] || []));
+  return metros;
+}
+function bindLongitudNodoCalculada(){
+  [
+    {key:"unc", pf:"unc_pf", lat:"unc_lat", lon:"unc_lon"},
+    {key:"cli", pf:"cli_pf", lat:"cli_lat", lon:"cli_lon"},
+    {key:"sus", pf:"sus_pf", lat:"sus_lat", lon:"sus_lon"},
+    {key:"bal", pf:"bal_pf", lat:"bal_lat", lon:"bal_lon"}
+  ].forEach(cfg=>{
+    [cfg.pf, cfg.lat, cfg.lon].forEach(id=>{
+      const el=$(id);
+      if(!el) return;
+      el.addEventListener("change", ()=>calcularLongitudNodo(cfg.key));
+      el.addEventListener("input", ()=>calcularLongitudNodo(cfg.key));
+      el.addEventListener("gpsupdated", ()=>calcularLongitudNodo(cfg.key));
+    });
+  });
 }
 async function serialExists(serial, currentId=null){
   const normalized = onlyDigits(serial);
@@ -1604,6 +1691,7 @@ async function buildEstructura(){
 }
 
 async function buildUNC(){
+  await calcularLongitudNodo("unc");
   const obj={
     fechaISO:new Date().toISOString(),
     Transformador:activeCD, Capacidad_kVA:activeCAP,
@@ -1656,6 +1744,7 @@ async function buildUNC(){
 }
 
 async function buildCliente(){
+  await calcularLongitudNodo("cli");
   const obj={
     fechaISO:new Date().toISOString(),
     Transformador:activeCD, Capacidad_kVA:activeCAP,
@@ -1683,6 +1772,7 @@ async function buildCliente(){
 }
 
 async function buildSusp(){
+  await calcularLongitudNodo("sus");
   const obj={
     fechaISO:new Date().toISOString(),
     Transformador:activeCD, Capacidad_kVA:activeCAP,
@@ -1705,6 +1795,7 @@ async function buildSusp(){
 }
 
 async function buildBaldio(){
+  await calcularLongitudNodo("bal");
   const obj={
     fechaISO:new Date().toISOString(),
     Transformador:activeCD, Capacidad_kVA:activeCAP,
@@ -2028,10 +2119,10 @@ function wireEvents(){
   $("modExcelSearch").addEventListener("input", renderModExcelTable);
 
   // open forms
-  $("btnUNC").addEventListener("click", async ()=>{ await refreshPFSelectors(); await updateFormCounters(); showSingleRegistroForm("formUNC","unc"); restoreLastLocalidad(); restoreDraft("unc", {unc_pf:$("unc_pf").value, unc_sede:$("unc_sede").value, unc_municipio:$("unc_municipio").value, unc_localidad:$("unc_localidad").value, unc_tipo_zona:$("unc_tipo_zona").value}); maybeAutofillUNCObservation(false); });
-  $("btnCliente").addEventListener("click", async ()=>{ await refreshPFSelectors(); await updateFormCounters(); showSingleRegistroForm("formCliente","cliente"); restoreDraft("cliente", {cli_pf:$("cli_pf").value}); });
-  $("btnSusp").addEventListener("click", async ()=>{ await refreshPFSelectors(); await updateFormCounters(); showSingleRegistroForm("formSusp","susp"); restoreDraft("susp", {sus_pf:$("sus_pf").value}); });
-  $("btnBaldio").addEventListener("click", async ()=>{ await refreshPFSelectors(); await updateFormCounters(); showSingleRegistroForm("formBaldio","baldio"); restoreDraft("baldio", {bal_pf:$("bal_pf").value}); });
+  $("btnUNC").addEventListener("click", async ()=>{ await refreshPFSelectors(); await updateFormCounters(); showSingleRegistroForm("formUNC","unc"); restoreLastLocalidad(); restoreDraft("unc", {unc_pf:$("unc_pf").value, unc_sede:$("unc_sede").value, unc_municipio:$("unc_municipio").value, unc_localidad:$("unc_localidad").value, unc_tipo_zona:$("unc_tipo_zona").value}); maybeAutofillUNCObservation(false); calcularLongitudNodo("unc"); });
+  $("btnCliente").addEventListener("click", async ()=>{ await refreshPFSelectors(); await updateFormCounters(); showSingleRegistroForm("formCliente","cliente"); restoreDraft("cliente", {cli_pf:$("cli_pf").value}); calcularLongitudNodo("cli"); });
+  $("btnSusp").addEventListener("click", async ()=>{ await refreshPFSelectors(); await updateFormCounters(); showSingleRegistroForm("formSusp","susp"); restoreDraft("susp", {sus_pf:$("sus_pf").value}); calcularLongitudNodo("sus"); });
+  $("btnBaldio").addEventListener("click", async ()=>{ await refreshPFSelectors(); await updateFormCounters(); showSingleRegistroForm("formBaldio","baldio"); restoreDraft("baldio", {bal_pf:$("bal_pf").value}); calcularLongitudNodo("bal"); });
 
   // cancel
   $("btnCancelUNC").addEventListener("click", ()=>showRegistroMenu());
@@ -2123,10 +2214,10 @@ function wireEvents(){
   });
 
   // after save modal
-  $("goUNC").addEventListener("click", async ()=>{ $("modalAfterSave").style.display="none"; resetForms(); await refreshPFSelectors(); show("screen2"); localStorage.setItem("gsdx_last_form","unc"); $("formUNC").style.display=""; restoreLastLocalidad(); restoreDraft("unc", {unc_pf:$("unc_pf").value, unc_sede:$("unc_sede").value, unc_municipio:$("unc_municipio").value, unc_localidad:$("unc_localidad").value, unc_tipo_zona:$("unc_tipo_zona").value}); });
-  $("goCLI").addEventListener("click", async ()=>{ $("modalAfterSave").style.display="none"; resetForms(); await refreshPFSelectors(); show("screen2"); localStorage.setItem("gsdx_last_form","cliente"); $("formCliente").style.display=""; restoreDraft("cliente", {cli_pf:$("cli_pf").value}); });
-  $("goSUS").addEventListener("click", async ()=>{ $("modalAfterSave").style.display="none"; resetForms(); await refreshPFSelectors(); show("screen2"); localStorage.setItem("gsdx_last_form","susp"); $("formSusp").style.display=""; restoreDraft("susp", {sus_pf:$("sus_pf").value}); });
-  $("goBAL").addEventListener("click", async ()=>{ $("modalAfterSave").style.display="none"; resetForms(); await refreshPFSelectors(); show("screen2"); localStorage.setItem("gsdx_last_form","baldio"); $("formBaldio").style.display=""; restoreDraft("baldio", {bal_pf:$("bal_pf").value}); });
+  $("goUNC").addEventListener("click", async ()=>{ $("modalAfterSave").style.display="none"; resetForms(); await refreshPFSelectors(); show("screen2"); localStorage.setItem("gsdx_last_form","unc"); $("formUNC").style.display=""; restoreLastLocalidad(); restoreDraft("unc", {unc_pf:$("unc_pf").value, unc_sede:$("unc_sede").value, unc_municipio:$("unc_municipio").value, unc_localidad:$("unc_localidad").value, unc_tipo_zona:$("unc_tipo_zona").value}); calcularLongitudNodo("unc"); });
+  $("goCLI").addEventListener("click", async ()=>{ $("modalAfterSave").style.display="none"; resetForms(); await refreshPFSelectors(); show("screen2"); localStorage.setItem("gsdx_last_form","cliente"); $("formCliente").style.display=""; restoreDraft("cliente", {cli_pf:$("cli_pf").value}); calcularLongitudNodo("cli"); });
+  $("goSUS").addEventListener("click", async ()=>{ $("modalAfterSave").style.display="none"; resetForms(); await refreshPFSelectors(); show("screen2"); localStorage.setItem("gsdx_last_form","susp"); $("formSusp").style.display=""; restoreDraft("susp", {sus_pf:$("sus_pf").value}); calcularLongitudNodo("sus"); });
+  $("goBAL").addEventListener("click", async ()=>{ $("modalAfterSave").style.display="none"; resetForms(); await refreshPFSelectors(); show("screen2"); localStorage.setItem("gsdx_last_form","baldio"); $("formBaldio").style.display=""; restoreDraft("baldio", {bal_pf:$("bal_pf").value}); calcularLongitudNodo("bal"); });
   $("goNO").addEventListener("click", ()=>{ $("modalAfterSave").style.display="none"; resetForms(); show("screen1"); });
 
   // export
@@ -2507,6 +2598,7 @@ function loadModExcelFile(){
 
     wireEvents();
     bindDraftSystem();
+    bindLongitudNodoCalculada();
     if(!$("est_luminarias").value) $("est_luminarias").value = "0";
     await registerSW();
     await requestPersistentStorage();
@@ -2520,10 +2612,10 @@ function loadModExcelFile(){
     if(safeLast === "screen2"){
       await refreshPFSelectors();
       const lastForm = localStorage.getItem("gsdx_last_form") || "";
-      if(lastForm === "unc") { showSingleRegistroForm("formUNC","unc"); restoreDraft("unc"); }
-      else if(lastForm === "cliente") { showSingleRegistroForm("formCliente","cliente"); restoreDraft("cliente"); }
-      else if(lastForm === "susp") { showSingleRegistroForm("formSusp","susp"); restoreDraft("susp"); }
-      else if(lastForm === "baldio") { showSingleRegistroForm("formBaldio","baldio"); restoreDraft("baldio"); }
+      if(lastForm === "unc") { showSingleRegistroForm("formUNC","unc"); restoreDraft("unc"); calcularLongitudNodo("unc"); }
+      else if(lastForm === "cliente") { showSingleRegistroForm("formCliente","cliente"); restoreDraft("cliente"); calcularLongitudNodo("cli"); }
+      else if(lastForm === "susp") { showSingleRegistroForm("formSusp","susp"); restoreDraft("susp"); calcularLongitudNodo("sus"); }
+      else if(lastForm === "baldio") { showSingleRegistroForm("formBaldio","baldio"); restoreDraft("baldio"); calcularLongitudNodo("bal"); }
       else { showRegistroMenu(); }
       await updateFormCounters();
     }
@@ -2866,38 +2958,20 @@ function dataURLToBlobSafe(dataURL){
   for(let i=0;i<bin.length;i++) u8[i]=bin.charCodeAt(i);
   return new Blob([u8], {type:mime});
 }
-
-function getUniqueCDsFromStores(estr, unc, cli, sus, bal){
-  const set = new Set();
-  const add = (v)=>{ const s = String(v||'').trim(); if(s) set.add(s); };
-  [estr,unc,cli,sus,bal].forEach(arr => (arr||[]).forEach(r => add(r.Transformador)));
-  return Array.from(set).sort((a,b)=>a.localeCompare(b,'es'));
-}
-function buildExportPackageForCD(cdAct, datasets, fixedDate){
-  const estr = datasets.estr || [];
-  const unc = datasets.unc || [];
-  const cli = datasets.cli || [];
-  const sus = datasets.sus || [];
-  const bal = datasets.bal || [];
-
-  const f = (arr)=> arr.filter(r => String(r.Transformador||'').trim() === String(cdAct||'').trim());
-  const estrF = f(estr), uncF = f(unc), cliF = f(cli), susF = f(sus), balF = f(bal);
-
-  const d = fixedDate || new Date();
+async function buildCurrentCDExport(){
+  const cdAct = (activeCD||'').toString();
+  const estr=await getAll('estructuras');
+  const unc=await getAll('unc');
+  const cli=await getAll('clientes');
+  const sus=await getAll('susp');
+  const bal=await getAll('baldios');
+  const f=(arr)=> cdAct ? arr.filter(r=> String(r.Transformador||'')===cdAct) : arr;
+  const estrF=f(estr), uncF=f(unc), cliF=f(cli), susF=f(sus), balF=f(bal);
+  const d=new Date();
   const stamp = d.toISOString().slice(0,10).replace(/-/g,'');
   const hm = d.toTimeString().slice(0,5).replace(':','');
   const baseName = `GS_Diagnostico_${slugCD(cdAct||'GENERAL')}_${stamp}_${hm}`;
   return {baseName, cdAct, estrF, uncF, cliF, susF, balF, excelU8:buildExcel(estrF,uncF,cliF,susF,balF)};
-}
-async function buildCurrentCDExport(){
-  const datasets = {
-    estr: await getAll('estructuras'),
-    unc: await getAll('unc'),
-    cli: await getAll('clientes'),
-    sus: await getAll('susp'),
-    bal: await getAll('baldios')
-  };
-  return buildExportPackageForCD(activeCD || 'GENERAL', datasets, new Date());
 }
 function collectDrivePhotoJobs(pkg){
   const jobs=[];
@@ -2911,98 +2985,33 @@ function collectDrivePhotoJobs(pkg){
     });
   };
   for(const r of pkg.estrF) add('ESTRUCTURAS', r, `${r.Transformador}_${r.PuntoFisico||('ITEM_'+r.item)}`);
-  for(const r of pkg.uncF)  add('UNC', r, `${r.Transformador}_${r.PuntoFisico||('ITEM_'+r.item)}`);
-  for(const r of pkg.cliF)  add('CLIENTES', r, `${r.Transformador}_${r.SerieMedidor||('ITEM_'+r.item)}`);
+  for(const r of pkg.uncF)  add('UNC', r, `${r.Transformador}_${r.PuntoFisico}_${r.unc_identificacion||('ITEM_'+r.item)}`);
+  for(const r of pkg.cliF)  add('CLIENTES', r, `${r.Transformador}}_${r.PuntoFisico}_${r.SerieMedidor||('ITEM_'+r.item)}`);
   for(const r of pkg.susF)  add('SUSPENSIONES', r, `${r.Transformador}_${r.PuntoFisico||('ITEM_'+r.item)}`);
   for(const r of pkg.balF)  add('BALDIOS', r, `${r.Transformador}_${r.PuntoFisico||('ITEM_'+r.item)}_BALDIO_${r.item}`);
   return jobs;
 }
-async function uploadExcelAndPhotosPackageToDrive(pkg){
+async function uploadCurrentExcelAndPhotosToDrive(){
+  const pkg = await buildCurrentCDExport();
   const excelName = `${pkg.baseName}.xls`;
   const excelBlob = new Blob([pkg.excelU8], {type:'application/vnd.ms-excel'});
   const excelInfo = await uploadBlobToDrive(DRIVE_FOLDERS.EXCEL, excelName, excelBlob, 'application/vnd.ms-excel');
 
-  const zip = new TinyZip();
-  let photosTotal = 0;
-  let photosFailed = 0;
-
-  const addFotosToZip = (grupo, r, folderBase) => {
-    const folder = safeName(folderBase || 'SIN_DATO') || 'SIN_DATO';
-    (r.Fotos || []).forEach((f, i) => {
-      try{
-        if(!f || !f.dataURL) return;
-        zip.add(`FOTOS/${grupo}/${folder}/foto_${i+1}.jpg`, dataURLtoU8(f.dataURL));
-        photosTotal++;
-      }catch(e){
-        console.warn('Foto no agregada al ZIP:', grupo, folder, i+1, e);
-        photosFailed++;
-      }
-    });
-  };
-
-  for(const r of pkg.estrF) addFotosToZip('ESTRUCTURAS', r, `${r.Transformador}_${r.PuntoFisico || ('ITEM_'+r.item)}`);
-  for(const r of pkg.uncF)  addFotosToZip('UNC', r, `${r.Transformador}_${r.PuntoFisico || ('ITEM_'+r.item)}`);
-  for(const r of pkg.cliF)  addFotosToZip('CLIENTES', r, `${r.Transformador}_${r.SerieMedidor || ('ITEM_'+r.item)}`);
-  for(const r of pkg.susF)  addFotosToZip('SUSPENSIONES', r, `${r.Transformador}_${r.PuntoFisico || ('ITEM_'+r.item)}`);
-  for(const r of pkg.balF)  addFotosToZip('BALDIOS', r, `${r.Transformador}_${r.PuntoFisico || ('ITEM_'+r.item)}_BALDIO_${r.item}`);
-
-  let photosZipInfo = null;
-  let photosZipName = '';
-  if(photosTotal > 0 || photosFailed > 0){
-    setExportStatus(`Comprimiendo fotos del CD ${pkg.cdAct} en ZIP... ${photosTotal} foto(s)`);
-    const zipU8 = zip.finalize();
-    photosZipName = `${pkg.baseName}_FOTOS.zip`;
-    const zipBlob = new Blob([zipU8], {type:'application/zip'});
-    setExportStatus(`Subiendo ZIP de fotos del CD ${pkg.cdAct} a Drive... ${photosTotal} foto(s)`);
-    photosZipInfo = await uploadBlobToDrive(DRIVE_FOLDERS.FOTOS, photosZipName, zipBlob, 'application/zip');
-  }else{
-    setExportStatus(`CD ${pkg.cdAct}: sin fotos para comprimir.`);
+  const photoJobs = collectDrivePhotoJobs(pkg);
+  let uploaded = 0;
+  let failed = 0;
+  for(const job of photoJobs){
+    try{
+      const blob = dataURLToBlobSafe(job.dataURL);
+      await uploadBlobToDrive(DRIVE_FOLDERS.FOTOS, job.name, blob, blob.type || 'image/jpeg');
+      uploaded++;
+      if(uploaded % 3 === 0) setExportStatus(`Subiendo fotos a Drive... ${uploaded}/${photoJobs.length}`);
+    }catch(e){
+      console.warn('Foto no subida:', job.name, e);
+      failed++;
+    }
   }
-
-  return {
-    cd: pkg.cdAct,
-    excelInfo,
-    excelName,
-    photosZipInfo,
-    photosZipName,
-    photosUploaded: photosTotal,
-    photosFailed,
-    photosTotal
-  };
-}
-async function uploadCurrentExcelAndPhotosToDrive(){
-  const pkg = await buildCurrentCDExport();
-  return uploadExcelAndPhotosPackageToDrive(pkg);
-}
-async function uploadAllCDsExcelAndPhotosToDrive(){
-  const datasets = {
-    estr: await getAll('estructuras'),
-    unc: await getAll('unc'),
-    cli: await getAll('clientes'),
-    sus: await getAll('susp'),
-    bal: await getAll('baldios')
-  };
-  const cds = getUniqueCDsFromStores(datasets.estr, datasets.unc, datasets.cli, datasets.sus, datasets.bal);
-  if(!cds.length){
-    return {cds:[], results:[], totals:{excel:0, photos:0, failed:0}};
-  }
-
-  const fixedDate = new Date();
-  const results = [];
-  let totalPhotos = 0;
-  let totalFailed = 0;
-
-  for(let i=0; i<cds.length; i++){
-    const cd = cds[i];
-    setExportStatus(`Procesando CD ${i+1}/${cds.length}: ${cd}`);
-    const pkg = buildExportPackageForCD(cd, datasets, fixedDate);
-    const info = await uploadExcelAndPhotosPackageToDrive(pkg);
-    results.push(info);
-    totalPhotos += Number(info.photosUploaded || 0);
-    totalFailed += Number(info.photosFailed || 0);
-  }
-
-  return {cds, results, totals:{excel:results.length, photos:totalPhotos, failed:totalFailed}};
+  return {excelInfo, excelName, photosUploaded:uploaded, photosFailed:failed, photosTotal:photoJobs.length};
 }
 async function syncDriveManual(){
   const btn = document.getElementById('btnSyncDrivePage') || document.getElementById('homeSyncDrive') || document.getElementById('btnSyncDrive');
@@ -3013,46 +3022,36 @@ async function syncDriveManual(){
     setExportStatus('Preparando conexión con Google Drive...');
     await getDriveAccessToken(true);
 
-    setExportStatus('Leyendo datos locales completos...');
+    setExportStatus('Leyendo datos locales...');
     const payload = await buildBackupPayload();
     const jsonText = JSON.stringify(payload, null, 2);
     const stamp = new Date().toISOString().replace(/[:T]/g,'-').slice(0,19);
-    const fileName = `GSX_BACKUP_TODOS_LOS_CDS_${stamp}.json`;
+    const fileName = `GSX_SYNC_${slugCD(activeCD)}_${stamp}.json`;
 
-    setExportStatus('Subiendo JSON maestro completo a Drive...');
+    setExportStatus('Subiendo JSON a Drive...');
     const jsonInfo = await uploadJsonToDrive(fileName, jsonText);
 
-    setExportStatus('Creando copia adicional en Respaldos...');
+    setExportStatus('Creando respaldo adicional en Drive...');
     let respaldoInfo = null;
     try{ respaldoInfo = await uploadBackupJsonToDrive(`RESPALDO_${fileName}`, jsonText); }catch(e){ console.warn('No se pudo subir copia a Respaldos:', e); }
 
-    setExportStatus('Generando Excel y ZIP de fotos por cada CD...');
-    const exportInfo = await uploadAllCDsExcelAndPhotosToDrive();
+    setExportStatus('Generando y subiendo Excel...');
+    const exportInfo = await uploadCurrentExcelAndPhotosToDrive();
 
     const meta = {
       when:new Date().toISOString(),
-      fileId:jsonInfo.id,
-      fileName:jsonInfo.name,
-      folderId:DRIVE_FOLDERS.JSON,
+      fileId:jsonInfo.id, fileName:jsonInfo.name, folderId:DRIVE_FOLDERS.JSON,
       backupFileId:respaldoInfo?.id || '',
-      cds: exportInfo.cds,
-      cdCount: exportInfo.cds.length,
-      excelCount: exportInfo.totals.excel,
-      photosUploaded: exportInfo.totals.photos,
-      photosFailed: exportInfo.totals.failed,
-      mode:'todos_los_cds'
+      excelFileId:exportInfo.excelInfo?.id || '', excelName:exportInfo.excelName,
+      photosUploaded:exportInfo.photosUploaded, photosFailed:exportInfo.photosFailed, photosTotal:exportInfo.photosTotal,
+      cd:activeCD||''
     };
     await setMeta('drive_last_sync_meta', meta);
     await updateLastDriveSyncUI();
     setBadge('LISTO ✅');
-    setExportStatus(`✅ Drive listo: JSON completo + ${exportInfo.totals.excel} Excel + ZIP por CD (${exportInfo.totals.photos} foto(s))`);
-    toast('Sincronización Drive completa ✅');
-    if(exportInfo.totals.failed){
-      alert(`Sincronización terminada, pero ${exportInfo.totals.failed} foto(s) no se pudieron comprimir. Revisa conexión y vuelve a intentar.`);
-    }
-    if(!exportInfo.cds.length){
-      alert('Se subió el JSON maestro, pero no se detectaron CDs para generar Excel/Fotos.');
-    }
+    setExportStatus(`✅ Drive listo: JSON + Excel + fotos (${exportInfo.photosUploaded}/${exportInfo.photosTotal})`);
+    toast('Sincronización Drive ✅');
+    if(exportInfo.photosFailed){ alert(`Sincronización terminada, pero ${exportInfo.photosFailed} foto(s) no se pudieron subir. Revisa conexión y vuelve a intentar.`); }
   }catch(err){
     console.error(err);
     setBadge('LISTO ✅');
@@ -3063,6 +3062,7 @@ async function syncDriveManual(){
     if(btn){ btn.disabled = false; btn.textContent = oldText; }
   }
 }
+
 document.getElementById('btnSyncDrive')?.addEventListener('click', syncDriveManual);
 document.getElementById('btnSyncDrivePage')?.addEventListener('click', syncDriveManual);
 document.getElementById('homeSyncDrive')?.addEventListener('click', syncDriveManual);
