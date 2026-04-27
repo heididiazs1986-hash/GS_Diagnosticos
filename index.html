@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>GS Diagnósticos</title>
+  <title>GS Diagnósticos v17</title>
   <meta name="theme-color" content="#d40000" />
   <link rel="manifest" href="manifest.json">
   <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png?v=gsdx-red-2">
@@ -288,6 +288,22 @@
     body.dark .miniTableWrap, body.dark .miniTable th, body.dark .miniTable td{background:#151b26!important;color:#f8fafc!important;border-color:#2d3748!important;}
     body.dark button.secondary, body.dark .soft-btn{color:#f8fafc!important;background:#151b26!important;border-color:#2d3748!important;}
 
+
+    /* ===== Ajustes Heidi v16: encabezados, fotos obligatorias y cliente ===== */
+    .sectionLabel{
+      color:var(--rojo) !important;
+      border-top:0 !important;
+      border-bottom:2px solid #111 !important;
+      padding:0 0 5px 0 !important;
+      display:inline-block;
+      margin-top:20px !important;
+      letter-spacing:.25px;
+    }
+    body.dark .sectionLabel{color:#ff6b74 !important;border-bottom-color:#f8fafc !important;}
+    .foto-hint{font-size:12px;color:var(--muted);margin-top:6px;font-weight:700;}
+    body.dark .foto-hint{color:#cbd5e1!important;}
+    #cli_req_inspeccion:disabled{accent-color:var(--rojo);}
+
   </style>
   <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
@@ -464,7 +480,7 @@
       </div>
 
       <div class="grid">
-        <div><label>Fotos</label><input id="est_fotos" type="file" accept="image/*" multiple data-max="7"></div>
+        <div><label>Fotos</label><input id="est_fotos" type="file" accept="image/*" multiple data-max="7" required><div class="foto-hint">Obligatorio: mínimo 3 y máximo 7 fotos. En celular, el selector puede permitir cámara o apps como TimeMarkr según el equipo.</div></div>
       </div>
 
       <div class="grid">
@@ -472,7 +488,7 @@
           <label>Observaciones</label>
           <div class="obs-auto-note">La app puede sugerir una observación base según los elementos marcados.</div>
           <div class="dictWrap">
-            <textarea id="est_obs" placeholder="(OBLIGATORIO)"></textarea>
+            <textarea id="est_obs" placeholder="OPCIONAL"></textarea>
             <button class="secondary mic" type="button" data-target="est_obs" title="Dictar">🎤</button>
           </div>
         </div>
@@ -501,11 +517,11 @@
     </div>
 
     <div class="btnrow registro-card-menu" id="registroMenuButtons">
+      <button class="secondary" id="btnBack1" type="button"><span class="reg-ico">⚡</span><span>Estructuras</span></button>
       <button id="btnUNC" type="button"><span class="reg-ico">👷‍♂️</span><span>UNC</span></button>
       <button id="btnCliente" type="button"><span class="reg-ico">🤝</span><span>Cliente</span></button>
       <button id="btnSusp" type="button"><span class="reg-ico">✕</span><span>Suspensión</span></button>
       <button id="btnBaldio" type="button"><span class="reg-ico">○</span><span>Baldíos</span></button>
-      <button class="secondary" id="btnBack1" type="button"><span class="reg-ico">⚡</span><span>Estructuras</span></button>
       <button class="secondary" id="btnInicioFromRegistro" type="button">Inicio</button>
     </div>
 
@@ -588,7 +604,7 @@
       </div>
 
       <div class="grid">
-        <div><label>Fotos</label><input id="unc_fotos" type="file" accept="image/*" multiple data-max="7" required></div>
+        <div><label>Fotos</label><input id="unc_fotos" type="file" accept="image/*" multiple data-max="7" required><div class="foto-hint">Obligatorio: mínimo 3 y máximo 7 fotos. En celular, el selector puede permitir cámara o apps como TimeMarkr según el equipo.</div></div>
       </div>
 
       <div class="sep"></div>
@@ -642,7 +658,7 @@
         <div>
           <label>Observaciones</label>
           <div class="dictWrap">
-            <textarea id="unc_obs" required></textarea>
+            <textarea id="unc_obs"></textarea>
             <button class="secondary mic" type="button" data-target="unc_obs" title="Dictar">🎤</button>
           </div>
         </div>
@@ -688,14 +704,14 @@
       </div>
 
       <div class="grid">
-        <div><label>Fotos</label><input id="cli_fotos" type="file" accept="image/*" multiple data-max="7" required></div>
+        <div><label>Fotos</label><input id="cli_fotos" type="file" accept="image/*" multiple data-max="7" required><div class="foto-hint">Obligatorio: mínimo 3 y máximo 7 fotos. En celular, el selector puede permitir cámara o apps como TimeMarkr según el equipo.</div></div>
       </div>
 
       <div class="grid">
         <div>
           <label>Observaciones</label>
           <div class="dictWrap">
-            <textarea id="cli_obs" required></textarea>
+            <textarea id="cli_obs"></textarea>
             <button class="secondary mic" type="button" data-target="cli_obs" title="Dictar">🎤</button>
           </div>
         </div>
@@ -739,14 +755,14 @@
       </div>
 
       <div class="grid">
-        <div><label>Fotos</label><input id="sus_fotos" type="file" accept="image/*" multiple data-max="7" required></div>
+        <div><label>Fotos</label><input id="sus_fotos" type="file" accept="image/*" multiple data-max="7" required><div class="foto-hint">Obligatorio: mínimo 3 y máximo 7 fotos. En celular, el selector puede permitir cámara o apps como TimeMarkr según el equipo.</div></div>
       </div>
 
       <div class="grid">
         <div>
           <label>Observaciones</label>
           <div class="dictWrap">
-            <textarea id="sus_obs" required></textarea>
+            <textarea id="sus_obs"></textarea>
             <button class="secondary mic" type="button" data-target="sus_obs" title="Dictar">🎤</button>
           </div>
         </div>
@@ -787,14 +803,14 @@
       </div>
 
       <div class="grid">
-        <div><label>Fotos</label><input id="bal_fotos" accept="image/*" type="file" data-max="7" multiple required></div>
+        <div><label>Fotos</label><input id="bal_fotos" accept="image/*" type="file" data-max="7" multiple required><div class="foto-hint">Obligatorio: mínimo 3 y máximo 7 fotos. En celular, el selector puede permitir cámara o apps como TimeMarkr según el equipo.</div></div>
       </div>
 
       <div class="grid">
         <div>
           <label>Observaciones</label>
           <div class="dictWrap">
-            <textarea id="bal_obs" required></textarea>
+            <textarea id="bal_obs"></textarea>
             <button class="secondary mic" type="button" data-target="bal_obs" title="Dictar">🎤</button>
           </div>
         </div>
@@ -1305,6 +1321,25 @@ function readFiles(inputEl){
     fr.readAsDataURL(f);
   })));
 }
+function getPhotoCount(inputEl, prev){
+  const nuevas=(inputEl && inputEl.files) ? inputEl.files.length : 0;
+  const anteriores=(prev && Array.isArray(prev.Fotos)) ? prev.Fotos.length : 0;
+  return nuevas || anteriores;
+}
+function validatePhotoRange(inputEl, prev, label){
+  const n=getPhotoCount(inputEl, prev);
+  if(n<3){ toast(`${label}: carga mínimo 3 fotos`); if(inputEl) inputEl.focus(); return false; }
+  if(n>7){ toast(`${label}: máximo 7 fotos`); if(inputEl) inputEl.focus(); return false; }
+  return true;
+}
+function normalizeFileInputsForMobile(){
+  document.querySelectorAll('input[type="file"][accept*="image"]').forEach(inp=>{
+    inp.removeAttribute('capture');
+    inp.setAttribute('accept','image/*');
+    inp.setAttribute('multiple','multiple');
+  });
+}
+
 function dataURLtoU8(dataURL){
   const b64=(dataURL.split(",")[1]||"");
   const bin=atob(b64);
@@ -1503,42 +1538,122 @@ async function warnDuplicateSerie(){
     $("cli_serie").style.boxShadow = '';
   }
 }
-function composeUNCObservation(){
-  const parts=[];
-  const items=[];
-  if($("unc_ampliacion_redes")?.checked) parts.push('predio que para servicio requiere ampliación de redes');
-  if($("unc_requiere_muro")?.checked) items.push('construcción de muro');
-  if($("unc_arriostre")?.checked) items.push('arriostre');
-  if($("unc_acometida")?.checked) items.push('acometida');
-  if($("unc_ducto")?.checked) items.push('ducto galvanizado de 1 pulgada');
-  if($("unc_celda")?.checked) items.push('celda');
-  if($("unc_interruptor")?.checked) items.push('interruptor');
-  if($("unc_spt")?.checked) items.push('SPT');
-  if($("unc_inst_interna")?.checked) items.push('instalación interna');
-  const estado = $("unc_estado")?.value||'';
-  if(estado) parts.push(`estado general: ${estado.toLowerCase()}`);
-  if(items.length) parts.push(`requiere ${items.join(', ')}`);
-  if(!parts.length) return '';
-  let text = 'Durante la visita se identifica ' + parts.join('; ') + '.';
-  const doc = $("unc_doc_propiedad")?.value||'';
-  if(doc) text += ` Documento reportado: ${doc.toLowerCase()}.`;
-  return upperTextFinal(text);
+function joinNatural(items){
+  const clean = (items||[]).filter(Boolean);
+  if(clean.length<=1) return clean.join('');
+  if(clean.length===2) return clean[0] + ' Y ' + clean[1];
+  return clean.slice(0,-1).join(', ') + ' Y ' + clean[clean.length-1];
 }
-function maybeAutofillUNCObservation(force=false){
-  const ta=$("unc_obs"); if(!ta) return;
-  const generated = composeUNCObservation();
+function setAutoObservation(textareaId, generated, force=false){
+  const ta=$(textareaId); if(!ta) return;
+  generated = upperTextFinal(generated||'');
   if(!generated) return;
-  const autoFlag = ta.dataset.autoGenerated==='1';
-  if(force || !ta.value.trim() || autoFlag){
+  const isAuto = ta.dataset.autoGenerated === '1';
+  const isEmpty = !ta.value.trim();
+  if(force || isEmpty || isAuto){
+    ta.dataset.programmaticAuto = '1';
     ta.value = generated;
-    ta.dataset.autoGenerated='1';
-    ta.dispatchEvent(new Event('input'));
+    ta.dataset.autoGenerated = '1';
+    ta.dispatchEvent(new Event('input', {bubbles:true}));
+    setTimeout(()=>{ if(ta) delete ta.dataset.programmaticAuto; }, 0);
   }
 }
-function bindUNCObservationAuto(){
-  const ids=['unc_ampliacion_redes','unc_requiere_muro','unc_arriostre','unc_acometida','unc_ducto','unc_celda','unc_interruptor','unc_spt','unc_inst_interna','unc_estado','unc_doc_propiedad'];
-  ids.forEach(id=>$(id)?.addEventListener('change', ()=>maybeAutofillUNCObservation(false)));
-  $("unc_obs")?.addEventListener('input', ()=>{ $("unc_obs").dataset.autoGenerated='0'; });
+function bindManualObservationFlag(textareaId){
+  const ta=$(textareaId); if(!ta || ta.dataset.boundManualObs==='1') return;
+  ta.dataset.boundManualObs='1';
+  ta.addEventListener('input', ()=>{
+    if(ta.dataset.programmaticAuto === '1') return;
+    ta.dataset.autoGenerated = '0';
+  });
+}
+function composeUNCObservation(){
+  const pf=$('unc_pf')?.value||'';
+  const estado=$('unc_estado')?.value||'';
+  const doc=$('unc_doc_propiedad')?.value||'';
+  const tipoZona=$('unc_tipo_zona')?.value||'';
+  const tipoMaterial=$('unc_tipo_material')?.value||'';
+  const habitable=$('unc_predio_habitable')?.checked;
+  const documentos=[];
+  if($('unc_e1')?.checked) documentos.push('FORMATO DE SOLICITUD E1');
+  if($('unc_ar')?.checked) documentos.push('ACEPTACIÓN DE REQUISITOS');
+  if($('unc_dj')?.checked) documentos.push('DECLARACIÓN JURAMENTADA');
+  if($('unc_e6')?.checked) documentos.push('RECIBO TÉCNICO E6');
+  if($('unc_ec_part')?.checked) documentos.push('ESQUEMA CONSTRUCTIVO PARTICULAR');
+  if($('unc_doc_elec')?.checked) documentos.push('DOCUMENTACIÓN DEL ELECTRICISTA');
+  if($('unc_retie')?.checked) documentos.push('DECLARACIÓN RETIE');
+  if($('unc_ec_inmel')?.checked) documentos.push('ESQUEMA CONSTRUCTIVO INMEL');
+  const req=[];
+  if($('unc_ampliacion_redes')?.checked) req.push('AMPLIACIÓN DE REDES');
+  if($('unc_requiere_muro')?.checked) req.push('CONSTRUCCIÓN DE MURO');
+  if($('unc_arriostre')?.checked) req.push('USO DE ARRIOSTRE');
+  if($('unc_acometida')?.checked) req.push('ACOMETIDA');
+  if($('unc_ducto')?.checked) req.push('DUCTO GALVANIZADO DE 1 PULGADA');
+  if($('unc_celda')?.checked) req.push('CELDA');
+  if($('unc_interruptor')?.checked) req.push('INTERRUPTOR');
+  if($('unc_spt')?.checked) req.push('SISTEMA DE PUESTA A TIERRA');
+  if($('unc_inst_interna')?.checked) req.push('INSTALACIÓN INTERNA');
+  const frases=[];
+  frases.push(`DURANTE LA VISITA SE CARACTERIZA USUARIO NO CLIENTE${pf ? ' ASOCIADO AL PUNTO FÍSICO '+pf : ''}.`);
+  if(estado) frases.push(`CONDICIÓN IDENTIFICADA: ${estado}.`);
+  if(tipoZona || tipoMaterial) frases.push(`EL PREDIO SE UBICA EN ZONA ${tipoZona||'NO REPORTADA'} Y PRESENTA MATERIALIDAD ${tipoMaterial||'NO REPORTADA'}.`);
+  frases.push(habitable ? 'SE EVIDENCIA PREDIO HABITABLE.' : 'NO SE MARCA PREDIO HABITABLE DURANTE EL REGISTRO.');
+  if(doc) frases.push(`DOCUMENTO DE SOPORTE REPORTADO: ${doc}.`);
+  if(documentos.length) frases.push(`DOCUMENTOS REQUERIDOS: ${joinNatural(documentos)}.`);
+  if(req.length) frases.push(`SEGÚN REVISIÓN DE NORMA TÉCNICA, SE REQUIERE ${joinNatural(req)}.`);
+  return frases.join(' ');
+}
+function composeClienteObservation(){
+  const pf=$('cli_pf')?.value||'';
+  const serie=onlyDigits($('cli_serie')?.value||'');
+  const marca=$('cli_marca')?.value||'';
+  const fases=$('cli_fases')?.value||'';
+  const med=$('cli_estado_medidor')?.value||'';
+  const visor=$('cli_estado_visor')?.value||'';
+  const req=$('cli_req_inspeccion')?.checked;
+  const frases=[];
+  frases.push(`DURANTE LA VISITA SE REGISTRA CLIENTE${pf ? ' ASOCIADO AL PUNTO FÍSICO '+pf : ''}${serie ? ', CON MEDIDOR SERIE '+serie : ''}.`);
+  if(marca || fases) frases.push(`MEDIDOR ${marca||'SIN MARCA REPORTADA'} DE CONFIGURACIÓN ${fases||'NO REPORTADA'}.`);
+  if(med || visor) frases.push(`ESTADO DE MEDIDOR: ${med||'NO REPORTADO'}; ESTADO DE VISOR: ${visor||'NO REPORTADO'}.`);
+  if(req) frases.push('SE REQUIERE INSPECCIÓN Y/O CAMBIO DEL EQUIPO DE MEDIDA, SEGÚN CONDICIÓN REGISTRADA EN CAMPO.');
+  else if(med || visor) frases.push('NO SE MARCA REQUERIMIENTO DE INSPECCIÓN O CAMBIO AL MOMENTO DEL REGISTRO.');
+  return frases.join(' ');
+}
+function composeSuspObservation(){
+  const pf=$('sus_pf')?.value||'';
+  const motivo=$('sus_motivo')?.value||'';
+  const long=$('sus_long_nodo')?.value||'';
+  const frases=[];
+  frases.push(`DURANTE LA VISITA SE REGISTRA PREDIO PARA GESTIÓN DE SUSPENSIÓN${pf ? ' ASOCIADO AL PUNTO FÍSICO '+pf : ''}.`);
+  if(motivo) frases.push(`MOTIVO REPORTADO: ${motivo}.`);
+  if(long) frases.push(`LONGITUD APROXIMADA AL NODO AMARRADO: ${long} M.`);
+  frases.push('SE DEJA REGISTRO FOTOGRÁFICO Y GEOREFERENCIADO COMO SOPORTE DE LA GESTIÓN EN CAMPO.');
+  return frases.join(' ');
+}
+function composeBaldioObservation(){
+  const pf=$('bal_pf')?.value||'';
+  const estado=$('bal_estado')?.value||'';
+  const long=$('bal_long_nodo')?.value||'';
+  const frases=[];
+  frases.push(`DURANTE LA VISITA SE REGISTRA PREDIO BALDÍO O SIN HABITABILIDAD PLENA${pf ? ' ASOCIADO AL PUNTO FÍSICO '+pf : ''}.`);
+  if(estado) frases.push(`CONDICIÓN IDENTIFICADA: ${estado}.`);
+  if(long) frases.push(`LONGITUD APROXIMADA AL NODO AMARRADO: ${long} M.`);
+  frases.push('SE CONSERVA EVIDENCIA FOTOGRÁFICA Y COORDENADA PARA TRAZABILIDAD DEL DIAGNÓSTICO.');
+  return frases.join(' ');
+}
+function maybeAutofillUNCObservation(force=false){ setAutoObservation('unc_obs', composeUNCObservation(), force); }
+function maybeAutofillClienteObservation(force=false){ setAutoObservation('cli_obs', composeClienteObservation(), force); }
+function maybeAutofillSuspObservation(force=false){ setAutoObservation('sus_obs', composeSuspObservation(), force); }
+function maybeAutofillBaldioObservation(force=false){ setAutoObservation('bal_obs', composeBaldioObservation(), force); }
+function bindAllAutoObservations(){
+  bindManualObservationFlag('unc_obs');
+  bindManualObservationFlag('cli_obs');
+  bindManualObservationFlag('sus_obs');
+  bindManualObservationFlag('bal_obs');
+  ['unc_pf','unc_tipo_zona','unc_tipo_material','unc_estado','unc_doc_propiedad','unc_predio_habitable','unc_ampliacion_redes','unc_e1','unc_ar','unc_dj','unc_e6','unc_ec_part','unc_doc_elec','unc_retie','unc_ec_inmel','unc_requiere_muro','unc_arriostre','unc_acometida','unc_ducto','unc_celda','unc_interruptor','unc_spt','unc_inst_interna'].forEach(id=>$(id)?.addEventListener('change', ()=>maybeAutofillUNCObservation(false)));
+  ['cli_pf','cli_serie','cli_marca','cli_fases','cli_estado_medidor','cli_estado_visor','cli_req_inspeccion'].forEach(id=>$(id)?.addEventListener('change', ()=>maybeAutofillClienteObservation(false)));
+  $('cli_serie')?.addEventListener('input', ()=>maybeAutofillClienteObservation(false));
+  ['sus_pf','sus_motivo'].forEach(id=>$(id)?.addEventListener('change', ()=>maybeAutofillSuspObservation(false)));
+  ['bal_pf','bal_estado'].forEach(id=>$(id)?.addEventListener('change', ()=>maybeAutofillBaldioObservation(false)));
 }
 
 function syncMetaMirror(){
@@ -1683,7 +1798,7 @@ async function buildEstructura(){
     Fotos:[]
   };
 
-  if(!obj.TipoNodo || !obj.MaterialNodo || !obj.CaracteristicasNodo || !obj.PuntoFisico || !obj.TipoRedBT || !obj.Observaciones){
+  if(!obj.TipoNodo || !obj.MaterialNodo || !obj.CaracteristicasNodo || !obj.PuntoFisico || !obj.TipoRedBT){
     toast("Faltan campos en ESTRUCTURAS");
     return null;
   }
@@ -1691,6 +1806,7 @@ async function buildEstructura(){
 }
 
 async function buildUNC(){
+  maybeAutofillUNCObservation(false);
   await calcularLongitudNodo("unc");
   const obj={
     fechaISO:new Date().toISOString(),
@@ -1734,7 +1850,7 @@ async function buildUNC(){
     Observaciones:upperAlnum($("unc_obs").value),
     Fotos:[]
   };
-  if(!obj.PuntoFisico || !obj.Nombres || !obj.Identificacion || !obj.Contacto || !obj.Sede || !obj.Municipio || !obj.Direccion || !obj.Localidad || !obj.TipoZona || !obj.TipoMaterial || !obj.Estado || !obj.DocPropiedad || !obj.Observaciones){
+  if(!obj.PuntoFisico || !obj.Nombres || !obj.Identificacion || !obj.Contacto || !obj.Sede || !obj.Municipio || !obj.Direccion || !obj.Localidad || !obj.TipoZona || !obj.TipoMaterial || !obj.Estado || !obj.DocPropiedad){
     toast("Faltan campos en UNC");
     return null;
   }
@@ -1744,6 +1860,8 @@ async function buildUNC(){
 }
 
 async function buildCliente(){
+  syncClienteReqInspeccion();
+  maybeAutofillClienteObservation(false);
   await calcularLongitudNodo("cli");
   const obj={
     fechaISO:new Date().toISOString(),
@@ -1763,7 +1881,7 @@ async function buildCliente(){
     Observaciones:upperAlnum($("cli_obs").value),
     Fotos:[]
   };
-  if(!obj.PuntoFisico || !obj.SerieMedidor || !obj.MarcaMedidor || !obj.Fases || !obj.EstadoMedidor || !obj.EstadoVisor || !obj.Observaciones){
+  if(!obj.PuntoFisico || !obj.SerieMedidor || !obj.MarcaMedidor || !obj.Fases || !obj.EstadoMedidor || !obj.EstadoVisor){
     toast("Faltan campos en CLIENTE");
     return null;
   }
@@ -1772,6 +1890,7 @@ async function buildCliente(){
 }
 
 async function buildSusp(){
+  maybeAutofillSuspObservation(false);
   await calcularLongitudNodo("sus");
   const obj={
     fechaISO:new Date().toISOString(),
@@ -1786,7 +1905,7 @@ async function buildSusp(){
     Observaciones:upperAlnum($("sus_obs").value),
     Fotos:[]
   };
-  if(!obj.PuntoFisico || !obj.Motivo || !obj.Observaciones){
+  if(!obj.PuntoFisico || !obj.Motivo){
     toast("Faltan campos en SUSPENSIÓN");
     return null;
   }
@@ -1795,6 +1914,7 @@ async function buildSusp(){
 }
 
 async function buildBaldio(){
+  maybeAutofillBaldioObservation(false);
   await calcularLongitudNodo("bal");
   const obj={
     fechaISO:new Date().toISOString(),
@@ -1809,7 +1929,7 @@ async function buildBaldio(){
     Observaciones:upperAlnum($("bal_obs").value),
     Fotos:[]
   };
-  if(!obj.PuntoFisico || !obj.Estado || !obj.Observaciones){
+  if(!obj.PuntoFisico || !obj.Estado){
     toast("Faltan campos en BALDÍOS");
     return null;
   }
@@ -1894,6 +2014,13 @@ function buildExcel(estr,unc,cli,sus,bal){
 
 /* =================== Export ZIP =================== */
 function safeName(s){return (s||"").toString().trim().replace(/[\\/:*?\\"<>|]+/g," ").replace(/\s+/g," ").trim();}
+function photoNameToken(v){ return safeName(String(v||'')).replace(/\s+/g,'_') || 'SIN_DATO'; }
+function getExportedCDMap(){ try{return JSON.parse(localStorage.getItem('gsdx_exported_cds')||'{}')||{};}catch(e){return {};} }
+function setCDExported(cd, value){ const key=upperAlnum(cd||''); if(!key) return; const map=getExportedCDMap(); if(value) map[key]=new Date().toISOString(); else delete map[key]; localStorage.setItem('gsdx_exported_cds', JSON.stringify(map)); }
+function isCDExported(cd){ const key=upperAlnum(cd||''); if(!key) return true; return !!getExportedCDMap()[key]; }
+async function cdHasAnyData(cd){ const key=String(cd||''); if(!key) return false; const stores=['estructuras','unc','clientes','susp','baldios']; for(const st of stores){ const arr=await getAll(st); if(arr.some(r=>String(r.Transformador||'')===key)) return true; } return false; }
+async function blockIfActiveCDNeedsExport(nextCD){ const current=String(activeCD||''); const next=String(nextCD||''); if(!current || !next || current===next) return false; if(await cdHasAnyData(current)){ if(!isCDExported(current)){ toast(`Antes de registrar otro CD, exporta el CD ${current}`); setBadge('EXPORTACIÓN PENDIENTE'); return true; } } return false; }
+function markCurrentCDDirty(){ if(activeCD) setCDExported(activeCD,false); }
 async function exportAll(){
   try{
     setBadge("EXPORTANDO… 📦");
@@ -1929,7 +2056,10 @@ async function exportAll(){
     };
 
     for(const r of estrF) addFotos("ESTRUCTURAS", r, `${r.Transformador}_${r.PuntoFisico||("ITEM_"+r.item)}`);
-    for(const r of uncF)  addFotos("UNC", r, `${r.Transformador}_${r.PuntoFisico||("ITEM_"+r.item)}`);
+    for(const r of uncF){
+      const idToken = /^0+$/.test(String(r.Identificacion||'')) ? ('ITEM_'+(r.item||'')) : (r.Identificacion||('ITEM_'+r.item));
+      addFotos("UNC", r, `${photoNameToken(r.Transformador)}_${photoNameToken(r.PuntoFisico||('ITEM_'+r.item))}_${photoNameToken(idToken)}`);
+    }
     for(const r of cliF)  addFotos("CLIENTES", r, `${r.Transformador}_${r.SerieMedidor||("ITEM_"+r.item)}`);
     for(const r of susF)  addFotos("SUSPENSIONES", r, `${r.Transformador}_${r.PuntoFisico||("ITEM_"+r.item)}`);
     for(const r of balF)  addFotos("BALDIOS", r, `${r.Transformador}_${r.PuntoFisico||("ITEM_"+r.item)}_BALDIO_${r.item}`);
@@ -1950,6 +2080,7 @@ async function exportAll(){
     link.href=url; link.download=zipName;
     $("dlModal").style.display="flex";
 
+    setCDExported(cdAct, true);
     setBadge("LISTO ✅");
     toast("Exportado ✅");
   }catch(e){
@@ -1969,6 +2100,17 @@ async function registerSW(){
   }catch(e){}
 }
 
+function syncClienteReqInspeccion(){
+  const med=$('cli_estado_medidor')?.value || '';
+  const visor=$('cli_estado_visor')?.value || '';
+  const cb=$('cli_req_inspeccion');
+  if(!cb) return;
+  const must = (med==='Malo' || visor==='Cambio');
+  if(must){ cb.checked=true; cb.disabled=true; cb.title='Marcado automáticamente por estado de medidor Malo y/o visor Cambio'; }
+  else { cb.disabled=false; cb.title=''; }
+  if(typeof maybeAutofillClienteObservation === 'function') maybeAutofillClienteObservation(false);
+}
+
 /* =================== events =================== */
 let editCtx=null;
 
@@ -1980,6 +2122,7 @@ function wireEvents(){
   document.querySelectorAll('input[name="modoCd"]').forEach(r=>r.addEventListener("change",refreshModoCd));
   refreshModoCd();
 
+  normalizeFileInputsForMobile();
   document.querySelectorAll('input[type="file"][data-max]').forEach(enforceMaxFiles);
   document.querySelectorAll('input[type="text"], input[type="tel"], input[type="search"], textarea').forEach(enforceUpper);
 
@@ -1994,6 +2137,13 @@ function wireEvents(){
   $("unc_ec_inmel").addEventListener("change", ()=>{
     if($("unc_ec_inmel").checked) $("unc_ec_part").checked=false;
   });
+
+  ["cli_estado_medidor","cli_estado_visor"].forEach(id=>{
+    const el=$(id);
+    if(el) el.addEventListener("change", syncClienteReqInspeccion);
+  });
+  syncClienteReqInspeccion();
+  bindAllAutoObservations();
 
   // GPS buttons
   $("est_btnGPS").addEventListener("click", ()=>captureGPS($("est_lat"),$("est_lon"),$("est_acc")));
@@ -2019,6 +2169,7 @@ function wireEvents(){
     const built=await buildEstructura();
     if(!built) return;
     const {obj,isNew}=built;
+    if(isNew && await blockIfActiveCDNeedsExport(obj.Transformador)) return;
 
     const currentId = (editCtx && editCtx.store==="estructuras") ? editCtx.id : null;
     const dup = await estructuraDuplicada(obj.Transformador, obj.PuntoFisico, currentId);
@@ -2034,6 +2185,7 @@ function wireEvents(){
     }
 
     const prev = currentId ? await getById("estructuras", currentId) : null;
+    if(!validatePhotoRange($("est_fotos"), prev, "ESTRUCTURAS")) return;
     const fotosNuevas = await readFiles($("est_fotos"));
     const fotosFinales = fotosNuevas.length ? fotosNuevas : (prev && Array.isArray(prev.Fotos) ? prev.Fotos : []);
     const item = prev ? (prev.item || await nextItem("estructuras")) : await nextItem("estructuras");
@@ -2051,6 +2203,7 @@ function wireEvents(){
       await setMeta("activeCD",activeCD);
       await setMeta("activeCAP",activeCAP);
     }
+    markCurrentCDDirty();
     updateActiveUI();
     await refreshPFSelectors();
     await updateFormCounters();
@@ -2120,9 +2273,9 @@ function wireEvents(){
 
   // open forms
   $("btnUNC").addEventListener("click", async ()=>{ await refreshPFSelectors(); await updateFormCounters(); showSingleRegistroForm("formUNC","unc"); restoreLastLocalidad(); restoreDraft("unc", {unc_pf:$("unc_pf").value, unc_sede:$("unc_sede").value, unc_municipio:$("unc_municipio").value, unc_localidad:$("unc_localidad").value, unc_tipo_zona:$("unc_tipo_zona").value}); maybeAutofillUNCObservation(false); calcularLongitudNodo("unc"); });
-  $("btnCliente").addEventListener("click", async ()=>{ await refreshPFSelectors(); await updateFormCounters(); showSingleRegistroForm("formCliente","cliente"); restoreDraft("cliente", {cli_pf:$("cli_pf").value}); calcularLongitudNodo("cli"); });
-  $("btnSusp").addEventListener("click", async ()=>{ await refreshPFSelectors(); await updateFormCounters(); showSingleRegistroForm("formSusp","susp"); restoreDraft("susp", {sus_pf:$("sus_pf").value}); calcularLongitudNodo("sus"); });
-  $("btnBaldio").addEventListener("click", async ()=>{ await refreshPFSelectors(); await updateFormCounters(); showSingleRegistroForm("formBaldio","baldio"); restoreDraft("baldio", {bal_pf:$("bal_pf").value}); calcularLongitudNodo("bal"); });
+  $("btnCliente").addEventListener("click", async ()=>{ await refreshPFSelectors(); await updateFormCounters(); showSingleRegistroForm("formCliente","cliente"); restoreDraft("cliente", {cli_pf:$("cli_pf").value}); syncClienteReqInspeccion(); maybeAutofillClienteObservation(false); calcularLongitudNodo("cli"); });
+  $("btnSusp").addEventListener("click", async ()=>{ await refreshPFSelectors(); await updateFormCounters(); showSingleRegistroForm("formSusp","susp"); restoreDraft("susp", {sus_pf:$("sus_pf").value}); calcularLongitudNodo("sus"); maybeAutofillSuspObservation(false); });
+  $("btnBaldio").addEventListener("click", async ()=>{ await refreshPFSelectors(); await updateFormCounters(); showSingleRegistroForm("formBaldio","baldio"); restoreDraft("baldio", {bal_pf:$("bal_pf").value}); calcularLongitudNodo("bal"); maybeAutofillBaldioObservation(false); });
 
   // cancel
   $("btnCancelUNC").addEventListener("click", ()=>showRegistroMenu());
@@ -2135,12 +2288,14 @@ function wireEvents(){
     if(!validateSection("formUNC")) return;
     if(!(activeCD&&activeCAP)) return toast("Sin CD activo");
     const obj=await buildUNC(); if(!obj) return;
-    const fotosNuevas=await readFiles($("unc_fotos"));
     const prev = (editCtx && editCtx.store==="unc") ? await getById("unc", editCtx.id) : null;
+    if(!validatePhotoRange($("unc_fotos"), prev, "UNC")) return;
+    const fotosNuevas=await readFiles($("unc_fotos"));
     obj.Fotos=fotosNuevas.length ? fotosNuevas : ((prev && prev.Fotos) || []);
     const item=(editCtx && editCtx.store==="unc" && prev) ? (prev.item || await nextItem("unc")) : await nextItem("unc");
     if(editCtx && editCtx.store==="unc"){ await putRec("unc",{...prev,...obj,id:editCtx.id,item}); editCtx=null; }
     else { await addRec("unc",{...obj,item}); }
+    markCurrentCDDirty();
     await updateSilentAutoBackup("save_unc");
     await updateHomeDashboard();
     await updateFormCounters();
@@ -2157,12 +2312,14 @@ function wireEvents(){
     const obj=await buildCliente(); if(!obj) return;
     const dup = await serialExists(obj.SerieMedidor, (editCtx && editCtx.store==="clientes") ? editCtx.id : null);
     if(dup) return toast(`La serie ${obj.SerieMedidor} ya está registrada en ${dup.Transformador||'otro CD'} / ${dup.PuntoFisico||'sin PF'}`);
-    const fotosNuevas=await readFiles($("cli_fotos"));
     const prev = (editCtx && editCtx.store==="clientes") ? await getById("clientes", editCtx.id) : null;
+    if(!validatePhotoRange($("cli_fotos"), prev, "CLIENTE")) return;
+    const fotosNuevas=await readFiles($("cli_fotos"));
     obj.Fotos=fotosNuevas.length ? fotosNuevas : ((prev && prev.Fotos) || []);
     const item=(editCtx && editCtx.store==="clientes" && prev) ? (prev.item || await nextItem("clientes")) : await nextItem("clientes");
     if(editCtx && editCtx.store==="clientes"){ await putRec("clientes",{...prev,...obj,id:editCtx.id,item}); editCtx=null; }
     else { await addRec("clientes",{...obj,item}); }
+    markCurrentCDDirty();
     await updateSilentAutoBackup("save_cliente");
     await updateHomeDashboard();
     await updateFormCounters();
@@ -2177,12 +2334,14 @@ function wireEvents(){
     if(!validateSection("formSusp")) return;
     if(!(activeCD&&activeCAP)) return toast("Sin CD activo");
     const obj=await buildSusp(); if(!obj) return;
-    const fotosNuevas=await readFiles($("sus_fotos"));
     const prev = (editCtx && editCtx.store==="susp") ? await getById("susp", editCtx.id) : null;
+    if(!validatePhotoRange($("sus_fotos"), prev, "SUSPENSIÓN")) return;
+    const fotosNuevas=await readFiles($("sus_fotos"));
     obj.Fotos=fotosNuevas.length ? fotosNuevas : ((prev && prev.Fotos) || []);
     const item=(editCtx && editCtx.store==="susp" && prev) ? (prev.item || await nextItem("susp")) : await nextItem("susp");
     if(editCtx && editCtx.store==="susp"){ await putRec("susp",{...prev,...obj,id:editCtx.id,item}); editCtx=null; }
     else { await addRec("susp",{...obj,item}); }
+    markCurrentCDDirty();
     await updateSilentAutoBackup("save_susp");
     await updateHomeDashboard();
     await updateFormCounters();
@@ -2197,12 +2356,14 @@ function wireEvents(){
     if(!validateSection("formBaldio")) return;
     if(!(activeCD&&activeCAP)) return toast("Sin CD activo");
     const obj=await buildBaldio(); if(!obj) return;
-    const fotosNuevas=await readFiles($("bal_fotos"));
     const prev = (editCtx && editCtx.store==="baldios") ? await getById("baldios", editCtx.id) : null;
+    if(!validatePhotoRange($("bal_fotos"), prev, "BALDÍOS")) return;
+    const fotosNuevas=await readFiles($("bal_fotos"));
     obj.Fotos=fotosNuevas.length ? fotosNuevas : ((prev && prev.Fotos) || []);
     const item=(editCtx && editCtx.store==="baldios" && prev) ? (prev.item || await nextItem("baldios")) : await nextItem("baldios");
     if(editCtx && editCtx.store==="baldios"){ await putRec("baldios",{...prev,...obj,id:editCtx.id,item}); editCtx=null; }
     else { await addRec("baldios",{...obj,item}); }
+    markCurrentCDDirty();
     await updateSilentAutoBackup("save_baldio");
     await updateHomeDashboard();
     await updateFormCounters();
@@ -2215,9 +2376,9 @@ function wireEvents(){
 
   // after save modal
   $("goUNC").addEventListener("click", async ()=>{ $("modalAfterSave").style.display="none"; resetForms(); await refreshPFSelectors(); show("screen2"); localStorage.setItem("gsdx_last_form","unc"); $("formUNC").style.display=""; restoreLastLocalidad(); restoreDraft("unc", {unc_pf:$("unc_pf").value, unc_sede:$("unc_sede").value, unc_municipio:$("unc_municipio").value, unc_localidad:$("unc_localidad").value, unc_tipo_zona:$("unc_tipo_zona").value}); calcularLongitudNodo("unc"); });
-  $("goCLI").addEventListener("click", async ()=>{ $("modalAfterSave").style.display="none"; resetForms(); await refreshPFSelectors(); show("screen2"); localStorage.setItem("gsdx_last_form","cliente"); $("formCliente").style.display=""; restoreDraft("cliente", {cli_pf:$("cli_pf").value}); calcularLongitudNodo("cli"); });
-  $("goSUS").addEventListener("click", async ()=>{ $("modalAfterSave").style.display="none"; resetForms(); await refreshPFSelectors(); show("screen2"); localStorage.setItem("gsdx_last_form","susp"); $("formSusp").style.display=""; restoreDraft("susp", {sus_pf:$("sus_pf").value}); calcularLongitudNodo("sus"); });
-  $("goBAL").addEventListener("click", async ()=>{ $("modalAfterSave").style.display="none"; resetForms(); await refreshPFSelectors(); show("screen2"); localStorage.setItem("gsdx_last_form","baldio"); $("formBaldio").style.display=""; restoreDraft("baldio", {bal_pf:$("bal_pf").value}); calcularLongitudNodo("bal"); });
+  $("goCLI").addEventListener("click", async ()=>{ $("modalAfterSave").style.display="none"; resetForms(); await refreshPFSelectors(); show("screen2"); localStorage.setItem("gsdx_last_form","cliente"); $("formCliente").style.display=""; restoreDraft("cliente", {cli_pf:$("cli_pf").value}); syncClienteReqInspeccion(); maybeAutofillClienteObservation(false); calcularLongitudNodo("cli"); });
+  $("goSUS").addEventListener("click", async ()=>{ $("modalAfterSave").style.display="none"; resetForms(); await refreshPFSelectors(); show("screen2"); localStorage.setItem("gsdx_last_form","susp"); $("formSusp").style.display=""; restoreDraft("susp", {sus_pf:$("sus_pf").value}); calcularLongitudNodo("sus"); maybeAutofillSuspObservation(false); });
+  $("goBAL").addEventListener("click", async ()=>{ $("modalAfterSave").style.display="none"; resetForms(); await refreshPFSelectors(); show("screen2"); localStorage.setItem("gsdx_last_form","baldio"); $("formBaldio").style.display=""; restoreDraft("baldio", {bal_pf:$("bal_pf").value}); calcularLongitudNodo("bal"); maybeAutofillBaldioObservation(false); });
   $("goNO").addEventListener("click", ()=>{ $("modalAfterSave").style.display="none"; resetForms(); show("screen1"); });
 
   // export
@@ -2985,8 +3146,8 @@ function collectDrivePhotoJobs(pkg){
     });
   };
   for(const r of pkg.estrF) add('ESTRUCTURAS', r, `${r.Transformador}_${r.PuntoFisico||('ITEM_'+r.item)}`);
-  for(const r of pkg.uncF)  add('UNC', r, `${r.Transformador}_${r.PuntoFisico}_${r.unc_identificacion||('ITEM_'+r.item)}`);
-  for(const r of pkg.cliF)  add('CLIENTES', r, `${r.Transformador}}_${r.PuntoFisico}_${r.SerieMedidor||('ITEM_'+r.item)}`);
+  for(const r of pkg.uncF)  add('UNC', r, `${r.Transformador}_${r.PuntoFisico}_${(/^0+$/.test(String(r.Identificacion||'')) ? ('ITEM_'+r.item) : (r.Identificacion||('ITEM_'+r.item)))}`);
+  for(const r of pkg.cliF)  add('CLIENTES', r, `${r.Transformador}_${r.PuntoFisico}_${r.SerieMedidor||('ITEM_'+r.item)}`);
   for(const r of pkg.susF)  add('SUSPENSIONES', r, `${r.Transformador}_${r.PuntoFisico||('ITEM_'+r.item)}`);
   for(const r of pkg.balF)  add('BALDIOS', r, `${r.Transformador}_${r.PuntoFisico||('ITEM_'+r.item)}_BALDIO_${r.item}`);
   return jobs;
