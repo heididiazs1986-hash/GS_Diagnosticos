@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>GS Diagnósticos v17</title>
+  <title>GS Diagnósticos v19</title>
   <meta name="theme-color" content="#d40000" />
   <link rel="manifest" href="manifest.json">
   <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png?v=gsdx-red-2">
@@ -303,6 +303,8 @@
     .foto-hint{font-size:12px;color:var(--muted);margin-top:6px;font-weight:700;}
     body.dark .foto-hint{color:#cbd5e1!important;}
     #cli_req_inspeccion:disabled{accent-color:var(--rojo);}
+    .danger-btn{background:#7f1d1d!important;color:#fff!important;border:1px solid #991b1b!important;}
+    body.dark .danger-btn{background:#991b1b!important;color:#fff!important;border-color:#ef4444!important;}
 
   </style>
   <script src="https://accounts.google.com/gsi/client" async defer></script>
@@ -697,10 +699,25 @@
         <div class="btnrow" style="margin:0;"><button class="secondary" id="cli_btnGPS" type="button">📍 Coordenadas</button></div>
       </div>
 
-      <div class="grid three">
-        <div><label>Estado de medidor</label><select id="cli_estado_medidor" required><option value="">Selecciona…</option><option>Bueno</option><option>Malo</option></select></div>
-        <div class="chips"><label class="chip"><input type="checkbox" id="cli_req_inspeccion"> ¿REQUIERE INSPECCIÓN/CAMBIO?</label></div>
-        <div><label>Estado de visor</label><select id="cli_estado_visor" required><option value="">Selecciona…</option><option>Normal</option><option>Cambio</option></select></div>
+      <div class="sectionLabel">Estado de medidor</div>
+      <div class="checklist" id="cli_estado_medidor_group">
+        <label class="checkItem"><input type="checkbox" class="cli_estado_chk" value="Caja principal de medidor abierta/dañada"> <span>CAJA PRINCIPAL DE MEDIDOR ABIERTA/DAÑADA</span></label>
+        <label class="checkItem"><input type="checkbox" class="cli_estado_chk" value="CC sin sellos/dañados"> <span>CC SIN SELLOS/DAÑADOS</span></label>
+        <label class="checkItem"><input type="checkbox" class="cli_estado_chk" value="CM sin sellos/dañados"> <span>CM SIN SELLOS/DAÑADOS</span></label>
+        <label class="checkItem"><input type="checkbox" class="cli_estado_chk" value="Disco frenado"> <span>DISCO FRENADO</span></label>
+        <label class="checkItem"><input type="checkbox" class="cli_estado_chk" value="Disco fuera de posición"> <span>DISCO FUERA DE POSICIÓN</span></label>
+        <label class="checkItem"><input type="checkbox" class="cli_estado_chk" value="Display apagado"> <span>DISPLAY APAGADO</span></label>
+        <label class="checkItem"><input type="checkbox" class="cli_estado_chk" value="LEDs no funcionan"> <span>LEDS NO FUNCIONAN</span></label>
+        <label class="checkItem"><input type="checkbox" class="cli_estado_chk" value="Medidor con objeto extraño en mecanismo"> <span>MEDIDOR CON OBJETO EXTRAÑO EN MECANISMO</span></label>
+        <label class="checkItem"><input type="checkbox" class="cli_estado_chk" value="Medidor en buen estado"> <span>MEDIDOR EN BUEN ESTADO</span></label>
+        <label class="checkItem"><input type="checkbox" class="cli_estado_chk" value="Medidor perforado"> <span>MEDIDOR PERFORADO</span></label>
+        <label class="checkItem"><input type="checkbox" class="cli_estado_chk" value="Medidor puenteado"> <span>MEDIDOR PUENTEADO</span></label>
+        <label class="checkItem"><input type="checkbox" class="cli_estado_chk" value="Predio con servicio directo"> <span>PREDIO CON SERVICIO DIRECTO</span></label>
+        <label class="checkItem"><input type="checkbox" class="cli_estado_chk" value="TP sin sellos/dañados"> <span>TP SIN SELLOS/DAÑADOS</span></label>
+        <label class="checkItem"><input type="checkbox" class="cli_estado_chk" value="Visor opaco/requiere cambio"> <span>VISOR OPACO/REQUIERE CAMBIO</span></label>
+      </div>
+      <div class="grid">
+        <div class="chips"><label class="chip"><input type="checkbox" id="cli_req_inspeccion" disabled> ¿REQUIERE INSPECCIÓN/CAMBIO?</label><div class="field-hint">Se marca automáticamente con cualquier novedad diferente a “Medidor en buen estado”.</div></div>
       </div>
 
       <div class="grid">
@@ -893,7 +910,8 @@
       <div id="updHint" style="font-size:13px;color:#444;margin-bottom:8px;"></div>
       <select id="updSelect"></select>
       <div class="btnrow" style="margin-top:10px;">
-        <button class="ok" id="updLoad" type="button">Cargar</button>
+        <button class="ok" id="updLoad" type="button">Cargar / editar</button>
+        <button class="danger-btn" id="updDelete" type="button">Eliminar registro</button>
         <button class="secondary" id="updBack" type="button">Atrás</button>
       </div>
     </div>
@@ -1112,8 +1130,10 @@ function clearUNCForm(preserve=true){
 function clearClienteForm(preserve=true){
   const keep = preserve ? {cli_pf:$('cli_pf').value} : {};
   ['cli_serie','cli_lat','cli_lon','cli_acc','cli_long_nodo','cli_obs'].forEach(id=>$(id).value='');
-  ['cli_marca','cli_fases','cli_estado_medidor','cli_estado_visor'].forEach(id=>setSelectIfExists(id,''));
+  ['cli_marca','cli_fases'].forEach(id=>setSelectIfExists(id,''));
+  setClienteEstadoMedidor([]);
   setCheckbox('cli_req_inspeccion', false);
+  if($('cli_req_inspeccion')) $('cli_req_inspeccion').disabled = true;
   clearFileInput('cli_fotos');
   applyFormValues(keep);
   saveDraft('cliente', keep);
@@ -1145,14 +1165,14 @@ async function updateSilentAutoBackup(reason='auto'){
 function bindDraftSystem(){
   bindDraftAutosave('estructuras',['est_tipo_nodo','est_material_nodo','est_caracteristicas','est_punto_fisico','est_tipo_red_bt','est_luminarias','est_lat','est_lon','est_acc','est_obs']);
   bindDraftAutosave('unc',['unc_pf','unc_nombres','unc_identificacion','unc_contacto','unc_sede','unc_municipio','unc_direccion','unc_localidad','unc_tipo_zona','unc_tipo_material','unc_tipo_poblacion','unc_estado','unc_lat','unc_lon','unc_acc','unc_long_nodo','unc_doc_propiedad','unc_predio_habitable','unc_ampliacion_redes','unc_e1','unc_ar','unc_dj','unc_e6','unc_ec_part','unc_doc_elec','unc_retie','unc_ec_inmel','unc_requiere_muro','unc_arriostre','unc_acometida','unc_ducto','unc_celda','unc_interruptor','unc_spt','unc_inst_interna','unc_obs']);
-  bindDraftAutosave('cliente',['cli_pf','cli_serie','cli_marca','cli_fases','cli_lat','cli_lon','cli_acc','cli_long_nodo','cli_estado_medidor','cli_req_inspeccion','cli_estado_visor','cli_obs']);
+  bindDraftAutosave('cliente',['cli_pf','cli_serie','cli_marca','cli_fases','cli_lat','cli_lon','cli_acc','cli_long_nodo','cli_req_inspeccion','cli_obs']);
   bindDraftAutosave('susp',['sus_pf','sus_lat','sus_lon','sus_acc','sus_long_nodo','sus_motivo','sus_obs']);
   bindDraftAutosave('baldio',['bal_pf','bal_estado','bal_lat','bal_lon','bal_acc','bal_long_nodo','bal_obs']);
 }
 window.addEventListener('beforeunload', ()=>{
   saveDraft('estructuras', collectFormValues(['est_tipo_nodo','est_material_nodo','est_caracteristicas','est_punto_fisico','est_tipo_red_bt','est_luminarias','est_lat','est_lon','est_acc','est_obs']));
   saveDraft('unc', collectFormValues(['unc_pf','unc_nombres','unc_identificacion','unc_contacto','unc_sede','unc_municipio','unc_direccion','unc_localidad','unc_tipo_zona','unc_tipo_material','unc_tipo_poblacion','unc_estado','unc_lat','unc_lon','unc_acc','unc_long_nodo','unc_doc_propiedad','unc_predio_habitable','unc_ampliacion_redes','unc_e1','unc_ar','unc_dj','unc_e6','unc_ec_part','unc_doc_elec','unc_retie','unc_ec_inmel','unc_requiere_muro','unc_arriostre','unc_acometida','unc_ducto','unc_celda','unc_interruptor','unc_spt','unc_inst_interna','unc_obs']));
-  saveDraft('cliente', collectFormValues(['cli_pf','cli_serie','cli_marca','cli_fases','cli_lat','cli_lon','cli_acc','cli_long_nodo','cli_estado_medidor','cli_req_inspeccion','cli_estado_visor','cli_obs']));
+  saveDraft('cliente', collectFormValues(['cli_pf','cli_serie','cli_marca','cli_fases','cli_lat','cli_lon','cli_acc','cli_long_nodo','cli_req_inspeccion','cli_obs']));
   saveDraft('susp', collectFormValues(['sus_pf','sus_lat','sus_lon','sus_acc','sus_long_nodo','sus_motivo','sus_obs']));
   saveDraft('baldio', collectFormValues(['bal_pf','bal_estado','bal_lat','bal_lon','bal_acc','bal_long_nodo','bal_obs']));
 });
@@ -1222,6 +1242,7 @@ function setMeta(key,value){ return new Promise((res,rej)=>{ const r=tx("meta","
 function addRec(store,obj){ return new Promise((res,rej)=>{ const r=tx(store,"readwrite").add(obj); r.onsuccess=()=>res(r.result); r.onerror=()=>rej(r.error); }); }
 function putRec(store,obj){ return new Promise((res,rej)=>{ const r=tx(store,"readwrite").put(obj); r.onsuccess=()=>res(r.result); r.onerror=()=>rej(r.error); }); }
 function getById(store,id){ return new Promise(res=>{ const r=tx(store).get(id); r.onsuccess=()=>res(r.result||null); r.onerror=()=>res(null); }); }
+function deleteRec(store,id){ return new Promise((res,rej)=>{ const r=tx(store,"readwrite").delete(id); r.onsuccess=()=>res(true); r.onerror=()=>rej(r.error); }); }
 function getAll(store){ return new Promise(res=>{ const r=tx(store).getAll(); r.onsuccess=()=>res(r.result||[]); r.onerror=()=>res([]); }); }
 function count(store){ return new Promise(res=>{ const r=tx(store).count(); r.onsuccess=()=>res(r.result||0); r.onerror=()=>res(0); }); }
 async function countByCD(store, cd=activeCD){
@@ -1496,7 +1517,7 @@ async function calcularLongitudNodo(formKey){
   out.value = metros;
   saveDraft(formKey, collectFormValues({
     unc:['unc_pf','unc_nombres','unc_identificacion','unc_contacto','unc_sede','unc_municipio','unc_direccion','unc_localidad','unc_tipo_zona','unc_tipo_material','unc_tipo_poblacion','unc_estado','unc_lat','unc_lon','unc_acc','unc_long_nodo','unc_doc_propiedad','unc_predio_habitable','unc_ampliacion_redes','unc_e1','unc_ar','unc_dj','unc_e6','unc_ec_part','unc_doc_elec','unc_retie','unc_ec_inmel','unc_requiere_muro','unc_arriostre','unc_acometida','unc_ducto','unc_celda','unc_interruptor','unc_spt','unc_inst_interna','unc_obs'],
-    cli:['cli_pf','cli_serie','cli_marca','cli_fases','cli_lat','cli_lon','cli_acc','cli_long_nodo','cli_estado_medidor','cli_req_inspeccion','cli_estado_visor','cli_obs'],
+    cli:['cli_pf','cli_serie','cli_marca','cli_fases','cli_lat','cli_lon','cli_acc','cli_long_nodo','cli_req_inspeccion','cli_obs'],
     sus:['sus_pf','sus_lat','sus_lon','sus_acc','sus_long_nodo','sus_motivo','sus_obs'],
     bal:['bal_pf','bal_estado','bal_lat','bal_lon','bal_acc','bal_long_nodo','bal_obs']
   }[formKey] || []));
@@ -1602,20 +1623,41 @@ function composeUNCObservation(){
   if(req.length) frases.push(`SEGÚN REVISIÓN DE NORMA TÉCNICA, SE REQUIERE ${joinNatural(req)}.`);
   return frases.join(' ');
 }
+const CLIENTE_ESTADO_BUENO = 'Medidor en buen estado';
+function getClienteEstadoMedidor(){
+  return [...document.querySelectorAll('.cli_estado_chk:checked')].map(ch=>ch.value).filter(Boolean);
+}
+function setClienteEstadoMedidor(values){
+  const set = new Set(String(values||'').split(/\s*;\s*/).filter(Boolean));
+  if(Array.isArray(values)){ set.clear(); values.forEach(v=>set.add(v)); }
+  document.querySelectorAll('.cli_estado_chk').forEach(ch=>{ ch.checked = set.has(ch.value); });
+  syncClienteReqInspeccion();
+}
+function syncClienteEstadoExclusivo(changed){
+  if(!changed) return;
+  if(changed.value === CLIENTE_ESTADO_BUENO && changed.checked){
+    document.querySelectorAll('.cli_estado_chk').forEach(ch=>{ if(ch !== changed) ch.checked = false; });
+  }else if(changed.checked){
+    document.querySelectorAll('.cli_estado_chk').forEach(ch=>{ if(ch.value === CLIENTE_ESTADO_BUENO) ch.checked = false; });
+  }
+  syncClienteReqInspeccion();
+}
+function clienteEstadoTexto(){
+  return getClienteEstadoMedidor().join('; ');
+}
 function composeClienteObservation(){
   const pf=$('cli_pf')?.value||'';
   const serie=onlyDigits($('cli_serie')?.value||'');
   const marca=$('cli_marca')?.value||'';
   const fases=$('cli_fases')?.value||'';
-  const med=$('cli_estado_medidor')?.value||'';
-  const visor=$('cli_estado_visor')?.value||'';
+  const estados=getClienteEstadoMedidor();
   const req=$('cli_req_inspeccion')?.checked;
   const frases=[];
   frases.push(`DURANTE LA VISITA SE REGISTRA CLIENTE${pf ? ' ASOCIADO AL PUNTO FÍSICO '+pf : ''}${serie ? ', CON MEDIDOR SERIE '+serie : ''}.`);
   if(marca || fases) frases.push(`MEDIDOR ${marca||'SIN MARCA REPORTADA'} DE CONFIGURACIÓN ${fases||'NO REPORTADA'}.`);
-  if(med || visor) frases.push(`ESTADO DE MEDIDOR: ${med||'NO REPORTADO'}; ESTADO DE VISOR: ${visor||'NO REPORTADO'}.`);
+  if(estados.length) frases.push(`ESTADO DE MEDIDOR: ${joinNatural(estados)}.`);
   if(req) frases.push('SE REQUIERE INSPECCIÓN Y/O CAMBIO DEL EQUIPO DE MEDIDA, SEGÚN CONDICIÓN REGISTRADA EN CAMPO.');
-  else if(med || visor) frases.push('NO SE MARCA REQUERIMIENTO DE INSPECCIÓN O CAMBIO AL MOMENTO DEL REGISTRO.');
+  else if(estados.length) frases.push('NO SE MARCA REQUERIMIENTO DE INSPECCIÓN O CAMBIO AL MOMENTO DEL REGISTRO.');
   return frases.join(' ');
 }
 function composeSuspObservation(){
@@ -1650,7 +1692,7 @@ function bindAllAutoObservations(){
   bindManualObservationFlag('sus_obs');
   bindManualObservationFlag('bal_obs');
   ['unc_pf','unc_tipo_zona','unc_tipo_material','unc_estado','unc_doc_propiedad','unc_predio_habitable','unc_ampliacion_redes','unc_e1','unc_ar','unc_dj','unc_e6','unc_ec_part','unc_doc_elec','unc_retie','unc_ec_inmel','unc_requiere_muro','unc_arriostre','unc_acometida','unc_ducto','unc_celda','unc_interruptor','unc_spt','unc_inst_interna'].forEach(id=>$(id)?.addEventListener('change', ()=>maybeAutofillUNCObservation(false)));
-  ['cli_pf','cli_serie','cli_marca','cli_fases','cli_estado_medidor','cli_estado_visor','cli_req_inspeccion'].forEach(id=>$(id)?.addEventListener('change', ()=>maybeAutofillClienteObservation(false)));
+  ['cli_pf','cli_serie','cli_marca','cli_fases','cli_req_inspeccion'].forEach(id=>$(id)?.addEventListener('change', ()=>maybeAutofillClienteObservation(false)));
   $('cli_serie')?.addEventListener('input', ()=>maybeAutofillClienteObservation(false));
   ['sus_pf','sus_motivo'].forEach(id=>$(id)?.addEventListener('change', ()=>maybeAutofillSuspObservation(false)));
   ['bal_pf','bal_estado'].forEach(id=>$(id)?.addEventListener('change', ()=>maybeAutofillBaldioObservation(false)));
@@ -1875,13 +1917,12 @@ async function buildCliente(){
     Precision:$("cli_acc").value||"",
     LongitudNodo:sanitizeMeters($("cli_long_nodo").value)||"",
     gpsISO:(($("cli_lat").dataset.gpsISO)||""),
-    EstadoMedidor:$("cli_estado_medidor").value||"",
-    EstadoVisor:$("cli_estado_visor").value||"",
+    EstadoMedidor:clienteEstadoTexto(),
     ReqInspeccion:$("cli_req_inspeccion").checked?"Sí":"No",
     Observaciones:upperAlnum($("cli_obs").value),
     Fotos:[]
   };
-  if(!obj.PuntoFisico || !obj.SerieMedidor || !obj.MarcaMedidor || !obj.Fases || !obj.EstadoMedidor || !obj.EstadoVisor){
+  if(!obj.PuntoFisico || !obj.SerieMedidor || !obj.MarcaMedidor || !obj.Fases || !obj.EstadoMedidor){
     toast("Faltan campos en CLIENTE");
     return null;
   }
@@ -1951,7 +1992,7 @@ function buildExcel(estr,unc,cli,sus,bal){
 
   const hdrE=["Ítem","Transformador (CD)","Tipo Nodo","Material Nodo","Características Nodo","Punto Físico","Tipo de Redes BT","Luminarias (AP)","Latitud (Y)","Longitud (X)","Precisión (m)","FECHA_HORA","GPS_HORA","Observaciones"];
   const hdrU=["Ítem","Transformador (CD)","Punto Físico","Longitud al nodo (m)","Nombres","Identificación","Contacto","Sede","Municipio","Dirección","Localidad","Tipo Zona","Tipo material","Tipo de población","¿Predio habitable?","Para servicio requiere ampliación de redes","Documento de propiedad","Formato E1","AR","DJ","E6","EC Particular","Doc. electricista","RETIE","EC Inmel","Estado","¿Requiere muro?","¿Requiere uso de arriostre?","Acometida","Ducto 1\" Galv.","Celda","Interruptor","SPT (Tierra)","Instalación interna","Latitud (Y)","Longitud (X)","Precisión (m)","FECHA_HORA","GPS_HORA","Observaciones"];
-  const hdrC=["Ítem","Transformador (CD)","Punto Físico","Longitud al nodo (m)","Serie de medidor","Marca de medidor","No. Fases","Estado de medidor","Estado de visor","¿Requiere inspección/Cambio?","Latitud (Y)","Longitud (X)","Precisión (m)","FECHA_HORA","GPS_HORA","Observaciones"];
+  const hdrC=["Ítem","Transformador (CD)","Punto Físico","Longitud al nodo (m)","Serie de medidor","Marca de medidor","No. Fases","Estado de medidor","¿Requiere inspección/Cambio?","Latitud (Y)","Longitud (X)","Precisión (m)","FECHA_HORA","GPS_HORA","Observaciones"];
   const hdrS=["Ítem","Transformador (CD)","Punto Físico","Longitud al nodo (m)","Motivo de suspensión","Latitud (Y)","Longitud (X)","Precisión (m)","FECHA_HORA","GPS_HORA","Observaciones"];
   const hdrB=["Ítem","Transformador (CD)","Punto Físico","Longitud al nodo (m)","Estado","Latitud (Y)","Longitud (X)","Precisión (m)","FECHA_HORA","GPS_HORA","Observaciones"];
 
@@ -1979,7 +2020,7 @@ function buildExcel(estr,unc,cli,sus,bal){
   const rowsC=cli.map(x=>({
     "Ítem":x.item,"Transformador (CD)":x.Transformador,"Punto Físico":x.PuntoFisico||"","Longitud al nodo (m)":x.LongitudNodo||"",
     "Serie de medidor":x.SerieMedidor,"Marca de medidor":x.MarcaMedidor,"No. Fases":x.Fases,
-    "Estado de medidor":x.EstadoMedidor,"Estado de visor":x.EstadoVisor,"¿Requiere inspección/Cambio?":x.ReqInspeccion,
+    "Estado de medidor":x.EstadoMedidor,"¿Requiere inspección/Cambio?":x.ReqInspeccion,
     "Latitud (Y)":x.Latitud,"Longitud (X)":x.Longitud,"Precisión (m)":x.Precision||"",
     "FECHA_HORA":x.fechaISO||"","GPS_HORA":x.gpsISO||"","Observaciones":x.Observaciones||""
   }));
@@ -2095,19 +2136,19 @@ async function registerSW(){
   try{
     if(location.protocol==="file:") return;
     if(!("serviceWorker" in navigator)) return;
-    const reg = await navigator.serviceWorker.register("/sw.js?v=gsdx-v8fix", { updateViaCache: "none" });
+    const reg = await navigator.serviceWorker.register("./sw.js?v=19", { updateViaCache: "none" });
     await reg.update();
   }catch(e){}
 }
 
 function syncClienteReqInspeccion(){
-  const med=$('cli_estado_medidor')?.value || '';
-  const visor=$('cli_estado_visor')?.value || '';
+  const estados = getClienteEstadoMedidor();
   const cb=$('cli_req_inspeccion');
   if(!cb) return;
-  const must = (med==='Malo' || visor==='Cambio');
-  if(must){ cb.checked=true; cb.disabled=true; cb.title='Marcado automáticamente por estado de medidor Malo y/o visor Cambio'; }
-  else { cb.disabled=false; cb.title=''; }
+  const must = estados.some(v => v && v !== CLIENTE_ESTADO_BUENO);
+  cb.checked = must;
+  cb.disabled = true;
+  cb.title = 'Marcado automáticamente por estado de medidor. No se modifica manualmente.';
   if(typeof maybeAutofillClienteObservation === 'function') maybeAutofillClienteObservation(false);
 }
 
@@ -2138,9 +2179,8 @@ function wireEvents(){
     if($("unc_ec_inmel").checked) $("unc_ec_part").checked=false;
   });
 
-  ["cli_estado_medidor","cli_estado_visor"].forEach(id=>{
-    const el=$(id);
-    if(el) el.addEventListener("change", syncClienteReqInspeccion);
+  document.querySelectorAll('.cli_estado_chk').forEach(ch=>{
+    ch.addEventListener("change", ()=>syncClienteEstadoExclusivo(ch));
   });
   syncClienteReqInspeccion();
   bindAllAutoObservations();
@@ -2482,9 +2522,9 @@ function wireEvents(){
       $("cli_serie").value = rec.SerieMedidor||"";
       $("cli_marca").value = rec.MarcaMedidor||"";
       $("cli_fases").value = rec.Fases||"";
-      $("cli_estado_medidor").value = rec.EstadoMedidor||"";
-      $("cli_estado_visor").value = rec.EstadoVisor||"";
+      setClienteEstadoMedidor(rec.EstadoMedidor||"");
       $("cli_req_inspeccion").checked = (rec.ReqInspeccion==="Sí");
+      syncClienteReqInspeccion();
       $("cli_lat").value = rec.Latitud||""; $("cli_lon").value = rec.Longitud||""; $("cli_acc").value = rec.Precision||""; $("cli_long_nodo").value = rec.LongitudNodo||"";
       $("cli_obs").value = rec.Observaciones||"";
     } else if(updStore==="susp") {
@@ -2503,6 +2543,23 @@ function wireEvents(){
       $("bal_obs").value = rec.Observaciones||"";
     }
     toast("Modo edición ✅");
+  });
+  $("updDelete")?.addEventListener("click", async ()=>{
+    const id=Number($("updSelect").value||0);
+    if(!updStore || !id) return toast("Selecciona un registro para eliminar");
+    const rec=await getById(updStore,id);
+    if(!rec) return toast("Registro no encontrado");
+    let nombre = rec.PuntoFisico || rec.SerieMedidor || rec.Nombres || rec.Motivo || rec.Estado || id;
+    const ok = confirm(`¿Eliminar definitivamente este registro?\n\n${nombre} | ID:${id}\n\nEsta acción no se puede deshacer.`);
+    if(!ok) return;
+    await deleteRec(updStore,id);
+    markCurrentCDDirty();
+    editCtx=null;
+    await updateSilentAutoBackup("delete_"+updStore);
+    await updateHomeDashboard();
+    await updateFormCounters();
+    await loadUpdList(updStore);
+    toast("Registro eliminado ✅");
   });
 }
 
@@ -3229,6 +3286,16 @@ document.getElementById('btnSyncDrivePage')?.addEventListener('click', syncDrive
 document.getElementById('homeSyncDrive')?.addEventListener('click', syncDriveManual);
 document.getElementById('btnBackupGSXSubtle')?.addEventListener('click', respaldoTotalGSX);
 updateLastDriveSyncUI();
+</script>
+
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./sw.js?v=19")
+      .then(reg => console.log("SW registrado:", reg.scope))
+      .catch(err => console.error("SW error:", err));
+  });
+}
 </script>
 
 </body>
