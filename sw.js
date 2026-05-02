@@ -1,1 +1,51 @@
-const CACHE_NAME="heidi-life-os-v1";const APP_SHELL=["./","./index.html","./manifest.json","./gatito.png","./icon-192.png","./icon-512.png","./icon-180.png"];self.addEventListener("install",event=>{self.skipWaiting();event.waitUntil(caches.open(CACHE_NAME).then(c=>c.addAll(APP_SHELL).catch(()=>null)))});self.addEventListener("activate",event=>{event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE_NAME).map(k=>caches.delete(k)))).then(()=>self.clients.claim()))});self.addEventListener("fetch",event=>{if(event.request.method!=="GET")return;event.respondWith(fetch(event.request).then(r=>{const copy=r.clone();caches.open(CACHE_NAME).then(c=>c.put(event.request,copy)).catch(()=>null);return r}).catch(()=>caches.match(event.request).then(c=>c||caches.match("./index.html"))))});
+const CACHE_NAME = "gsdx-cache-v17"; // 🔥 CAMBIA ESTE NÚMERO EN CADA UPDATE
+
+const URLS_TO_CACHE = [
+  "./",
+  "./index.html",
+  "./manifest.json",
+  "./icon-192.png",
+  "./icon-512.png",
+  "./icon-180.png"
+];
+
+// INSTALL
+self.addEventListener("install", (event) => {
+  self.skipWaiting(); // activa inmediatamente
+  event.waitUntil(
+    caches.open(CACHE_NAME).then((cache) => cache.addAll(URLS_TO_CACHE))
+  );
+});
+
+// ACTIVATE
+self.addEventListener("activate", (event) => {
+  event.waitUntil(
+    caches.keys().then((keys) =>
+      Promise.all(
+        keys.map((key) => {
+          if (key !== CACHE_NAME) {
+            return caches.delete(key); // limpia versiones viejas
+          }
+        })
+      )
+    )
+  );
+  self.clients.claim(); // toma control inmediato
+});
+
+// FETCH (estrategia inteligente)
+self.addEventListener("fetch", (event) => {
+  if (event.request.method !== "GET") return;
+
+  event.respondWith(
+    fetch(event.request)
+      .then((response) => {
+        const clone = response.clone();
+        caches.open(CACHE_NAME).then((cache) => {
+          cache.put(event.request, clone);
+        });
+        return response;
+      })
+      .catch(() => caches.match(event.request))
+  );
+});
