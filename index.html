@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>GS Diagnósticos v20</title>
+  <title>GS Diagnósticos v21</title>
   <meta name="theme-color" content="#d40000" />
   <link rel="manifest" href="manifest.json">
   <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png?v=gsdx-red-2">
@@ -325,10 +325,10 @@
       <div class="pill" id="homeDatePill"></div>
     </div>
     <div class="dashboard-grid">
-      <div class="stat-card"><div class="n" id="summaryDiag">0</div><div class="l">Registros</div></div>
-      <div class="stat-card"><div class="n" id="summaryPhotos">0</div><div class="l">Fotos</div></div>
+      <div class="stat-card"><div class="n" id="summaryDiag">0</div><div class="l">Registros CD</div></div>
+      <div class="stat-card"><div class="n" id="summaryPhotos">0</div><div class="l">Fotos CD</div></div>
       <div class="stat-card"><div class="n" id="summaryEstr">0</div><div class="l">Estructuras</div></div>
-      <div class="stat-card"><div class="n" id="summaryPending">0</div><div class="l">Por sincronizar</div></div>
+      <div class="stat-card"><div class="n" id="summaryPending">0</div><div class="l">Por exportar</div></div>
     </div>
 
     <div class="title" style="margin-top:18px;"><div><h2>Acciones principales</h2></div></div>
@@ -343,6 +343,7 @@
 
     <div class="nav-mini" style="margin-top:18px;">
       <button id="btnOpenRespaldo" class="soft-btn" type="button">Crear respaldo de datos</button>
+      <button id="homeExportarHistorico" class="soft-btn" type="button">Exportar histórico CD</button>
     </div>
 
     <div class="title" style="margin-top:18px;"><div><h2>Utilidades</h2></div></div>
@@ -1397,16 +1398,25 @@ function refreshModoCd(){
 }
 
 async function updateHomeDashboard(){
-  const [a,b,c,d,e]=await Promise.all([count("estructuras"),count("unc"),count("clientes"),count("susp"),count("baldios")]);
-  const total=a+b+c+d+e;
-  const all=[...(await getAll("estructuras")),...(await getAll("unc")),...(await getAll("clientes")),...(await getAll("susp")),...(await getAll("baldios"))];
-  let fotos=0;
-  all.forEach(r=>{ if(Array.isArray(r.Fotos)) fotos += r.Fotos.length; });
-  if($("summaryDiag")) $("summaryDiag").textContent=String(total);
-  if($("summaryPhotos")) $("summaryPhotos").textContent=String(fotos);
-  if($("summaryEstr")) $("summaryEstr").textContent=String(a);
-  if($("summaryPending")) $("summaryPending").textContent=String(total);
-  if($("homeDatePill")) $("homeDatePill").textContent=new Date().toLocaleDateString('es-CO',{day:'numeric',month:'long',year:'numeric'});
+  const cdAct = String(activeCD || "");
+  const stores = ["estructuras","unc","clientes","susp","baldios"];
+  let totalCd = 0, fotosCd = 0, estructurasCd = 0, pendientesCd = 0;
+
+  if(cdAct){
+    for(const st of stores){
+      const arr = (await getAll(st)).filter(r => String(r.Transformador||"") === cdAct);
+      totalCd += arr.length;
+      if(st === "estructuras") estructurasCd = arr.length;
+      pendientesCd += arr.filter(isPendingExport).length;
+      arr.forEach(r=>{ if(Array.isArray(r.Fotos)) fotosCd += r.Fotos.length; });
+    }
+  }
+
+  if($("summaryDiag")) $("summaryDiag").textContent=String(totalCd);
+  if($("summaryPhotos")) $("summaryPhotos").textContent=String(fotosCd);
+  if($("summaryEstr")) $("summaryEstr").textContent=String(estructurasCd);
+  if($("summaryPending")) $("summaryPending").textContent=String(pendientesCd);
+  if($("homeDatePill")) $("homeDatePill").textContent = activeCD ? `CD activo: ${activeCD}` : new Date().toLocaleDateString('es-CO',{day:'numeric',month:'long',year:'numeric'});
 }
 async function renderPhotosGallery(){
   const holder=$("photosGallery"); if(!holder) return;
@@ -1430,37 +1440,37 @@ async function renderPhotosGallery(){
 }
 
 async function updateFormCounters(){
-  const [e,u,c,s,b,et,ut,ct,st,bt]=await Promise.all([
+  const [e,u,c,s,b,ep,up,cp,sp,bp]=await Promise.all([
     countByCD("estructuras"), countByCD("unc"), countByCD("clientes"), countByCD("susp"), countByCD("baldios"),
-    count("estructuras"), count("unc"), count("clientes"), count("susp"), count("baldios")
+    countPendingByCD("estructuras"), countPendingByCD("unc"), countPendingByCD("clientes"), countPendingByCD("susp"), countPendingByCD("baldios")
   ]);
-  if($("countESTForm")) $("countESTForm").textContent=`Estructuras CD: ${e} / Total: ${et}`;
-  if($("countUNCForm")) $("countUNCForm").textContent=`UNC CD: ${u} / Total: ${ut}`;
-  if($("countCLIForm")) $("countCLIForm").textContent=`Clientes CD: ${c} / Total: ${ct}`;
-  if($("countSUSForm")) $("countSUSForm").textContent=`Susp. CD: ${s} / Total: ${st}`;
-  if($("countBALForm")) $("countBALForm").textContent=`Baldíos CD: ${b} / Total: ${bt}`;
+  if($("countESTForm")) $("countESTForm").textContent=`Estructuras CD: ${e} | Por exportar: ${ep}`;
+  if($("countUNCForm")) $("countUNCForm").textContent=`UNC CD: ${u} | Por exportar: ${up}`;
+  if($("countCLIForm")) $("countCLIForm").textContent=`Clientes CD: ${c} | Por exportar: ${cp}`;
+  if($("countSUSForm")) $("countSUSForm").textContent=`Susp. CD: ${s} | Por exportar: ${sp}`;
+  if($("countBALForm")) $("countBALForm").textContent=`Baldíos CD: ${b} | Por exportar: ${bp}`;
 }
 async function showCountsModal(){
-  const [et,ut,ct,st,bt,ec,uc,cc,sc,bc]=await Promise.all([
-    count("estructuras"), count("unc"), count("clientes"), count("susp"), count("baldios"),
-    countByCD("estructuras"), countByCD("unc"), countByCD("clientes"), countByCD("susp"), countByCD("baldios")
+  const [ec,uc,cc,sc,bc,ep,up,cp,sp,bp]=await Promise.all([
+    countByCD("estructuras"), countByCD("unc"), countByCD("clientes"), countByCD("susp"), countByCD("baldios"),
+    countPendingByCD("estructuras"), countPendingByCD("unc"), countPendingByCD("clientes"), countPendingByCD("susp"), countPendingByCD("baldios")
   ]);
-  const total=et+ut+ct+st+bt;
   const totalCd=ec+uc+cc+sc+bc;
+  const pendingCd=ep+up+cp+sp+bp;
   const cdLabel = activeCD ? activeCD : 'Sin CD activo';
   if($("countModalBody")) $("countModalBody").innerHTML = `
     <b>CD activo:</b> ${cdLabel}<br>
     <b>Total del CD:</b> ${totalCd}<br>
-    Estructuras CD: <b>${ec}</b><br>
-    UNC CD: <b>${uc}</b><br>
-    Clientes CD: <b>${cc}</b><br>
-    Suspensiones CD: <b>${sc}</b><br>
-    Baldíos CD: <b>${bc}</b><br>
+    <b>Pendientes por exportar:</b> ${pendingCd}<br>
     <hr style="border:0;border-top:1px solid var(--borde);margin:10px 0">
-    <b>Total general:</b> ${total}<br>
-    Estructuras: <b>${et}</b><br>UNC: <b>${ut}</b><br>Clientes: <b>${ct}</b><br>Suspensiones: <b>${st}</b><br>Baldíos: <b>${bt}</b>`;
+    Estructuras CD: <b>${ec}</b> | Por exportar: <b>${ep}</b><br>
+    UNC CD: <b>${uc}</b> | Por exportar: <b>${up}</b><br>
+    Clientes CD: <b>${cc}</b> | Por exportar: <b>${cp}</b><br>
+    Suspensiones CD: <b>${sc}</b> | Por exportar: <b>${sp}</b><br>
+    Baldíos CD: <b>${bc}</b> | Por exportar: <b>${bp}</b>`;
   if($("countModal")) $("countModal").style.display='flex';
 }
+
 function sanitizeMeters(v){
   return String(v||'').replace(/,/g,'.').replace(/[^0-9.]/g,'').trim();
 }
@@ -2085,15 +2095,62 @@ function buildExcel(estr,unc,cli,sus,bal){
 /* =================== Export ZIP =================== */
 function safeName(s){return (s||"").toString().trim().replace(/[\\/:*?\\"<>|]+/g," ").replace(/\s+/g," ").trim();}
 function photoNameToken(v){ return safeName(String(v||'')).replace(/\s+/g,'_') || 'SIN_DATO'; }
-function getExportedCDMap(){ try{return JSON.parse(localStorage.getItem('gsdx_exported_cds')||'{}')||{};}catch(e){return {};} }
-function setCDExported(cd, value){ const key=upperAlnum(cd||''); if(!key) return; const map=getExportedCDMap(); if(value) map[key]=new Date().toISOString(); else delete map[key]; localStorage.setItem('gsdx_exported_cds', JSON.stringify(map)); }
-function isCDExported(cd){ const key=upperAlnum(cd||''); if(!key) return true; return !!getExportedCDMap()[key]; }
-async function cdHasAnyData(cd){ const key=String(cd||''); if(!key) return false; const stores=['estructuras','unc','clientes','susp','baldios']; for(const st of stores){ const arr=await getAll(st); if(arr.some(r=>String(r.Transformador||'')===key)) return true; } return false; }
-async function blockIfActiveCDNeedsExport(nextCD){ const current=String(activeCD||''); const next=String(nextCD||''); if(!current || !next || current===next) return false; if(await cdHasAnyData(current)){ if(!isCDExported(current)){ toast(`Antes de registrar otro CD, exporta el CD ${current}`); setBadge('EXPORTACIÓN PENDIENTE'); return true; } } return false; }
-function markCurrentCDDirty(){ if(activeCD) setCDExported(activeCD,false); }
-async function exportAll(){
+const GS_STORES=["estructuras","unc","clientes","susp","baldios"];
+function todayKeyLocal(){ const d=new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`; }
+function isPendingExport(r){ return !(r && (r.exportado===true || r.Exportado==="Sí")); }
+async function countPendingByCD(store, cd=activeCD){
+  const all = await getAll(store);
+  return all.filter(r=>String(r.Transformador||'')===String(cd||'') && isPendingExport(r)).length;
+}
+async function pendingByCD(cd=activeCD){
+  let total=0;
+  for(const st of GS_STORES) total += await countPendingByCD(st, cd);
+  return total;
+}
+async function pendingAny(){
+  for(const st of GS_STORES){
+    const arr=await getAll(st);
+    if(arr.some(isPendingExport)) return true;
+  }
+  return false;
+}
+async function cdHasAnyData(cd){ const key=String(cd||''); if(!key) return false; for(const st of GS_STORES){ const arr=await getAll(st); if(arr.some(r=>String(r.Transformador||'')===key)) return true; } return false; }
+async function blockIfActiveCDNeedsExport(nextCD){
+  const current=String(activeCD||''); const next=String(nextCD||'');
+  if(!current || !next || current===next) return false;
+  const pending = await pendingByCD(current);
+  if(pending>0){ toast(`Antes de registrar otro CD, exporta ${pending} registro(s) pendiente(s) del CD ${current}`); setBadge('EXPORTACIÓN PENDIENTE'); return true; }
+  return false;
+}
+async function blockIfJornadaNeedsExport(){
+  const today=todayKeyLocal();
+  const saved=await getMeta('activeWorkDate');
+  if(!saved){ await setMeta('activeWorkDate', today); return false; }
+  if(saved!==today){
+    const hasPending=await pendingAny();
+    if(hasPending){
+      toast(`Hay registros pendientes de exportar de la jornada ${saved}. Exporta antes de continuar.`);
+      setBadge('EXPORTA JORNADA');
+      return true;
+    }
+    await setMeta('activeWorkDate', today);
+  }
+  return false;
+}
+async function refreshWorkDateAfterExport(){ if(!(await pendingAny())) await setMeta('activeWorkDate', todayKeyLocal()); }
+function markCurrentCDDirty(){ /* Los registros nuevos/editados quedan pendientes con exportado=false. */ }
+async function markExportedBatch(groups, batchId, iso){
+  for(const [store, arr] of Object.entries(groups)){
+    for(const r of arr){
+      if(!r || !r.id) continue;
+      await putRec(store, {...r, exportado:true, Exportado:"Sí", exportBatch:batchId, fechaExportacion:iso});
+    }
+  }
+}
+async function exportAll(opts={}){
+  const historico = !!(opts && opts.historico === true);
   try{
-    setBadge("EXPORTANDO… 📦");
+    setBadge(historico ? "EXPORTANDO HISTÓRICO… 📦" : "EXPORTANDO… 📦");
     const cdAct = (activeCD||"").toString();
     if(!cdAct){ toast("No hay CD activo"); setBadge("LISTO ✅"); return; }
 
@@ -2103,14 +2160,24 @@ async function exportAll(){
     const sus=await getAll("susp");
     const bal=await getAll("baldios");
 
-    const f=(arr)=>arr.filter(r=> String(r.Transformador||"")===cdAct);
+    const f=(arr)=>arr.filter(r=> String(r.Transformador||"")===cdAct && (historico || isPendingExport(r)));
     const estrF=f(estr), uncF=f(unc), cliF=f(cli), susF=f(sus), balF=f(bal);
+    const totalExport = estrF.length + uncF.length + cliF.length + susF.length + balF.length;
+
+    if(totalExport===0){
+      toast(historico ? `No hay registros para exportar en ${cdAct}` : `No hay registros pendientes por exportar en ${cdAct}`);
+      setBadge("LISTO ✅");
+      return;
+    }
 
     const d=new Date();
-    const stamp = d.toISOString().slice(0,10).replace(/-/g,"");
+    const isoExport=d.toISOString();
+    const stamp = isoExport.slice(0,10).replace(/-/g,"");
     const hm = d.toTimeString().slice(0,5).replace(":","");
-    const cdSafe = cdAct.replace(/[^A-Z0-9_\\-]/g,"_");
-    const baseName = `GS_Diagnostico_${cdSafe}_${stamp}_${hm}`;
+    const cdSafe = cdAct.replace(/[^A-Z0-9_\-]/g,"_");
+    const modeToken = historico ? "HISTORICO" : "PENDIENTE";
+    const batchId = `EXP_${cdSafe}_${stamp}_${hm}`;
+    const baseName = `GS_Diagnostico_${cdSafe}_${modeToken}_${stamp}_${hm}`;
 
     const excelName = `${baseName}.xls`;
     const excelU8=buildExcel(estrF,uncF,cliF,susF,balF);
@@ -2140,19 +2207,22 @@ async function exportAll(){
     const blob=new Blob([zipU8],{type:"application/zip"});
     const url=URL.createObjectURL(blob);
 
-    // intento descarga directa
     const a=document.createElement("a");
     a.href=url; a.download=zipName;
     document.body.appendChild(a); a.click(); a.remove();
 
-    // fallback modal
     const link=$("dlLink");
     link.href=url; link.download=zipName;
     $("dlModal").style.display="flex";
 
-    setCDExported(cdAct, true);
+    if(!historico){
+      await markExportedBatch({estructuras:estrF, unc:uncF, clientes:cliF, susp:susF, baldios:balF}, batchId, isoExport);
+      await refreshWorkDateAfterExport();
+    }
+    await updateHomeDashboard();
+    await updateFormCounters();
     setBadge("LISTO ✅");
-    toast("Exportado ✅");
+    toast(historico ? "Histórico exportado ✅" : "Pendientes exportados y marcados ✅");
   }catch(e){
     console.error(e);
     setBadge("LISTO ✅");
@@ -2165,7 +2235,7 @@ async function registerSW(){
   try{
     if(location.protocol==="file:") return;
     if(!("serviceWorker" in navigator)) return;
-    const reg = await navigator.serviceWorker.register("./sw.js?v=19", { updateViaCache: "none" });
+    const reg = await navigator.serviceWorker.register("./sw.js?v=21", { updateViaCache: "none" });
     await reg.update();
   }catch(e){}
 }
@@ -2238,6 +2308,7 @@ function wireEvents(){
     const built=await buildEstructura();
     if(!built) return;
     const {obj,isNew}=built;
+    if(await blockIfJornadaNeedsExport()) return;
     if(isNew && await blockIfActiveCDNeedsExport(obj.Transformador)) return;
 
     const currentId = (editCtx && editCtx.store==="estructuras") ? editCtx.id : null;
@@ -2260,10 +2331,10 @@ function wireEvents(){
     const item = prev ? (prev.item || await nextItem("estructuras")) : await nextItem("estructuras");
 
     if(currentId && prev){
-      await putRec("estructuras", {...prev, ...obj, id:currentId, item, Fotos:fotosFinales, updatedISO:new Date().toISOString()});
+      await putRec("estructuras", {...prev, ...obj, id:currentId, item, Fotos:fotosFinales, exportado:false, Exportado:"No", exportBatch:"", fechaExportacion:"", updatedISO:new Date().toISOString()});
       toast("Estructura actualizada ✅");
     }else{
-      await addRec("estructuras", {...obj, item, Fotos:fotosFinales});
+      await addRec("estructuras", {...obj, item, Fotos:fotosFinales, exportado:false, Exportado:"No", exportBatch:"", fechaExportacion:""});
       toast("Estructura guardada ✅");
     }
 
@@ -2301,6 +2372,7 @@ function wireEvents(){
 
   // nav
   $("btnIrARegistro").addEventListener("click", async ()=>{
+    if(await blockIfJornadaNeedsExport()) return;
     if(!(activeCD&&activeCAP)) return toast("Registra CD primero");
     showRegistroMenu();
     await refreshPFSelectors();
@@ -2315,6 +2387,7 @@ function wireEvents(){
   $("toggleDark")?.addEventListener("click", toggleDarkMode);
 
   $("homeRegistrar").addEventListener("click", async ()=>{
+    if(await blockIfJornadaNeedsExport()) return;
     if(activeCD && activeCAP){
       showRegistroMenu();
       await refreshPFSelectors();
@@ -2325,6 +2398,7 @@ function wireEvents(){
     }
   });
   $("homeExportar").addEventListener("click", exportAll);
+  listenIf("homeExportarHistorico","click", ()=>exportAll({historico:true}));
   $("homeEditar").addEventListener("click", ()=>{ $("modalUpdate").style.display="flex"; $("updPick").style.display="flex"; $("updListWrap").style.display="none"; });
   $("homeConteo").addEventListener("click", showCountsModal);
   $("homeExcel").addEventListener("click", ()=>show("screen3"));
@@ -2356,14 +2430,15 @@ function wireEvents(){
   $("btnGuardarUNC").addEventListener("click", async ()=>{
     if(!validateSection("formUNC")) return;
     if(!(activeCD&&activeCAP)) return toast("Sin CD activo");
+    if(await blockIfJornadaNeedsExport()) return;
     const obj=await buildUNC(); if(!obj) return;
     const prev = (editCtx && editCtx.store==="unc") ? await getById("unc", editCtx.id) : null;
     if(!validatePhotoRange($("unc_fotos"), prev, "UNC")) return;
     const fotosNuevas=await readFiles($("unc_fotos"));
     obj.Fotos=fotosNuevas.length ? fotosNuevas : ((prev && prev.Fotos) || []);
     const item=(editCtx && editCtx.store==="unc" && prev) ? (prev.item || await nextItem("unc")) : await nextItem("unc");
-    if(editCtx && editCtx.store==="unc"){ await putRec("unc",{...prev,...obj,id:editCtx.id,item}); editCtx=null; }
-    else { await addRec("unc",{...obj,item}); }
+    if(editCtx && editCtx.store==="unc"){ await putRec("unc",{...prev,...obj,id:editCtx.id,item, exportado:false, Exportado:"No", exportBatch:"", fechaExportacion:""}); editCtx=null; }
+    else { await addRec("unc",{...obj,item, exportado:false, Exportado:"No", exportBatch:"", fechaExportacion:""}); }
     markCurrentCDDirty();
     await updateSilentAutoBackup("save_unc");
     await updateHomeDashboard();
@@ -2378,6 +2453,7 @@ function wireEvents(){
   $("btnGuardarCli").addEventListener("click", async ()=>{
     if(!validateSection("formCliente")) return;
     if(!(activeCD&&activeCAP)) return toast("Sin CD activo");
+    if(await blockIfJornadaNeedsExport()) return;
     const obj=await buildCliente(); if(!obj) return;
     const dup = await serialExists(obj.SerieMedidor, (editCtx && editCtx.store==="clientes") ? editCtx.id : null);
     if(dup) return toast(`La serie ${obj.SerieMedidor} ya está registrada en ${dup.Transformador||'otro CD'} / ${dup.PuntoFisico||'sin PF'}`);
@@ -2386,8 +2462,8 @@ function wireEvents(){
     const fotosNuevas=await readFiles($("cli_fotos"));
     obj.Fotos=fotosNuevas.length ? fotosNuevas : ((prev && prev.Fotos) || []);
     const item=(editCtx && editCtx.store==="clientes" && prev) ? (prev.item || await nextItem("clientes")) : await nextItem("clientes");
-    if(editCtx && editCtx.store==="clientes"){ await putRec("clientes",{...prev,...obj,id:editCtx.id,item}); editCtx=null; }
-    else { await addRec("clientes",{...obj,item}); }
+    if(editCtx && editCtx.store==="clientes"){ await putRec("clientes",{...prev,...obj,id:editCtx.id,item, exportado:false, Exportado:"No", exportBatch:"", fechaExportacion:""}); editCtx=null; }
+    else { await addRec("clientes",{...obj,item, exportado:false, Exportado:"No", exportBatch:"", fechaExportacion:""}); }
     markCurrentCDDirty();
     await updateSilentAutoBackup("save_cliente");
     await updateHomeDashboard();
@@ -2402,14 +2478,15 @@ function wireEvents(){
   $("btnGuardarSus").addEventListener("click", async ()=>{
     if(!validateSection("formSusp")) return;
     if(!(activeCD&&activeCAP)) return toast("Sin CD activo");
+    if(await blockIfJornadaNeedsExport()) return;
     const obj=await buildSusp(); if(!obj) return;
     const prev = (editCtx && editCtx.store==="susp") ? await getById("susp", editCtx.id) : null;
     if(!validatePhotoRange($("sus_fotos"), prev, "SUSPENSIÓN")) return;
     const fotosNuevas=await readFiles($("sus_fotos"));
     obj.Fotos=fotosNuevas.length ? fotosNuevas : ((prev && prev.Fotos) || []);
     const item=(editCtx && editCtx.store==="susp" && prev) ? (prev.item || await nextItem("susp")) : await nextItem("susp");
-    if(editCtx && editCtx.store==="susp"){ await putRec("susp",{...prev,...obj,id:editCtx.id,item}); editCtx=null; }
-    else { await addRec("susp",{...obj,item}); }
+    if(editCtx && editCtx.store==="susp"){ await putRec("susp",{...prev,...obj,id:editCtx.id,item, exportado:false, Exportado:"No", exportBatch:"", fechaExportacion:""}); editCtx=null; }
+    else { await addRec("susp",{...obj,item, exportado:false, Exportado:"No", exportBatch:"", fechaExportacion:""}); }
     markCurrentCDDirty();
     await updateSilentAutoBackup("save_susp");
     await updateHomeDashboard();
@@ -2424,14 +2501,15 @@ function wireEvents(){
   $("btnGuardarBaldio").addEventListener("click", async ()=>{
     if(!validateSection("formBaldio")) return;
     if(!(activeCD&&activeCAP)) return toast("Sin CD activo");
+    if(await blockIfJornadaNeedsExport()) return;
     const obj=await buildBaldio(); if(!obj) return;
     const prev = (editCtx && editCtx.store==="baldios") ? await getById("baldios", editCtx.id) : null;
     if(!validatePhotoRange($("bal_fotos"), prev, "BALDÍOS")) return;
     const fotosNuevas=await readFiles($("bal_fotos"));
     obj.Fotos=fotosNuevas.length ? fotosNuevas : ((prev && prev.Fotos) || []);
     const item=(editCtx && editCtx.store==="baldios" && prev) ? (prev.item || await nextItem("baldios")) : await nextItem("baldios");
-    if(editCtx && editCtx.store==="baldios"){ await putRec("baldios",{...prev,...obj,id:editCtx.id,item}); editCtx=null; }
-    else { await addRec("baldios",{...obj,item}); }
+    if(editCtx && editCtx.store==="baldios"){ await putRec("baldios",{...prev,...obj,id:editCtx.id,item, exportado:false, Exportado:"No", exportBatch:"", fechaExportacion:""}); editCtx=null; }
+    else { await addRec("baldios",{...obj,item, exportado:false, Exportado:"No", exportBatch:"", fechaExportacion:""}); }
     markCurrentCDDirty();
     await updateSilentAutoBackup("save_baldio");
     await updateHomeDashboard();
@@ -2851,6 +2929,7 @@ function loadModExcelFile(){
     await requestPersistentStorage();
     updateInstallStateUI();
     applyDarkModeState();
+    await blockIfJornadaNeedsExport();
     await updateHomeDashboard();
     syncMetaMirror();
     const lastScreen = localStorage.getItem("gsdx_last_screen") || "screenHome";
