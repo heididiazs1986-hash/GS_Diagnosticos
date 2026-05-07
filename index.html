@@ -2107,10 +2107,11 @@ async function pendingByCD(cd=activeCD){
   for(const st of GS_STORES) total += await countPendingByCD(st, cd);
   return total;
 }
-async function pendingAny(){
+async function pendingAny(cd=null){
+  const filterCd = cd ? String(cd) : "";
   for(const st of GS_STORES){
     const arr=await getAll(st);
-    if(arr.some(isPendingExport)) return true;
+    if(arr.some(r => (!filterCd || String(r.Transformador||'')===filterCd) && isPendingExport(r))) return true;
   }
   return false;
 }
@@ -2127,9 +2128,14 @@ async function blockIfJornadaNeedsExport(){
   const saved=await getMeta('activeWorkDate');
   if(!saved){ await setMeta('activeWorkDate', today); return false; }
   if(saved!==today){
-    const hasPending=await pendingAny();
-    if(hasPending){
-      toast(`Hay registros pendientes de exportar de la jornada ${saved}. Exporta antes de continuar.`);
+    const cdAct = String(activeCD || await getMeta('activeCD') || '').trim();
+    if(!cdAct){
+      await setMeta('activeWorkDate', today);
+      return false;
+    }
+    const pending = await pendingByCD(cdAct);
+    if(pending>0){
+      toast(`Hay ${pending} registro(s) pendiente(s) del CD ${cdAct} de la jornada ${saved}. Exporta antes de continuar.`);
       setBadge('EXPORTA JORNADA');
       return true;
     }
@@ -2137,7 +2143,7 @@ async function blockIfJornadaNeedsExport(){
   }
   return false;
 }
-async function refreshWorkDateAfterExport(){ if(!(await pendingAny())) await setMeta('activeWorkDate', todayKeyLocal()); }
+async function refreshWorkDateAfterExport(){ if(!(await pendingAny(activeCD))) await setMeta('activeWorkDate', todayKeyLocal()); }
 function markCurrentCDDirty(){ /* Los registros nuevos/editados quedan pendientes con exportado=false. */ }
 async function markExportedBatch(groups, batchId, iso){
   for(const [store, arr] of Object.entries(groups)){
@@ -2165,7 +2171,8 @@ async function exportAll(opts={}){
     const totalExport = estrF.length + uncF.length + cliF.length + susF.length + balF.length;
 
     if(totalExport===0){
-      toast(historico ? `No hay registros para exportar en ${cdAct}` : `No hay registros pendientes por exportar en ${cdAct}`);
+      if(!historico){ await setMeta('activeWorkDate', todayKeyLocal()); }
+      toast(historico ? `No hay registros para exportar en ${cdAct}` : `No hay registros pendientes por exportar en ${cdAct}. Jornada liberada.`);
       setBadge("LISTO ✅");
       return;
     }
@@ -2235,7 +2242,7 @@ async function registerSW(){
   try{
     if(location.protocol==="file:") return;
     if(!("serviceWorker" in navigator)) return;
-    const reg = await navigator.serviceWorker.register("./sw.js?v=21", { updateViaCache: "none" });
+    const reg = await navigator.serviceWorker.register("./sw.js?v=22", { updateViaCache: "none" });
     await reg.update();
   }catch(e){}
 }
