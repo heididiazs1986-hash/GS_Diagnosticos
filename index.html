@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>GS Diagnósticos v21</title>
-  <meta name="theme-color" content="#d40000" />
+  <title>GS Diagnósticos V2 Pro</title>
+  <meta name="theme-color" content="#00133A" />
   <link rel="manifest" href="manifest.json">
   <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png?v=gsdx-red-2">
   <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png?v=gsdx-red-2">
@@ -306,7 +306,190 @@
     .danger-btn{background:#7f1d1d!important;color:#fff!important;border:1px solid #991b1b!important;}
     body.dark .danger-btn{background:#991b1b!important;color:#fff!important;border-color:#ef4444!important;}
 
-  </style>
+  
+
+/* ==========================================================
+   GS DIAGNÓSTICOS V2 PRO REAL
+   Distribución tipo ficha técnica, cintas por apartado y menos scroll.
+   No cambia nombres de campos ni lógica de captura.
+   ========================================================== */
+:root{
+  --gs-navy:#00133A;
+  --gs-navy-2:#000B20;
+  --gs-blue:#003D99;
+  --gs-blue-2:#0066CC;
+  --gs-sky:#3399FF;
+  --gs-soft:#C9DBFF;
+  --gs-bg:#F4F8FF;
+  --gs-row:#FFFFFF;
+  --gs-line:#DDE9FB;
+  --gs-text:#0B234C;
+  --gs-muted:#5E718F;
+  --gs-shadow:0 18px 40px rgba(0,19,58,.12);
+  --rojo:#00133A!important;
+  --rojo-osc:#000B20!important;
+  --gris:#F4F8FF!important;
+  --borde:#DDE9FB!important;
+  --texto:#0B234C!important;
+  --muted:#5E718F!important;
+}
+html{background:var(--gs-navy);}
+body{
+  background:linear-gradient(180deg,#EAF3FF 0%,#F7FAFF 34%,#EEF5FF 100%)!important;
+  color:var(--gs-text)!important;
+  padding-bottom:86px;
+}
+header{
+  background:linear-gradient(135deg,#00133A 0%,#002A66 54%,#003D99 100%)!important;
+  border-bottom:1px solid rgba(255,255,255,.12);
+  box-shadow:0 16px 34px rgba(0,19,58,.26)!important;
+  padding:10px 14px!important;
+}
+header h1{font-size:16px!important;font-weight:900!important;letter-spacing:.2px;}
+header h1::before{
+  content:""!important;
+  width:38px!important;height:38px!important;border-radius:10px!important;
+  background:url('icon-192.png?v=gsdx-v2-pro') center/cover no-repeat!important;
+  box-shadow:none!important;
+}
+header .badge{font-size:12px!important;background:rgba(255,255,255,.12)!important;border-color:rgba(255,255,255,.20)!important;}
+.icon-toggle{width:44px!important;height:44px!important;font-size:20px!important;}
+main{padding:10px!important;max-width:1040px!important;}
+.card,.floating-panel,.modalCard{
+  border-radius:24px!important;
+  border:1px solid var(--gs-line)!important;
+  box-shadow:var(--gs-shadow)!important;
+  background:rgba(255,255,255,.94)!important;
+}
+#screen2.floating-panel,#screen1.card,#screen3.card{max-width:760px!important;margin-left:auto!important;margin-right:auto!important;padding:12px!important;}
+.title{margin-bottom:8px!important;align-items:center!important;}
+.title h2{color:var(--gs-navy)!important;font-size:16px!important;font-weight:900!important;}
+.pill,.form-counter{
+  background:#EAF3FF!important;color:#003D99!important;border:1px solid #C9DBFF!important;font-weight:800!important;
+}
+/* Tarjetas de inicio más pro */
+.dashboard-grid{gap:10px!important;}
+.stat-card{min-height:86px!important;border-radius:22px!important;background:linear-gradient(180deg,#fff,#F8FBFF)!important;border-color:#DDE9FB!important;}
+.stat-card .n{font-size:34px!important;color:#00133A!important;}
+.stat-card .l{font-size:12px!important;color:#5E718F!important;}
+.action-grid{gap:10px!important;}
+.action-btn,.registro-card-menu button{
+  min-height:88px!important;border-radius:22px!important;background:linear-gradient(180deg,#fff,#F7FAFF)!important;
+  color:#00133A!important;border:1px solid #DDE9FB!important;box-shadow:0 10px 24px rgba(0,19,58,.08)!important;
+}
+.action-btn .ico,.registro-card-menu .reg-ico{background:#EAF3FF!important;color:#003D99!important;}
+/* Cintas por apartado, sin cambiar textos */
+.sectionLabel{
+  display:flex!important;align-items:center!important;gap:9px!important;width:100%!important;
+  margin:14px 0 0!important;padding:10px 12px!important;
+  background:linear-gradient(90deg,#EAF3FF 0%,#F7FAFF 100%)!important;
+  border:1px solid #DDE9FB!important;border-bottom:0!important;
+  border-radius:16px 16px 0 0!important;
+  color:#00133A!important;font-size:14px!important;font-weight:900!important;
+  text-transform:none!important;letter-spacing:.1px!important;
+}
+.sectionLabel::before{content:"";width:22px;height:22px;display:inline-flex;align-items:center;justify-content:center;color:#00133A;font-size:18px;line-height:1;}
+.sectionLabel[data-gs-icon]::before{content:attr(data-gs-icon);}
+.sep{height:8px!important;background:transparent!important;margin:6px 0!important;}
+/* Ficha técnica 2 columnas: etiqueta izquierda, campo derecho */
+#screen1 .grid,#screen2 .grid,#screen3 .grid,.modalCard .modGrid{
+  display:block!important;
+  margin-top:0!important;
+  border:1px solid var(--gs-line);
+  border-radius:0 0 16px 16px;
+  overflow:hidden;
+  background:#fff;
+}
+#screen1 .grid + .grid,#screen2 .grid + .grid,#screen3 .grid + .grid{border-top:0;border-radius:0;}
+#screen1 .grid:first-of-type,#screen2 .grid:first-of-type,#screen3 .grid:first-of-type{border-radius:16px;}
+#screen1 .grid > div,#screen2 .grid > div,#screen3 .grid > div,.modalCard .modGrid > .modField{
+  display:grid!important;
+  grid-template-columns:minmax(112px,38%) 1fr!important;
+  align-items:center!important;
+  gap:8px!important;
+  min-height:43px!important;
+  padding:6px 8px!important;
+  border-bottom:1px solid #E6EEF9!important;
+  margin:0!important;
+  background:#fff!important;
+}
+#screen1 .grid > div:empty,#screen2 .grid > div:empty,#screen3 .grid > div:empty{display:none!important;}
+#screen1 .grid > div:last-child,#screen2 .grid > div:last-child,#screen3 .grid > div:last-child{border-bottom:0!important;}
+#screen1 label,#screen2 label,#screen3 label,.modField label{
+  margin:0!important;color:#415779!important;font-size:12px!important;font-weight:900!important;line-height:1.15!important;
+}
+#screen1 input,#screen1 select,#screen1 textarea,
+#screen2 input,#screen2 select,#screen2 textarea,
+#screen3 input,#screen3 select,#screen3 textarea,.modField input,.modField select,.modField textarea{
+  min-height:35px!important;border-radius:10px!important;border:1px solid transparent!important;background:#F8FBFF!important;
+  box-shadow:none!important;padding:7px 10px!important;font-size:14px!important;color:#0B234C!important;
+}
+#screen1 select,#screen2 select,#screen3 select{background:#F8FBFF!important;}
+#screen1 input:focus,#screen1 select:focus,#screen1 textarea:focus,
+#screen2 input:focus,#screen2 select:focus,#screen2 textarea:focus,
+#screen3 input:focus,#screen3 select:focus,#screen3 textarea:focus{
+  border-color:#3399FF!important;box-shadow:0 0 0 3px rgba(51,153,255,.14)!important;background:#fff!important;
+}
+/* Campos especiales se mantienen cómodos */
+#screen1 .grid > div:has(textarea),#screen2 .grid > div:has(textarea),#screen3 .grid > div:has(textarea),
+#screen1 .grid > div:has(input[type=file]),#screen2 .grid > div:has(input[type=file]),#screen3 .grid > div:has(input[type=file]){
+  display:block!important;padding:8px!important;background:#fff!important;
+}
+#screen1 .grid > div:has(textarea) label,#screen2 .grid > div:has(textarea) label,#screen3 .grid > div:has(textarea) label,
+#screen1 .grid > div:has(input[type=file]) label,#screen2 .grid > div:has(input[type=file]) label,#screen3 .grid > div:has(input[type=file]) label{display:block!important;margin:0 0 6px!important;}
+textarea{min-height:72px!important;}
+.dictWrap .mic{right:7px!important;bottom:7px!important;min-height:36px!important;padding:8px 10px!important;}
+.foto-hint,.field-hint,.obs-auto-note{font-size:11px!important;color:#6A7B95!important;margin-top:4px!important;}
+/* GPS button row */
+#screen1 .grid > div.btnrow,#screen2 .grid > div.btnrow,#screen3 .grid > div.btnrow{
+  display:flex!important;justify-content:flex-end!important;align-items:center!important;min-height:43px!important;
+}
+#screen1 .grid > div.btnrow button,#screen2 .grid > div.btnrow button,#screen3 .grid > div.btnrow button{width:100%!important;min-height:36px!important;padding:8px 10px!important;}
+/* Checklists compactas con cinta arriba */
+.checklist{
+  margin-top:0!important;gap:0!important;background:#fff!important;border:1px solid var(--gs-line)!important;border-top:0!important;border-radius:0 0 16px 16px!important;overflow:hidden!important;
+}
+.checkItem{
+  min-height:38px!important;padding:8px 10px!important;border-bottom:1px solid #E6EEF9!important;width:100%!important;
+  font-size:14px!important;color:#172B4D!important;background:#fff!important;
+}
+.checkItem:last-child{border-bottom:0!important;}
+.checkItem input[type="checkbox"]{accent-color:#003D99!important;transform:scale(1.08)!important;}
+/* Radios / chips */
+.chips{gap:6px!important;margin-top:8px!important;}
+.chip.radioBig{min-height:44px!important;padding:10px 12px!important;border-radius:14px!important;background:#fff!important;color:#00133A!important;border-color:#DDE9FB!important;}
+.chip.radioBig:has(input:checked){background:#EAF3FF!important;box-shadow:0 0 0 3px rgba(51,153,255,.14) inset!important;}
+/* Botones */
+button,.ok{background:linear-gradient(135deg,#003D99,#00133A)!important;color:#fff!important;border:0!important;}
+button.secondary,.soft-btn,.utility-item{background:#fff!important;color:#00133A!important;border:1px solid #C9DBFF!important;}
+.btnrow{gap:8px!important;margin-top:10px!important;}
+#btnGuardarUNC,#btnGuardarCliente,#btnGuardarSusp,#btnGuardarBaldio,#btnGuardarEstructura{
+  width:100%!important;min-height:50px!important;border-radius:16px!important;font-size:16px!important;box-shadow:0 12px 28px rgba(0,19,58,.18)!important;
+}
+/* Vista previa de fotos tipo galería */
+.gs-photo-strip{display:flex;gap:7px;overflow-x:auto;padding:7px 2px 2px;margin-top:7px;}
+.gs-photo-strip img{width:66px;height:58px;object-fit:cover;border-radius:10px;border:1px solid #DDE9FB;box-shadow:0 8px 18px rgba(0,19,58,.10);background:#F4F8FF;flex:0 0 auto;}
+input[type="file"]{padding:8px!important;background:#F8FBFF!important;}
+/* Barra inferior visual pro: no cambia navegación existente */
+.gs-bottom-nav{position:fixed;left:0;right:0;bottom:0;z-index:999;background:linear-gradient(135deg,#00133A,#002A66);border-top:1px solid rgba(255,255,255,.16);display:grid;grid-template-columns:repeat(5,1fr);padding:6px 6px calc(6px + env(safe-area-inset-bottom));box-shadow:0 -12px 30px rgba(0,19,58,.28);}
+.gs-bottom-nav button{background:transparent!important;border:0!important;box-shadow:none!important;color:#DDE9FB!important;display:flex;flex-direction:column;gap:2px;align-items:center;justify-content:center;font-size:11px!important;font-weight:800!important;min-height:46px!important;padding:3px!important;border-radius:12px!important;}
+.gs-bottom-nav button strong{font-size:19px;line-height:1;color:#fff;}
+.gs-bottom-nav button:active,.gs-bottom-nav button.active{background:rgba(255,255,255,.12)!important;}
+/* Dark */
+body.dark{background:#000B20!important;color:#F8FBFF!important;}
+body.dark .card,body.dark .floating-panel,body.dark .modalCard{background:#071A42!important;border-color:#18386F!important;}
+body.dark .title h2,body.dark label,body.dark .sectionLabel{color:#F8FBFF!important;}
+body.dark .sectionLabel{background:linear-gradient(90deg,#102A5C,#071A42)!important;border-color:#18386F!important;}
+body.dark #screen1 .grid,body.dark #screen2 .grid,body.dark #screen3 .grid,body.dark .checklist{background:#071A42!important;border-color:#18386F!important;}
+body.dark #screen1 .grid > div,body.dark #screen2 .grid > div,body.dark #screen3 .grid > div,body.dark .checkItem{background:#071A42!important;border-color:#18386F!important;color:#F8FBFF!important;}
+body.dark input,body.dark select,body.dark textarea{background:#00133A!important;color:#F8FBFF!important;border-color:#18386F!important;}
+body.dark .pill,body.dark .form-counter{background:#102A5C!important;color:#C9DBFF!important;border-color:#1E4D91!important;}
+@media(max-width:380px){
+  #screen1 .grid > div,#screen2 .grid > div,#screen3 .grid > div{grid-template-columns:minmax(100px,40%) 1fr!important;gap:6px!important;padding:5px 7px!important;}
+  #screen1 input,#screen1 select,#screen2 input,#screen2 select,#screen3 input,#screen3 select{font-size:13px!important;padding:6px 8px!important;}
+}
+
+</style>
   <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
@@ -2029,14 +2212,14 @@ function buildExcel(estr,unc,cli,sus,bal){
     return `<Worksheet ss:Name="${escXml(name)}"><Table>${headerRow}${bodyRows}</Table></Worksheet>`;
   };
 
-  const hdrE=["Ítem","Transformador (CD)","Tipo Nodo","Material Nodo","Características Nodo","Punto Físico","Tipo de Redes BT","Luminarias (AP)","Latitud (Y)","Longitud (X)","Precisión (m)","FECHA_HORA","GPS_HORA","Observaciones"];
+  const hdrE=["Ítem","Transformador (CD)","Capacidad CD (kVA)","Tipo Nodo","Material Nodo","Características Nodo","Punto Físico","Tipo de Redes BT","Luminarias (AP)","Latitud (Y)","Longitud (X)","Precisión (m)","FECHA_HORA","GPS_HORA","Observaciones"];
   const hdrU=["Ítem","Transformador (CD)","Punto Físico","Longitud al nodo (m)","Nombres","Identificación","Contacto","Sede","Municipio","Dirección","Localidad","Tipo Zona","Tipo material","Tipo de población","¿Predio habitable?","Para servicio requiere ampliación de redes","Documento de propiedad","Formato E1","AR","DJ","E6","EC Particular","Doc. electricista","RETIE","EC Inmel","Estado","¿Requiere muro?","¿Requiere uso de arriostre?","Acometida","Ducto 1\" Galv.","Celda","Interruptor","SPT (Tierra)","Instalación interna","Latitud (Y)","Longitud (X)","Precisión (m)","FECHA_HORA","GPS_HORA","Observaciones"];
   const hdrC=["Ítem","Transformador (CD)","Punto Físico","Longitud al nodo (m)","Serie de medidor","Marca de medidor","No. Fases","Estado de medidor","¿Requiere inspección/Cambio?","Latitud (Y)","Longitud (X)","Precisión (m)","FECHA_HORA","GPS_HORA","Observaciones"];
   const hdrS=["Ítem","Transformador (CD)","Punto Físico","Longitud al nodo (m)","Motivo de suspensión","Latitud (Y)","Longitud (X)","Precisión (m)","FECHA_HORA","GPS_HORA","Observaciones"];
   const hdrB=["Ítem","Transformador (CD)","Punto Físico","Longitud al nodo (m)","Estado","Latitud (Y)","Longitud (X)","Precisión (m)","FECHA_HORA","GPS_HORA","Observaciones"];
 
   const rowsE=estr.map(x=>({
-    "Ítem":x.item,"Transformador (CD)":x.Transformador,
+    "Ítem":x.item,"Transformador (CD)":x.Transformador,"Capacidad CD (kVA)":x.Capacidad_kVA||x.CapacidadCD||"",
     "Tipo Nodo":x.TipoNodo,"Material Nodo":x.MaterialNodo,"Características Nodo":x.CaracteristicasNodo,
     "Punto Físico":x.PuntoFisico,"Tipo de Redes BT":x.TipoRedBT,"Luminarias (AP)":x.Luminarias,
     "Latitud (Y)":x.Latitud,"Longitud (X)":x.Longitud,"Precisión (m)":x.Precision||"",
@@ -3411,6 +3594,100 @@ if ("serviceWorker" in navigator) {
       .catch(err => console.error("SW error:", err));
   });
 }
+</script>
+
+
+<script>
+/* === GS V2 PRO: presentación, secciones y galería. No cambia lógica. === */
+(function(){
+  const iconFor = (txt)=>{
+    txt=(txt||'').toLowerCase();
+    if(txt.includes('document')) return '▣';
+    if(txt.includes('norma')) return '⚙';
+    if(txt.includes('medidor')) return '▤';
+    if(txt.includes('técnic')||txt.includes('tecnic')) return '⚒';
+    if(txt.includes('población')||txt.includes('poblacion')) return '●';
+    if(txt.includes('foto')) return '▧';
+    return '●';
+  };
+  function applySectionIcons(){
+    document.querySelectorAll('.sectionLabel').forEach(el=>{
+      if(!el.dataset.gsIcon) el.dataset.gsIcon = iconFor(el.textContent);
+    });
+  }
+  function addPhotoPreview(input){
+    if(!input || input.dataset.gsPreviewReady) return;
+    input.dataset.gsPreviewReady='1';
+    const strip=document.createElement('div');
+    strip.className='gs-photo-strip';
+    strip.style.display='none';
+    input.insertAdjacentElement('afterend', strip);
+    input.addEventListener('change', ()=>{
+      strip.innerHTML='';
+      const files=Array.from(input.files||[]).slice(0,7);
+      if(!files.length){strip.style.display='none'; return;}
+      strip.style.display='flex';
+      files.forEach(f=>{
+        if(!f.type || !f.type.startsWith('image/')) return;
+        const img=document.createElement('img');
+        img.alt='Foto seleccionada';
+        img.src=URL.createObjectURL(f);
+        img.onload=()=>URL.revokeObjectURL(img.src);
+        strip.appendChild(img);
+      });
+    });
+  }
+  function addBottomNav(){
+    if(document.querySelector('.gs-bottom-nav')) return;
+    const nav=document.createElement('div');
+    nav.className='gs-bottom-nav';
+    nav.innerHTML=`
+      <button type="button" data-gs-act="home"><strong>⌂</strong><span>Inicio</span></button>
+      <button type="button" data-gs-act="reg"><strong>＋</strong><span>Registrar</span></button>
+      <button type="button" data-gs-act="count"><strong>▥</strong><span>Conteos</span></button>
+      <button type="button" data-gs-act="export"><strong>⇧</strong><span>Exportar</span></button>
+      <button type="button" data-gs-act="more"><strong>⋯</strong><span>Más</span></button>`;
+    document.body.appendChild(nav);
+    const click=(id)=>{ const el=document.getElementById(id); if(el) el.click(); };
+    nav.addEventListener('click',e=>{
+      const b=e.target.closest('button'); if(!b) return;
+      const a=b.dataset.gsAct;
+      if(a==='home') click('btnInicioFromRegistro') || click('btnInicioFromEstructuras') || click('btnFotosBackHome') || click('btnAcercaBackHome') || click('btnRespaldoBackHome');
+      if(a==='reg') click('homeRegistrar') || click('btnIrARegistro');
+      if(a==='count') click('homeConteo') || click('btnConteos');
+      if(a==='export') click('homeExportar') || click('btnExportar');
+      if(a==='more') click('utilAcerca');
+    });
+  }
+  function groupFormSections(){
+    // Añade cintas visuales antes de bloques cuando el formulario no tiene suficiente separación.
+    const defs = [
+      ['formUNC','1. Identificación del habitante','unc_nombres'],
+      ['formUNC','2. Información del predio','unc_pf'],
+      ['formUNC','3. Caracterización social','unc_tipo_poblacion'],
+      ['formUNC','4. Características técnicas','unc_estado'],
+      ['formCliente','1. Información del medidor','cli_pf'],
+      ['formCliente','2. Estado del medidor','cli_estado_medidor_group'],
+      ['formSusp','1. Información de suspensión','sus_pf'],
+      ['formBaldio','1. Información del predio','bal_pf']
+    ];
+    defs.forEach(([formId,title,beforeId])=>{
+      const form=document.getElementById(formId), target=document.getElementById(beforeId);
+      if(!form||!target||form.querySelector(`[data-gs-title="${title}"]`)) return;
+      const sec=document.createElement('div'); sec.className='sectionLabel'; sec.textContent=title; sec.dataset.gsTitle=title; sec.dataset.gsIcon=iconFor(title);
+      const holder=target.closest('.grid,.checklist,.chips') || target.parentElement;
+      if(holder) holder.insertAdjacentElement('beforebegin',sec);
+    });
+  }
+  function init(){
+    applySectionIcons();
+    groupFormSections();
+    document.querySelectorAll('input[type="file"][accept*="image"]').forEach(addPhotoPreview);
+    addBottomNav();
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init); else init();
+  setTimeout(init,500); setTimeout(init,1500);
+})();
 </script>
 
 </body>

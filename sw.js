@@ -1,8 +1,8 @@
-const CACHE_NAME = "gsdx-cache-v17"; // 🔥 CAMBIA ESTE NÚMERO EN CADA UPDATE
+const CACHE_NAME = "gsdx-cache-v2-pro-ficha"; // 🔥 CAMBIA ESTE NÚMERO EN CADA UPDATE
 
 const URLS_TO_CACHE = [
   "./",
-  "./index.html",
+  "./index (1).html",
   "./manifest.json",
   "./icon-192.png",
   "./icon-512.png",
