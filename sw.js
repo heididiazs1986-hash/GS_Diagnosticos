@@ -1,4 +1,4 @@
-const CACHE_NAME = "gsdx-cache-v2-pro-ficha"; // 🔥 CAMBIA ESTE NÚMERO EN CADA UPDATE
+const CACHE_NAME = "gsdx-cache-v2-ui-pdf-fix";
 
 const URLS_TO_CACHE = [
   "./",

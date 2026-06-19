@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>GS Diagnósticos V2 Pro</title>
+  <title>GS Diagnósticos V2 Ajustada Pro</title>
   <meta name="theme-color" content="#00133A" />
   <link rel="manifest" href="manifest.json">
   <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png?v=gsdx-red-2">
@@ -491,6 +491,31 @@ body.dark .pill,body.dark .form-counter{background:#102A5C!important;color:#C9DB
 
 </style>
   <script src="https://accounts.google.com/gsi/client" async defer></script>
+
+
+<style>
+/* === GS V2 PRO Correcciones visuales PDF Heidi === */
+.form-local-nav{display:none!important;}
+body.gs-home-active .gs-bottom-nav{display:none!important;}
+body.gs-home-active{padding-bottom:0!important;}
+#unc_predio_habitable{display:none!important;}
+.checkItem span{font-weight:500!important;text-transform:none!important;letter-spacing:0!important;color:#243650!important;}
+.checkItem{font-weight:500!important;text-transform:none!important;}
+body.dark .checkItem span{color:#E7EEFB!important;}
+#formCliente .field-hint{font-size:0!important;margin:0!important;height:0!important;overflow:hidden!important;}
+.gs-segment-row{display:grid;grid-template-columns:minmax(0,1fr) 168px;align-items:center;gap:12px;padding:10px 12px;border-bottom:1px solid #E6EEF9;background:#fff;}
+.gs-segment-row .gs-segment-label{font-size:13px;font-weight:700;color:#344765;line-height:1.25;}
+.gs-segment{display:grid;grid-template-columns:1fr 1fr;border:1px solid #C9DBFF;border-radius:14px;overflow:hidden;background:#fff;min-height:38px;}
+.gs-segment button{background:#fff!important;color:#00133A!important;border:0!important;border-radius:0!important;box-shadow:none!important;min-height:38px!important;padding:6px 10px!important;font-size:13px!important;}
+.gs-segment button.active{background:#00133A!important;color:#fff!important;}
+body.dark .gs-segment-row{background:#071A42!important;border-bottom-color:#18386F!important;}
+body.dark .gs-segment-row .gs-segment-label{color:#F8FBFF!important;}
+body.dark .gs-segment{background:#00133A!important;border-color:#1E4D91!important;}
+body.dark .gs-segment button{background:#102A5C!important;color:#F8FBFF!important;}
+body.dark .gs-segment button.active{background:#3399FF!important;color:#00133A!important;}
+@media(max-width:420px){.gs-segment-row{grid-template-columns:minmax(0,1fr) 142px;gap:8px}.gs-segment button{font-size:12px!important;padding:6px!important;}}
+</style>
+
 </head>
 <body>
 <header>
@@ -901,7 +926,7 @@ body.dark .pill,body.dark .form-counter{background:#102A5C!important;color:#C9DB
         <label class="checkItem"><input type="checkbox" class="cli_estado_chk" value="Visor opaco/requiere cambio"> <span>VISOR OPACO/REQUIERE CAMBIO</span></label>
       </div>
       <div class="grid">
-        <div class="chips"><label class="chip"><input type="checkbox" id="cli_req_inspeccion" disabled> ¿REQUIERE INSPECCIÓN/CAMBIO?</label><div class="field-hint">Se marca automáticamente con cualquier novedad diferente a “Medidor en buen estado”.</div></div>
+        <div class="chips"><label class="chip"><input type="checkbox" id="cli_req_inspeccion" disabled> ¿REQUIERE INSPECCIÓN/CAMBIO?</label></div>
       </div>
 
       <div class="grid">
@@ -1306,7 +1331,7 @@ function clearUNCForm(preserve=true){
   const keep = preserve ? {unc_pf:$('unc_pf').value, unc_sede:$('unc_sede').value, unc_municipio:$('unc_municipio').value, unc_localidad:$('unc_localidad').value, unc_tipo_zona:$('unc_tipo_zona').value} : {};
   ['unc_nombres','unc_identificacion','unc_contacto','unc_direccion','unc_lat','unc_lon','unc_acc','unc_long_nodo','unc_obs'].forEach(id=>$(id).value='');
   ['unc_tipo_material','unc_tipo_poblacion','unc_estado','unc_doc_propiedad'].forEach(id=>setSelectIfExists(id,''));
-  ['unc_predio_habitable','unc_ampliacion_redes','unc_e1','unc_ar','unc_dj','unc_e6','unc_ec_part','unc_doc_elec','unc_retie','unc_ec_inmel','unc_requiere_muro','unc_arriostre','unc_acometida','unc_ducto','unc_celda','unc_interruptor','unc_spt','unc_inst_interna'].forEach(id=>setCheckbox(id,false));
+  ['unc_ampliacion_redes','unc_e1','unc_ar','unc_dj','unc_e6','unc_ec_part','unc_doc_elec','unc_retie','unc_ec_inmel','unc_requiere_muro','unc_arriostre','unc_acometida','unc_ducto','unc_celda','unc_interruptor','unc_spt','unc_inst_interna'].forEach(id=>setCheckbox(id,false));
   clearFileInput('unc_fotos');
   applyFormValues(keep);
   saveDraft('unc', keep);
@@ -1348,14 +1373,14 @@ async function updateSilentAutoBackup(reason='auto'){
 }
 function bindDraftSystem(){
   bindDraftAutosave('estructuras',['est_tipo_nodo','est_material_nodo','est_caracteristicas','est_punto_fisico','est_tipo_red_bt','est_luminarias','est_lat','est_lon','est_acc','est_obs']);
-  bindDraftAutosave('unc',['unc_pf','unc_nombres','unc_identificacion','unc_contacto','unc_sede','unc_municipio','unc_direccion','unc_localidad','unc_tipo_zona','unc_tipo_material','unc_tipo_poblacion','unc_estado','unc_lat','unc_lon','unc_acc','unc_long_nodo','unc_doc_propiedad','unc_predio_habitable','unc_ampliacion_redes','unc_e1','unc_ar','unc_dj','unc_e6','unc_ec_part','unc_doc_elec','unc_retie','unc_ec_inmel','unc_requiere_muro','unc_arriostre','unc_acometida','unc_ducto','unc_celda','unc_interruptor','unc_spt','unc_inst_interna','unc_obs']);
+  bindDraftAutosave('unc',['unc_pf','unc_nombres','unc_identificacion','unc_contacto','unc_sede','unc_municipio','unc_direccion','unc_localidad','unc_tipo_zona','unc_tipo_material','unc_tipo_poblacion','unc_estado','unc_lat','unc_lon','unc_acc','unc_long_nodo','unc_doc_propiedad','unc_ampliacion_redes','unc_e1','unc_ar','unc_dj','unc_e6','unc_ec_part','unc_doc_elec','unc_retie','unc_ec_inmel','unc_requiere_muro','unc_arriostre','unc_acometida','unc_ducto','unc_celda','unc_interruptor','unc_spt','unc_inst_interna','unc_obs']);
   bindDraftAutosave('cliente',['cli_pf','cli_serie','cli_marca','cli_fases','cli_lat','cli_lon','cli_acc','cli_long_nodo','cli_req_inspeccion','cli_obs']);
   bindDraftAutosave('susp',['sus_pf','sus_lat','sus_lon','sus_acc','sus_long_nodo','sus_motivo','sus_obs']);
   bindDraftAutosave('baldio',['bal_pf','bal_estado','bal_lat','bal_lon','bal_acc','bal_long_nodo','bal_obs']);
 }
 window.addEventListener('beforeunload', ()=>{
   saveDraft('estructuras', collectFormValues(['est_tipo_nodo','est_material_nodo','est_caracteristicas','est_punto_fisico','est_tipo_red_bt','est_luminarias','est_lat','est_lon','est_acc','est_obs']));
-  saveDraft('unc', collectFormValues(['unc_pf','unc_nombres','unc_identificacion','unc_contacto','unc_sede','unc_municipio','unc_direccion','unc_localidad','unc_tipo_zona','unc_tipo_material','unc_tipo_poblacion','unc_estado','unc_lat','unc_lon','unc_acc','unc_long_nodo','unc_doc_propiedad','unc_predio_habitable','unc_ampliacion_redes','unc_e1','unc_ar','unc_dj','unc_e6','unc_ec_part','unc_doc_elec','unc_retie','unc_ec_inmel','unc_requiere_muro','unc_arriostre','unc_acometida','unc_ducto','unc_celda','unc_interruptor','unc_spt','unc_inst_interna','unc_obs']));
+  saveDraft('unc', collectFormValues(['unc_pf','unc_nombres','unc_identificacion','unc_contacto','unc_sede','unc_municipio','unc_direccion','unc_localidad','unc_tipo_zona','unc_tipo_material','unc_tipo_poblacion','unc_estado','unc_lat','unc_lon','unc_acc','unc_long_nodo','unc_doc_propiedad','unc_ampliacion_redes','unc_e1','unc_ar','unc_dj','unc_e6','unc_ec_part','unc_doc_elec','unc_retie','unc_ec_inmel','unc_requiere_muro','unc_arriostre','unc_acometida','unc_ducto','unc_celda','unc_interruptor','unc_spt','unc_inst_interna','unc_obs']));
   saveDraft('cliente', collectFormValues(['cli_pf','cli_serie','cli_marca','cli_fases','cli_lat','cli_lon','cli_acc','cli_long_nodo','cli_req_inspeccion','cli_obs']));
   saveDraft('susp', collectFormValues(['sus_pf','sus_lat','sus_lon','sus_acc','sus_long_nodo','sus_motivo','sus_obs']));
   saveDraft('baldio', collectFormValues(['bal_pf','bal_estado','bal_lat','bal_lon','bal_acc','bal_long_nodo','bal_obs']));
@@ -1709,7 +1734,7 @@ async function calcularLongitudNodo(formKey){
   const metros = formatMeters(haversineMeters(lat1, lon1, lat2, lon2));
   out.value = metros;
   saveDraft(formKey, collectFormValues({
-    unc:['unc_pf','unc_nombres','unc_identificacion','unc_contacto','unc_sede','unc_municipio','unc_direccion','unc_localidad','unc_tipo_zona','unc_tipo_material','unc_tipo_poblacion','unc_estado','unc_lat','unc_lon','unc_acc','unc_long_nodo','unc_doc_propiedad','unc_predio_habitable','unc_ampliacion_redes','unc_e1','unc_ar','unc_dj','unc_e6','unc_ec_part','unc_doc_elec','unc_retie','unc_ec_inmel','unc_requiere_muro','unc_arriostre','unc_acometida','unc_ducto','unc_celda','unc_interruptor','unc_spt','unc_inst_interna','unc_obs'],
+    unc:['unc_pf','unc_nombres','unc_identificacion','unc_contacto','unc_sede','unc_municipio','unc_direccion','unc_localidad','unc_tipo_zona','unc_tipo_material','unc_tipo_poblacion','unc_estado','unc_lat','unc_lon','unc_acc','unc_long_nodo','unc_doc_propiedad','unc_ampliacion_redes','unc_e1','unc_ar','unc_dj','unc_e6','unc_ec_part','unc_doc_elec','unc_retie','unc_ec_inmel','unc_requiere_muro','unc_arriostre','unc_acometida','unc_ducto','unc_celda','unc_interruptor','unc_spt','unc_inst_interna','unc_obs'],
     cli:['cli_pf','cli_serie','cli_marca','cli_fases','cli_lat','cli_lon','cli_acc','cli_long_nodo','cli_req_inspeccion','cli_obs'],
     sus:['sus_pf','sus_lat','sus_lon','sus_acc','sus_long_nodo','sus_motivo','sus_obs'],
     bal:['bal_pf','bal_estado','bal_lat','bal_lon','bal_acc','bal_long_nodo','bal_obs']
@@ -1912,7 +1937,7 @@ function bindAllAutoObservations(){
   bindManualObservationFlag('cli_obs');
   bindManualObservationFlag('sus_obs');
   bindManualObservationFlag('bal_obs');
-  ['unc_pf','unc_tipo_zona','unc_tipo_material','unc_estado','unc_doc_propiedad','unc_predio_habitable','unc_ampliacion_redes','unc_e1','unc_ar','unc_dj','unc_e6','unc_ec_part','unc_doc_elec','unc_retie','unc_ec_inmel','unc_requiere_muro','unc_arriostre','unc_acometida','unc_ducto','unc_celda','unc_interruptor','unc_spt','unc_inst_interna'].forEach(id=>$(id)?.addEventListener('change', ()=>maybeAutofillUNCObservation(false)));
+  ['unc_pf','unc_tipo_zona','unc_tipo_material','unc_estado','unc_doc_propiedad','unc_ampliacion_redes','unc_e1','unc_ar','unc_dj','unc_e6','unc_ec_part','unc_doc_elec','unc_retie','unc_ec_inmel','unc_requiere_muro','unc_arriostre','unc_acometida','unc_ducto','unc_celda','unc_interruptor','unc_spt','unc_inst_interna'].forEach(id=>$(id)?.addEventListener('change', ()=>maybeAutofillUNCObservation(false)));
   ['cli_pf','cli_serie','cli_marca','cli_fases','cli_req_inspeccion'].forEach(id=>$(id)?.addEventListener('change', ()=>maybeAutofillClienteObservation(false)));
   document.querySelectorAll('.cli_estado_chk').forEach(ch=>ch.addEventListener('change', ()=>maybeAutofillClienteObservation(false)));
   $('cli_serie')?.addEventListener('input', ()=>maybeAutofillClienteObservation(false));
@@ -2091,7 +2116,6 @@ async function buildUNC(){
     Precision:$("unc_acc").value||"",
     LongitudNodo:sanitizeMeters($("unc_long_nodo").value)||"",
     gpsISO:(($("unc_lat").dataset.gpsISO)||""),
-    PredioHabitable:$("unc_predio_habitable").checked?"Sí":"No",
     AmpliacionRedes:$("unc_ampliacion_redes").checked?"Sí":"No",
     Estado:$("unc_estado").value||"",
     DocPropiedad:$("unc_doc_propiedad").value||"",
@@ -2213,7 +2237,7 @@ function buildExcel(estr,unc,cli,sus,bal){
   };
 
   const hdrE=["Ítem","Transformador (CD)","Capacidad CD (kVA)","Tipo Nodo","Material Nodo","Características Nodo","Punto Físico","Tipo de Redes BT","Luminarias (AP)","Latitud (Y)","Longitud (X)","Precisión (m)","FECHA_HORA","GPS_HORA","Observaciones"];
-  const hdrU=["Ítem","Transformador (CD)","Punto Físico","Longitud al nodo (m)","Nombres","Identificación","Contacto","Sede","Municipio","Dirección","Localidad","Tipo Zona","Tipo material","Tipo de población","¿Predio habitable?","Para servicio requiere ampliación de redes","Documento de propiedad","Formato E1","AR","DJ","E6","EC Particular","Doc. electricista","RETIE","EC Inmel","Estado","¿Requiere muro?","¿Requiere uso de arriostre?","Acometida","Ducto 1\" Galv.","Celda","Interruptor","SPT (Tierra)","Instalación interna","Latitud (Y)","Longitud (X)","Precisión (m)","FECHA_HORA","GPS_HORA","Observaciones"];
+  const hdrU=["Ítem","Transformador (CD)","Punto Físico","Longitud al nodo (m)","Nombres","Identificación","Contacto","Sede","Municipio","Dirección","Localidad","Tipo Zona","Tipo material","Tipo de población","Para servicio requiere ampliación de redes","Documento de propiedad","Formato E1","AR","DJ","E6","EC Particular","Doc. electricista","RETIE","EC Inmel","Estado","¿Requiere muro?","¿Requiere uso de arriostre?","Acometida","Ducto 1\" Galv.","Celda","Interruptor","SPT (Tierra)","Instalación interna","Latitud (Y)","Longitud (X)","Precisión (m)","FECHA_HORA","GPS_HORA","Observaciones"];
   const hdrC=["Ítem","Transformador (CD)","Punto Físico","Longitud al nodo (m)","Serie de medidor","Marca de medidor","No. Fases","Estado de medidor","¿Requiere inspección/Cambio?","Latitud (Y)","Longitud (X)","Precisión (m)","FECHA_HORA","GPS_HORA","Observaciones"];
   const hdrS=["Ítem","Transformador (CD)","Punto Físico","Longitud al nodo (m)","Motivo de suspensión","Latitud (Y)","Longitud (X)","Precisión (m)","FECHA_HORA","GPS_HORA","Observaciones"];
   const hdrB=["Ítem","Transformador (CD)","Punto Físico","Longitud al nodo (m)","Estado","Latitud (Y)","Longitud (X)","Precisión (m)","FECHA_HORA","GPS_HORA","Observaciones"];
@@ -2230,7 +2254,7 @@ function buildExcel(estr,unc,cli,sus,bal){
     "Nombres":x.Nombres,"Identificación":x.Identificacion,"Contacto":x.Contacto,
     "Sede":x.Sede,"Municipio":x.Municipio,"Dirección":x.Direccion,"Localidad":x.Localidad,
     "Tipo Zona":x.TipoZona,"Tipo material":x.TipoMaterial,"Tipo de población":x.TipoPoblacion||"",
-    "¿Predio habitable?":x.PredioHabitable,"Para servicio requiere ampliación de redes":x.AmpliacionRedes,
+    "Para servicio requiere ampliación de redes":x.AmpliacionRedes,
     "Documento de propiedad":x.DocPropiedad,
     "Formato E1":x.E1,"AR":x.AR,"DJ":x.DJ,"E6":x.E6,
     "EC Particular":x.ECPart,"Doc. electricista":x.DocElectricista,"RETIE":x.RETIE,"EC Inmel":x.ECInmel,
@@ -2793,7 +2817,6 @@ function wireEvents(){
       $("unc_estado").value = rec.Estado||"";
       $("unc_lat").value = rec.Latitud||""; $("unc_lon").value = rec.Longitud||""; $("unc_acc").value = rec.Precision||""; $("unc_long_nodo").value = rec.LongitudNodo||"";
       $("unc_doc_propiedad").value = rec.DocPropiedad||"";
-      $("unc_predio_habitable").checked = (rec.PredioHabitable==="Sí");
       $("unc_ampliacion_redes").checked = (rec.AmpliacionRedes==="Sí");
       $("unc_e1").checked = (rec.E1==="Sí");
       $("unc_ar").checked = (rec.AR==="Sí");
@@ -2870,7 +2893,7 @@ let modExcelFilteredRows = [];
 let modExcelActiveIndex = -1;
 const MOD_NO_EDIT = ["Ítem","PDI","Municipio"];
 const MOD_CHECK_COLS = [
-  "Predio habitable","Requiere construir muro","Requiere ampliación/remodelación de redes",
+"Requiere construir muro","Requiere ampliación/remodelación de redes",
   "Formato E1 Solicitud","Aceptación de requisitos","Declaración Juramentada","Formato E6 RT",
   "EC Particular","Documentos electricista","Declaración RETIE","EC Inmel",
   "Acometida","Ducto 1 Pulgada Galv.","Celda","Interruptor","SPT (Tierra)","Instalación interna"
@@ -2945,7 +2968,7 @@ function openModExcelRecord(index){
   renderModExcelTable();
 
   const groupDocs = ["Formato E1 Solicitud","Aceptación de requisitos","Declaración Juramentada","Formato E6 RT","EC Particular","Documentos electricista","Declaración RETIE","EC Inmel"];
-  const groupNorma = ["Predio habitable","Requiere construir muro","Requiere ampliación/remodelación de redes","Acometida","Ducto 1 Pulgada Galv.","Celda","Interruptor","SPT (Tierra)","Instalación interna"];
+  const groupNorma = ["Requiere construir muro","Requiere ampliación/remodelación de redes","Acometida","Ducto 1 Pulgada Galv.","Celda","Interruptor","SPT (Tierra)","Instalación interna"];
   const coordLatHeader = modExcelHeaders.find(h=>normHeader(h)==="LATITUD (Y)") || "Latitud (Y)";
   const coordLonHeader = modExcelHeaders.find(h=>normHeader(h)==="LONGITUD (X)") || "Longitud (X)";
   let coordAccHeader = modExcelHeaders.find(h=>["PRECISIÓN (M)","PRECISION (M)","PRECISIÓN","PRECISION"].includes(normHeader(h)));
@@ -3589,7 +3612,7 @@ updateLastDriveSyncUI();
 <script>
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("./sw.js?v=20")
+    navigator.serviceWorker.register("./sw.js?v=22")
       .then(reg => console.log("SW registrado:", reg.scope))
       .catch(err => console.error("SW error:", err));
   });
@@ -3687,6 +3710,201 @@ if ("serviceWorker" in navigator) {
   }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init); else init();
   setTimeout(init,500); setTimeout(init,1500);
+})();
+</script>
+
+
+
+<script>
+/* === GS V2 PRO Correcciones PDF Heidi === */
+(function(){
+  const $ = (id)=>document.getElementById(id);
+  const titleCase = (txt)=>String(txt||'').toLowerCase().replace(/(^|[\s¿(\/\-])([a-záéíóúñü])/g,(m,p,c)=>p+c.toUpperCase()).replace(/\bCc\b/g,'CC').replace(/\bCm\b/g,'CM').replace(/\bTp\b/g,'TP').replace(/\bLed(s)?\b/g,'LED$1').replace(/\bSpt\b/g,'SPT').replace(/\bRetie\b/g,'RETIE').replace(/\bInmel\b/g,'INMEL').replace(/\bE1\b/g,'E1').replace(/\bE6\b/g,'E6').replace(/\bDj\b/g,'DJ').replace(/\bAr\b/g,'AR');
+
+  function setBottomNavState(){
+    const home=$('screenHome');
+    document.body.classList.toggle('gs-home-active', !!(home && home.style.display !== 'none' && home.classList.contains('active')));
+  }
+
+  function removeTopFormNav(){
+    document.querySelectorAll('.form-local-nav').forEach(n=>n.remove());
+  }
+
+  function removePredioHabitable(){
+    const el=$('unc_predio_habitable');
+    if(el){
+      const box=el.closest('.chip,.checkItem,.chips,.grid > div');
+      if(box) box.remove();
+    }
+    document.querySelectorAll('label, span, div').forEach(node=>{
+      if(node.textContent && node.textContent.trim().toUpperCase()==='¿PREDIO HABITABLE?'){
+        const box=node.closest('.chip,.checkItem,.modCheck,.grid > div');
+        if(box) box.remove();
+      }
+    });
+  }
+
+  function normalizeCheckboxTypography(){
+    document.querySelectorAll('.checkItem span').forEach(sp=>{
+      const t=sp.textContent.trim();
+      if(t) sp.textContent=titleCase(t);
+    });
+    document.querySelectorAll('.checkItem').forEach(label=>{
+      label.style.fontWeight='500';
+      label.style.textTransform='none';
+    });
+  }
+
+  function removeDuplicateSections(){
+    document.querySelectorAll('.sectionLabel').forEach(sec=>{
+      const t=(sec.dataset.gsTitle || sec.textContent || '').trim().toLowerCase();
+      if(t==='2. estado del medidor') sec.remove();
+    });
+  }
+
+  function findSection(text){
+    text=String(text||'').toLowerCase();
+    return [...document.querySelectorAll('#formUNC .sectionLabel')].find(sec=>(sec.textContent||'').toLowerCase().includes(text));
+  }
+  function nextSectionAfter(el){
+    let n=el && el.nextElementSibling;
+    while(n){ if(n.classList && n.classList.contains('sectionLabel')) return n; n=n.nextElementSibling; }
+    return null;
+  }
+  function moveRangeAfter(start,end,after){
+    if(!start||!after) return;
+    const frag=document.createDocumentFragment();
+    let n=start;
+    while(n){
+      const next=n.nextElementSibling;
+      frag.appendChild(n);
+      if(n===end) break;
+      n=next;
+    }
+    after.insertAdjacentElement('afterend', document.createComment('gs-range-anchor'));
+    const marker=after.nextSibling;
+    marker.parentNode.insertBefore(frag, marker.nextSibling);
+    marker.remove();
+  }
+
+  function makeSegmentForCheckbox(id,labelText){
+    const cb=$(id); if(!cb || cb.dataset.segmented==='1') return null;
+    cb.dataset.segmented='1';
+    const original=cb.closest('.checkItem,.chip');
+    if(original) original.style.display='none';
+    const row=document.createElement('div');
+    row.className='gs-segment-row';
+    row.dataset.for=id;
+    row.innerHTML=`<div class="gs-segment-label">${labelText}</div><div class="gs-segment"><button type="button" data-v="1">Sí</button><button type="button" data-v="0">No</button></div>`;
+    const sync=()=>{
+      row.querySelector('[data-v="1"]').classList.toggle('active', cb.checked);
+      row.querySelector('[data-v="0"]').classList.toggle('active', !cb.checked);
+    };
+    row.addEventListener('click',e=>{
+      const b=e.target.closest('button[data-v]'); if(!b) return;
+      cb.checked = b.dataset.v==='1';
+      cb.dispatchEvent(new Event('change',{bubbles:true}));
+      sync();
+    });
+    cb.addEventListener('change',sync);
+    sync();
+    return row;
+  }
+
+  function reorderUNC(){
+    const form=$('formUNC'); if(!form || form.dataset.gsOrdered==='1') return;
+    form.dataset.gsOrdered='1';
+    // Quitar el campo predio habitable antes de organizar.
+    removePredioHabitable();
+
+    // Documento de propiedad pasa a ser el primer campo del apartado Documentos requeridos.
+    const docSec=findSection('documentos requeridos') || [...form.querySelectorAll('.sectionLabel')].find(x=>(x.textContent||'').toLowerCase().includes('documentos'));
+    const docGrid=$('unc_doc_propiedad')?.closest('.grid');
+    const docsList=docSec ? docSec.nextElementSibling : null;
+    if(docSec && docGrid){ docSec.insertAdjacentElement('afterend', docGrid); }
+
+    // Características técnicas: se mantiene Estado allí y se agregan tres botones Sí/No.
+    const estadoGrid=$('unc_estado')?.closest('.grid');
+    const longGrid=$('unc_long_nodo')?.closest('.grid');
+    const gpsGrid=$('unc_lat')?.closest('.grid');
+    const carSec=findSection('características técnicas') || [...form.querySelectorAll('.sectionLabel')].find(x=>(x.textContent||'').toLowerCase().includes('caracter'));
+    const revSec=findSection('revisión norma técnica') || [...form.querySelectorAll('.sectionLabel')].find(x=>(x.textContent||'').toLowerCase().includes('revisión'));
+    if(carSec && docSec && docsList){
+      // ubicar Características después de Documentos requeridos + checklist.
+      const afterDocs = docsList.classList?.contains('checklist') ? docsList : docGrid;
+      const nodes=[carSec, estadoGrid, longGrid, gpsGrid].filter(Boolean);
+      let after=afterDocs;
+      nodes.forEach(n=>{ if(n && n.parentNode){ after.insertAdjacentElement('afterend', n); after=n; } });
+    }
+    const segments = [
+      ['unc_ampliacion_redes','Para servicio requiere ampliación de redes'],
+      ['unc_requiere_muro','¿Requiere construir muro?'],
+      ['unc_arriostre','¿Requiere uso de arriostre?']
+    ].map(([id,txt])=>makeSegmentForCheckbox(id,txt)).filter(Boolean);
+    let after = $('unc_estado')?.closest('.grid') || carSec;
+    segments.forEach(seg=>{ if(after){ after.insertAdjacentElement('afterend',seg); after=seg; } });
+
+    // Revisión norma técnica queda después de Características y solo con los demás ítems normativos.
+    if(revSec){
+      const revList = revSec.nextElementSibling;
+      const ref = $('unc_acc')?.closest('.grid') || longGrid || after;
+      if(ref){
+        ref.insertAdjacentElement('afterend', revSec);
+        if(revList && revList.classList.contains('checklist')) revSec.insertAdjacentElement('afterend', revList);
+      }
+    }
+  }
+
+  function numberSections(){
+    const maps=[
+      ['formUNC',['Identificación del habitante','Información del predio','Caracterización social','Documentos requeridos','Características técnicas','Revisión norma técnica']],
+      ['formCliente',['Información del medidor','Estado de medidor']],
+      ['formSusp',['Información de suspensión']],
+      ['formBaldio',['Información del predio']]
+    ];
+    maps.forEach(([formId,names])=>{
+      const form=$(formId); if(!form) return;
+      let idx=1;
+      form.querySelectorAll('.sectionLabel').forEach(sec=>{
+        let clean=(sec.dataset.gsTitle || sec.textContent || '').replace(/^\s*\d+\.\s*/,'').trim();
+        if(!clean || clean.toLowerCase()==='estado de medidor' && formId==='formCliente') clean='Estado de medidor';
+        if(names.some(n=>n.toLowerCase()===clean.toLowerCase()) || formId!=='formUNC'){
+          sec.textContent = `${idx}. ${clean}`;
+          sec.dataset.gsTitle = sec.textContent;
+          idx++;
+        }
+      });
+    });
+  }
+
+  function cleanupReqInspeccion(){
+    const cb=$('cli_req_inspeccion');
+    if(cb){
+      const wrap=cb.closest('.chips') || cb.parentElement;
+      if(wrap){
+        wrap.querySelectorAll('.field-hint').forEach(x=>x.remove());
+      }
+    }
+  }
+
+  function initFixes(){
+    removeTopFormNav();
+    removePredioHabitable();
+    normalizeCheckboxTypography();
+    removeDuplicateSections();
+    cleanupReqInspeccion();
+    reorderUNC();
+    numberSections();
+    setBottomNavState();
+  }
+
+  const oldShow = window.show;
+  if(typeof oldShow==='function' && !oldShow.__gsFixed){
+    window.show = function(id){ const r=oldShow.apply(this,arguments); setTimeout(initFixes,0); return r; };
+    window.show.__gsFixed=true;
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',initFixes); else initFixes();
+  setTimeout(initFixes,500); setTimeout(initFixes,1600);
 })();
 </script>
 
