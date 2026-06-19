@@ -2,7 +2,7 @@ const CACHE_NAME = "gsdx-cache-v2-ui-pdf-fix";
 
 const URLS_TO_CACHE = [
   "./",
-  "./index (1).html",
+  "./index.html",
   "./manifest.json",
   "./icon-192.png",
   "./icon-512.png",
