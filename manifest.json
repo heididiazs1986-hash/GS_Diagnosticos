@@ -1,6 +1,6 @@
 {
   "name": "GS Diagnósticos",
-  "short_name": "GS",
+  "short_name": "GS_DX",
   "start_url": "/index.html?v=v3.0.2-final-apk-ready",
   "display": "standalone",
   "background_color": "#d40000",
