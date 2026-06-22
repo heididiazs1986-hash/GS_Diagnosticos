@@ -27,7 +27,6 @@ jobs:
           mkdir -p apk-build/www
           shopt -s extglob dotglob
 
-          # Copia la app web al directorio www, excluyendo carpetas de GitHub/Git.
           rsync -av \
             --exclude='.git' \
             --exclude='.github' \
@@ -36,17 +35,23 @@ jobs:
 
           cd apk-build
 
+          # Si por error el archivo está como índice.html, crear copia como index.html
+          if [ -f "www/índice.html" ] && [ ! -f "www/index.html" ]; then
+            cp "www/índice.html" "www/index.html"
+          fi
+
           npm init -y
           npm install @capacitor/core @capacitor/cli @capacitor/android
 
           npx cap init "GS Diagnósticos" "com.gsocial.gsdiagnosticos" --web-dir=www
           npx cap add android
 
-          # Permisos útiles para GS Diagnósticos: GPS, cámara, internet y archivos.
-          MANIFEST="android/app/src/main/AndroidManifest.xml"
+          npx cap sync android
 
+          # Permisos útiles para GS Diagnósticos
           python3 - <<'PY'
           from pathlib import Path
+          import re
 
           p = Path("android/app/src/main/AndroidManifest.xml")
           txt = p.read_text()
@@ -61,13 +66,10 @@ jobs:
               '<uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />'
           ]
 
-          for perm in perms:
-              if perm not in txt:
-                  txt = txt.replace("<manifest", perm + "\n<manifest", 1)
-
-          txt = txt.replace('android:label="@string/app_name"', 'android:label="GS Diagnósticos"')
-          txt = txt.replace('android:allowBackup="true"', 'android:allowBackup="true"')
-          txt = txt.replace('android:usesCleartextTraffic="true"', 'android:usesCleartextTraffic="true"')
+          # Insertar permisos DESPUÉS de la etiqueta <manifest ...>, no antes.
+          insert = "\n    " + "\n    ".join([perm for perm in perms if perm not in txt]) + "\n"
+          if insert.strip():
+              txt = re.sub(r'(<manifest[^>]*>)', r'\1' + insert, txt, count=1)
 
           p.write_text(txt)
           PY
@@ -75,10 +77,11 @@ jobs:
           # Nombre visible de la app
           python3 - <<'PY'
           from pathlib import Path
+          import re
           p = Path("android/app/src/main/res/values/strings.xml")
           txt = p.read_text()
-          txt = txt.replace("<string name=\"app_name\">GS Diagnósticos</string>", "<string name=\"app_name\">GS Diagnósticos</string>")
-          txt = txt.replace("<string name=\"title_activity_main\">GS Diagnósticos</string>", "<string name=\"title_activity_main\">GS Diagnósticos</string>")
+          txt = re.sub(r'<string name="app_name">.*?</string>', '<string name="app_name">GS Diagnósticos</string>', txt)
+          txt = re.sub(r'<string name="title_activity_main">.*?</string>', '<string name="title_activity_main">GS Diagnósticos</string>', txt)
           p.write_text(txt)
           PY
 
@@ -88,7 +91,7 @@ jobs:
         run: |
           cd apk-build/android
           chmod +x gradlew
-          ./gradlew assembleDebug
+          ./gradlew assembleDebug --stacktrace
 
       - name: Subir APK como artefacto
         uses: actions/upload-artifact@v4
