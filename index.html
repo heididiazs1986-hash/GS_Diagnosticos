@@ -2578,8 +2578,7 @@ async function ofrecerLimpiezaDespuesExportar(cdAct, resumenExportado=null){
       "Aceptar = Sí, limpiar información del aplicativo.",
       "Cancelar = No, conservar para continuar en otra jornada."
     ];
-    const ok = confirm(lineas.join("
-"));
+    const ok = confirm(lineas.join("\\n"));
     if(!ok){
       toast("Información conservada para continuar en otra jornada");
       return;
@@ -2587,12 +2586,8 @@ async function ofrecerLimpiezaDespuesExportar(cdAct, resumenExportado=null){
     const total = await limpiarCDActualDespuesExportar(cdAct);
     toast("CD finalizado y limpiado del aplicativo ✅");
     alert(
-      "Limpieza completada.
-
-" +
-      "Se eliminaron " + total + " registros del CD " + cdAct + " dentro de la app.
-
-" +
+      "Limpieza completada.\\n\\n" +
+      "Se eliminaron " + total + " registros del CD " + cdAct + " dentro de la app.\\n\\n" +
       "Puedes iniciar o continuar con otro CD."
     );
   }catch(e){
@@ -2699,7 +2694,7 @@ async function registerSW(){
   try{
     if(location.protocol==="file:") return;
     if(!("serviceWorker" in navigator)) return;
-    const reg = await navigator.serviceWorker.register("./sw.js?v=22", { updateViaCache: "none" });
+    const reg = await navigator.serviceWorker.register("./sw.js?v=v3.0.1-apk-candidate-fix", { updateViaCache: "none" });
     await reg.update();
   }catch(e){}
 }
@@ -3862,7 +3857,7 @@ updateLastDriveSyncUI();
 <script>
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("./sw.js?v=22")
+    navigator.serviceWorker.register("./sw.js?v=v3.0.1-apk-candidate-fix")
       .then(reg => console.log("SW registrado:", reg.scope))
       .catch(err => console.error("SW error:", err));
   });
@@ -4222,7 +4217,7 @@ if ("serviceWorker" in navigator) {
 
 <script id="gs-cache-manager">
 (function(){
-  const GS_APP_VERSION = "v3.0.0-apk-candidate";
+  const GS_APP_VERSION = "v3.0.1-apk-candidate-fix";
   const VERSION_URL = "./version.json?v=" + Date.now();
 
   function showBanner(remoteVersion){

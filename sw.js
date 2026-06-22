@@ -1,4 +1,4 @@
-const CACHE_NAME = "gsdx-cache-v3.0.0-apk-candidate";
+const CACHE_NAME = "gsdx-cache-v3.0.1-apk-candidate-fix";
 const APP_SHELL = [
   "./",
   "./index.html",
@@ -26,20 +26,15 @@ self.addEventListener("activate", (event) => {
 });
 
 self.addEventListener("message", (event) => {
-  if(event.data && event.data.type === "SKIP_WAITING") {
-    self.skipWaiting();
-  }
+  if(event.data && event.data.type === "SKIP_WAITING") self.skipWaiting();
 });
 
 self.addEventListener("fetch", (event) => {
   if (event.request.method !== "GET") return;
-
   const url = new URL(event.request.url);
 
   if (url.pathname.endsWith("/version.json") || url.search.includes("v=")) {
-    event.respondWith(
-      fetch(event.request, {cache:"no-store"}).catch(() => caches.match(event.request))
-    );
+    event.respondWith(fetch(event.request, {cache:"no-store"}).catch(() => caches.match(event.request)));
     return;
   }
 
