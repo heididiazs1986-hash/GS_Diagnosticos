@@ -1,4 +1,4 @@
-const CACHE_NAME = "gsdx-cache-v3-0-2-pwa-install-fix";
+const CACHE_NAME = "gsdx-cache-v3.0.2-final-apk-ready";
 
 const APP_SHELL = [
   "/",
@@ -35,9 +35,7 @@ self.addEventListener("activate", (event) => {
 });
 
 self.addEventListener("message", (event) => {
-  if (event.data && event.data.type === "SKIP_WAITING") {
-    self.skipWaiting();
-  }
+  if (event.data && event.data.type === "SKIP_WAITING") self.skipWaiting();
 });
 
 self.addEventListener("fetch", (event) => {

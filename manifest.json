@@ -1,16 +1,8 @@
 {
-  "id": "/",
   "name": "GS Diagnósticos",
   "short_name": "GS",
-  "description": "Aplicación de diagnóstico técnico y social en campo.",
-  "start_url": "/index.html",
-  "scope": "/",
+  "start_url": "/index.html?v=v3.0.2-final-apk-ready",
   "display": "standalone",
-  "display_override": [
-    "standalone",
-    "fullscreen",
-    "minimal-ui"
-  ],
   "background_color": "#d40000",
   "theme_color": "#d40000",
   "orientation": "portrait",
@@ -27,6 +19,14 @@
       "type": "image/png",
       "purpose": "any maskable"
     }
+  ],
+  "scope": "/",
+  "id": "/",
+  "description": "Aplicación de diagnóstico técnico y social en campo.",
+  "display_override": [
+    "standalone",
+    "fullscreen",
+    "minimal-ui"
   ],
   "prefer_related_applications": false,
   "categories": [
