@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>GS Diagnósticos V2 Ajustada Pro</title>
-  <meta name="theme-color" content="#00133A" />
+  <meta name="theme-color" content="#d40000" />
   <link rel="manifest" href="manifest.json">
   <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png?v=gsdx-red-2">
   <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png?v=gsdx-red-2">
@@ -514,6 +514,177 @@ body.dark .gs-segment{background:#00133A!important;border-color:#1E4D91!importan
 body.dark .gs-segment button{background:#102A5C!important;color:#F8FBFF!important;}
 body.dark .gs-segment button.active{background:#3399FF!important;color:#00133A!important;}
 @media(max-width:420px){.gs-segment-row{grid-template-columns:minmax(0,1fr) 142px;gap:8px}.gs-segment button{font-size:12px!important;padding:6px!important;}}
+</style>
+
+
+<style id="gs-inmel-corporativo-fix">
+/* === FIX INMEL: regresar a rojo corporativo y conservar layout actual === */
+:root{
+  --gs-navy:#d40000!important;
+  --gs-navy-2:#9f0000!important;
+  --gs-blue:#b40808!important;
+  --gs-blue-2:#ed0e0e!important;
+  --gs-sky:#ff4d4d!important;
+  --gs-soft:#ffd6d6!important;
+  --gs-bg:#fff5f5!important;
+  --gs-row:#ffffff!important;
+  --gs-line:#f1c7c7!important;
+  --gs-text:#2b1111!important;
+  --gs-muted:#7a4b4b!important;
+  --rojo:#d40000!important;
+  --rojo-osc:#9f0000!important;
+  --gris:#fff7f7!important;
+  --borde:#f1c7c7!important;
+  --texto:#2b1111!important;
+  --muted:#7a4b4b!important;
+}
+html{background:#d40000!important;}
+body{
+  background:linear-gradient(180deg,#fff1f1 0%,#fffafa 42%,#fff4f4 100%)!important;
+  color:#2b1111!important;
+}
+header,
+.gs-bottom-nav{
+  background:linear-gradient(135deg,#d40000 0%,#b40808 56%,#7f0000 100%)!important;
+}
+header{box-shadow:0 16px 34px rgba(212,0,0,.26)!important;}
+.title h2,.stat-card .n,.sectionLabel,.gs-segment-row .gs-segment-label{
+  color:#4a1111!important;
+}
+.pill,.form-counter,.action-btn .ico,.registro-card-menu .reg-ico{
+  background:#fff1f1!important;
+  color:#b40808!important;
+  border-color:#ffd0d0!important;
+}
+.card,.floating-panel,.modalCard,.stat-card,.action-btn,.registro-card-menu button{
+  border-color:#f1c7c7!important;
+}
+.sectionLabel{
+  background:linear-gradient(90deg,#fff1f1 0%,#fffafa 100%)!important;
+  border-color:#f1c7c7!important;
+  color:#4a1111!important;
+}
+button,.ok{
+  background:linear-gradient(135deg,#d40000,#9f0000)!important;
+  color:#fff!important;
+}
+button.secondary,.soft-btn,.utility-item{
+  background:#fff!important;
+  color:#8a0000!important;
+  border-color:#ffd0d0!important;
+}
+input:focus,select:focus,textarea:focus{
+  border-color:#ed0e0e!important;
+  box-shadow:0 0 0 3px rgba(212,0,0,.14)!important;
+}
+.checkItem input[type="checkbox"], input[type="checkbox"]{
+  accent-color:#d40000!important;
+}
+.gs-segment{border-color:#ffd0d0!important;}
+.gs-segment button{
+  background:#fff!important;
+  color:#7f0000!important;
+}
+.gs-segment button.active{
+  background:#d40000!important;
+  color:#fff!important;
+}
+body.dark{
+  background:#190000!important;
+  color:#fff7f7!important;
+}
+body.dark header,
+body.dark .gs-bottom-nav{
+  background:linear-gradient(135deg,#7f0000,#2a0000)!important;
+}
+body.dark .card,body.dark .floating-panel,body.dark .modalCard,
+body.dark #screen1 .grid,body.dark #screen2 .grid,body.dark #screen3 .grid,body.dark .checklist{
+  background:#250606!important;
+  border-color:#6b1b1b!important;
+}
+body.dark #screen1 .grid > div,body.dark #screen2 .grid > div,body.dark #screen3 .grid > div,body.dark .checkItem{
+  background:#250606!important;
+  border-color:#6b1b1b!important;
+  color:#fff7f7!important;
+}
+body.dark input,body.dark select,body.dark textarea{
+  background:#160303!important;
+  color:#fff7f7!important;
+  border-color:#6b1b1b!important;
+}
+body.dark .sectionLabel{
+  background:linear-gradient(90deg,#4a0b0b,#250606)!important;
+  color:#fff7f7!important;
+  border-color:#6b1b1b!important;
+}
+body.dark .pill,body.dark .form-counter{
+  background:#4a0b0b!important;
+  color:#ffd6d6!important;
+  border-color:#7f1d1d!important;
+}
+
+/* Observaciones más grande */
+#unc_obs{
+  min-height:150px!important;
+}
+#formUNC .dictWrap textarea{
+  min-height:150px!important;
+}
+
+/* Ocultar el texto de ayuda que se veía remontado en Cliente */
+#formCliente .field-hint,
+#formCliente .obs-auto-note{
+  display:none!important;
+}
+</style>
+
+
+<style id="gs-legibilidad-cache-manager">
+/* Legibilidad en campo */
+.title h2{font-size:16.5px!important;}
+.sectionLabel{font-size:14.5px!important;}
+input,select,textarea{font-size:14.5px!important;}
+.checkItem{font-size:14.5px!important;}
+button,.action-btn,.utility-item,.soft-btn{font-size:15.5px!important;}
+label{font-size:12.5px!important;}
+.pill,.form-counter{font-size:13.5px!important;}
+#unc_obs, textarea{min-height:165px!important;}
+
+/* Cache Manager GS */
+#gsUpdateBanner{
+  position:fixed;left:12px;right:12px;bottom:84px;z-index:99999;
+  background:linear-gradient(135deg,#d40000,#8f0000);
+  color:#fff;border-radius:18px;padding:14px;
+  box-shadow:0 18px 42px rgba(0,0,0,.32);
+  display:none;gap:12px;align-items:center;justify-content:space-between;
+  border:1px solid rgba(255,255,255,.22);
+}
+#gsUpdateBanner.show{display:flex;}
+#gsUpdateBanner .txt{font-size:14px;line-height:1.25;font-weight:800;}
+#gsUpdateBanner .sub{display:block;font-size:12px;font-weight:600;opacity:.9;margin-top:2px;}
+#gsUpdateBanner button{
+  background:#fff!important;color:#8f0000!important;border:0!important;
+  border-radius:14px!important;padding:10px 12px!important;white-space:nowrap;
+  box-shadow:none!important;font-size:14px!important;
+}
+#gsVersionChip{
+  position:fixed;right:10px;bottom:10px;z-index:99998;
+  background:rgba(255,255,255,.95);color:#8f0000;
+  border:1px solid #ffd0d0;border-radius:999px;
+  padding:6px 9px;font-size:11px;font-weight:800;
+  box-shadow:0 8px 18px rgba(0,0,0,.12);
+}
+body.dark #gsVersionChip{background:#2a0707;color:#ffd6d6;border-color:#7f1d1d;}
+@media(max-width:420px){
+  #gsUpdateBanner{bottom:76px;left:8px;right:8px;padding:12px;}
+  #gsUpdateBanner .txt{font-size:13px;}
+  #gsUpdateBanner button{font-size:13px!important;padding:9px 10px!important;}
+}
+</style>
+
+
+<style id="gs-apk-candidate-badge">
+#gsVersionChip::before{content:"APK ";font-weight:900;}
 </style>
 
 </head>
@@ -2360,6 +2531,76 @@ async function markExportedBatch(groups, batchId, iso){
     }
   }
 }
+
+async function limpiarCDActualDespuesExportar(cdAct){
+  const stores = ["estructuras","unc","clientes","susp","baldios"];
+  let total = 0;
+  for(const store of stores){
+    const all = await getAll(store);
+    const del = all.filter(r => String(r.Transformador||"") === String(cdAct||""));
+    for(const r of del){
+      if(r && r.id !== undefined && r.id !== null){
+        await deleteRec(store, r.id);
+        total++;
+      }
+    }
+  }
+  await setMeta("activeCD", "");
+  await setMeta("activeCAP", "");
+  await setMeta("activeWorkDate", todayKeyLocal());
+  activeCD = "";
+  activeCAP = "";
+  updateActiveUI();
+  await refreshPFSelectors();
+  await updateHomeDashboard();
+  await updateFormCounters();
+  try{ clearAllDrafts(); }catch(e){}
+  return total;
+}
+
+async function ofrecerLimpiezaDespuesExportar(cdAct, resumenExportado=null){
+  try{
+    const resumen = resumenExportado || {};
+    const lineas = [
+      "Exportación completada correctamente.",
+      "",
+      "CD: " + cdAct,
+      "",
+      "Registros exportados:",
+      "Estructuras: " + (resumen.estructuras ?? "-"),
+      "UNC: " + (resumen.unc ?? "-"),
+      "Clientes: " + (resumen.clientes ?? "-"),
+      "Suspensiones: " + (resumen.suspensiones ?? "-"),
+      "Baldíos: " + (resumen.baldios ?? "-"),
+      "",
+      "¿El diagnóstico de este CD ha finalizado?",
+      "",
+      "Aceptar = Sí, limpiar información del aplicativo.",
+      "Cancelar = No, conservar para continuar en otra jornada."
+    ];
+    const ok = confirm(lineas.join("
+"));
+    if(!ok){
+      toast("Información conservada para continuar en otra jornada");
+      return;
+    }
+    const total = await limpiarCDActualDespuesExportar(cdAct);
+    toast("CD finalizado y limpiado del aplicativo ✅");
+    alert(
+      "Limpieza completada.
+
+" +
+      "Se eliminaron " + total + " registros del CD " + cdAct + " dentro de la app.
+
+" +
+      "Puedes iniciar o continuar con otro CD."
+    );
+  }catch(e){
+    console.error(e);
+    toast("No se pudo limpiar el CD ❌");
+  }
+}
+
 async function exportAll(opts={}){
   const historico = !!(opts && opts.historico === true);
   try{
@@ -2436,7 +2677,16 @@ async function exportAll(opts={}){
     await updateHomeDashboard();
     await updateFormCounters();
     setBadge("LISTO ✅");
-    toast(historico ? "Histórico exportado ✅" : "Pendientes exportados y marcados ✅");
+    toast(historico ? "Histórico exportado ✅" : "Pendientes exportados ✅");
+    if(!historico){
+      setTimeout(()=>ofrecerLimpiezaDespuesExportar(cdAct, {
+        estructuras: estrF.length,
+        unc: uncF.length,
+        clientes: cliF.length,
+        suspensiones: susF.length,
+        baldios: balF.length
+      }), 600);
+    }
   }catch(e){
     console.error(e);
     setBadge("LISTO ✅");
@@ -3905,6 +4155,147 @@ if ("serviceWorker" in navigator) {
   }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',initFixes); else initFixes();
   setTimeout(initFixes,500); setTimeout(initFixes,1600);
+})();
+</script>
+
+
+<script id="gs-unc-fix-inmel">
+(function(){
+  function $(id){ return document.getElementById(id); }
+  function norm(t){ return (t||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/^\s*\d+\.\s*/,'').trim(); }
+
+  function dedupeUncCaracteristicas(){
+    const form = $('formUNC');
+    if(!form) return;
+    const sections = [...form.querySelectorAll('.sectionLabel')];
+    const chars = sections.filter(s => norm(s.textContent).includes('caracteristicas tecnicas'));
+    if(chars.length <= 1) return;
+    const keep = chars[0];
+    chars.slice(1).forEach(sec => {
+      // Si la cinta duplicada está vacía o seguida por otra cinta, se elimina.
+      const next = sec.nextElementSibling;
+      if(!next || next.classList.contains('sectionLabel') || (next.classList.contains('grid') && !next.textContent.trim())){
+        sec.remove();
+      }else{
+        // Si tiene contenido, solo se quita la franja para no perder campos.
+        sec.remove();
+      }
+    });
+    keep.textContent = keep.textContent.replace(/^\s*\d+\.\s*/,'').trim();
+  }
+
+  function fotosAntesObservacionesUNC(){
+    const form = $('formUNC');
+    const fotos = $('unc_fotos')?.closest('.grid');
+    const obs = $('unc_obs')?.closest('.grid');
+    if(form && fotos && obs && fotos.compareDocumentPosition(obs) & Node.DOCUMENT_POSITION_PRECEDING){
+      obs.parentNode.insertBefore(fotos, obs);
+    }
+  }
+
+  function agrandarObsUNC(){
+    const obs = $('unc_obs');
+    if(obs){
+      obs.style.minHeight = '150px';
+      obs.rows = Math.max(Number(obs.rows)||0, 6);
+    }
+  }
+
+  function runFix(){
+    dedupeUncCaracteristicas();
+    fotosAntesObservacionesUNC();
+    agrandarObsUNC();
+  }
+
+  document.addEventListener('DOMContentLoaded', runFix);
+  setTimeout(runFix, 300);
+  setTimeout(runFix, 1200);
+  document.addEventListener('click', function(e){
+    if(e.target && (e.target.id === 'btnUNC' || e.target.closest && e.target.closest('#btnUNC'))){
+      setTimeout(runFix, 80);
+      setTimeout(runFix, 350);
+    }
+  });
+})();
+</script>
+
+
+<script id="gs-cache-manager">
+(function(){
+  const GS_APP_VERSION = "v3.0.0-apk-candidate";
+  const VERSION_URL = "./version.json?v=" + Date.now();
+
+  function showBanner(remoteVersion){
+    if(document.getElementById("gsUpdateBanner")) return;
+    const div = document.createElement("div");
+    div.id = "gsUpdateBanner";
+    div.innerHTML = `
+      <div class="txt">Nueva versión disponible<span class="sub">Instalada: ${GS_APP_VERSION} · Nueva: ${remoteVersion || "actual"}</span></div>
+      <button type="button" id="gsUpdateNow">Actualizar</button>
+    `;
+    document.body.appendChild(div);
+    setTimeout(()=>div.classList.add("show"), 80);
+    document.getElementById("gsUpdateNow").addEventListener("click", forceUpdate);
+  }
+
+  function addVersionChip(){
+    if(document.getElementById("gsVersionChip")) return;
+    const chip = document.createElement("div");
+    chip.id = "gsVersionChip";
+    chip.textContent = GS_APP_VERSION;
+    chip.title = "Versión instalada";
+    document.body.appendChild(chip);
+  }
+
+  async function checkVersion(){
+    try{
+      const r = await fetch(VERSION_URL, {cache:"no-store"});
+      if(!r.ok) return;
+      const data = await r.json();
+      const remote = data.version || "";
+      if(remote && remote !== GS_APP_VERSION){
+        showBanner(remote);
+      }
+    }catch(e){}
+  }
+
+  async function forceUpdate(){
+    try{
+      const keys = await caches.keys();
+      await Promise.all(keys.map(k => caches.delete(k)));
+    }catch(e){}
+
+    try{
+      if("serviceWorker" in navigator){
+        const regs = await navigator.serviceWorker.getRegistrations();
+        await Promise.all(regs.map(async reg => {
+          try{ if(reg.waiting) reg.waiting.postMessage({type:"SKIP_WAITING"}); }catch(e){}
+          try{ await reg.update(); }catch(e){}
+        }));
+      }
+    }catch(e){}
+
+    try{ localStorage.setItem("gsdx_last_forced_update", new Date().toISOString()); }catch(e){}
+    const clean = location.origin + location.pathname.replace(/index\s*\(1\)\.html/i, "index.html") + "?v=" + Date.now();
+    location.replace(clean);
+  }
+
+  if("serviceWorker" in navigator){
+    navigator.serviceWorker.addEventListener("controllerchange", () => {
+      if(!window.__gsReloading){
+        window.__gsReloading = true;
+        location.reload();
+      }
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    addVersionChip();
+    checkVersion();
+    setTimeout(checkVersion, 2500);
+  });
+
+  window.GS_FORCE_UPDATE = forceUpdate;
 })();
 </script>
 

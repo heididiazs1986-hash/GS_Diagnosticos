@@ -1,49 +1,66 @@
-const CACHE_NAME = "gsdx-cache-v2-ui-pdf-fix";
-
-const URLS_TO_CACHE = [
+const CACHE_NAME = "gsdx-cache-v3.0.0-apk-candidate";
+const APP_SHELL = [
   "./",
   "./index.html",
   "./manifest.json",
+  "./version.json",
   "./icon-192.png",
   "./icon-512.png",
-  "./icon-180.png"
+  "./icon-180.png",
+  "./rescate_gsx.html"
 ];
 
-// INSTALL
 self.addEventListener("install", (event) => {
-  self.skipWaiting(); // activa inmediatamente
+  self.skipWaiting();
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(URLS_TO_CACHE))
+    caches.open(CACHE_NAME).then((cache) => cache.addAll(APP_SHELL).catch(() => null))
   );
 });
 
-// ACTIVATE
 self.addEventListener("activate", (event) => {
   event.waitUntil(
     caches.keys().then((keys) =>
-      Promise.all(
-        keys.map((key) => {
-          if (key !== CACHE_NAME) {
-            return caches.delete(key); // limpia versiones viejas
-          }
-        })
-      )
-    )
+      Promise.all(keys.map((key) => key !== CACHE_NAME ? caches.delete(key) : null))
+    ).then(() => self.clients.claim())
   );
-  self.clients.claim(); // toma control inmediato
 });
 
-// FETCH (estrategia inteligente)
+self.addEventListener("message", (event) => {
+  if(event.data && event.data.type === "SKIP_WAITING") {
+    self.skipWaiting();
+  }
+});
+
 self.addEventListener("fetch", (event) => {
   if (event.request.method !== "GET") return;
+
+  const url = new URL(event.request.url);
+
+  if (url.pathname.endsWith("/version.json") || url.search.includes("v=")) {
+    event.respondWith(
+      fetch(event.request, {cache:"no-store"}).catch(() => caches.match(event.request))
+    );
+    return;
+  }
+
+  if (event.request.mode === "navigate") {
+    event.respondWith(
+      fetch(event.request, {cache:"no-store"})
+        .then((response) => {
+          const clone = response.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put("./index.html", clone));
+          return response;
+        })
+        .catch(() => caches.match("./index.html"))
+    );
+    return;
+  }
 
   event.respondWith(
     fetch(event.request)
       .then((response) => {
         const clone = response.clone();
-        caches.open(CACHE_NAME).then((cache) => {
-          cache.put(event.request, clone);
-        });
+        caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
         return response;
       })
       .catch(() => caches.match(event.request))
