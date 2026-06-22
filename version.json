@@ -1,6 +1,5 @@
 {
-  "version": "v3.0.1-apk-candidate-fix",
-  "build": "APK Candidate Fix",
-  "date": "2026-06-22T16:38:00",
-  "app": "GS Diagnósticos"
+  "version": "v3.0.2-pwa-install-fix",
+  "app": "GS Diagnósticos",
+  "theme": "INMEL rojo corporativo"
 }
