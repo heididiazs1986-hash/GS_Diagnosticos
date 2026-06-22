@@ -77,7 +77,7 @@
     .vBtns button{width:100%;padding:14px 12px;border-radius:14px;font-size:16px;}
     a.dl{display:inline-flex;justify-content:center;align-items:center;text-decoration:none;}
   
-    /* ===== Ultra Premium v4 ===== */
+    
     :root{
       --rojo:#d40000;
       --rojo-osc:#b40808;
@@ -183,7 +183,7 @@
     .obs-auto-note{font-size:12px;color:#8a2430;margin-top:6px;}
 
 
-    /* ===== Modo oscuro manual y pantallas de formulario v10 ===== */
+    
     .header-actions{display:flex;align-items:center;gap:10px;}
     .icon-toggle{width:54px;height:54px;border-radius:999px;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.18);color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:24px;padding:0;box-shadow:0 8px 18px rgba(0,0,0,.12);}
     body.dark{background:#0f131b;color:#eef2f7;}
@@ -205,7 +205,7 @@
 
 
 
-    /* ===== FIX FINAL MODO OSCURO PRO v13 ===== */
+    
     body.dark .stat-card .n,
     body.dark #summaryDiag,
     body.dark #summaryPhotos,
@@ -261,7 +261,7 @@
     }
 
 
-    /* ===== Dark PRO fix v14: contraste total en tarjetas y botones ===== */
+    
     body.dark .stat-card .n{color:#ffffff!important;text-shadow:0 0 12px rgba(255,255,255,.08);}
     body.dark .stat-card .l{color:#cbd5e1!important;}
     body.dark .title h2, body.dark .modalCard b, body.dark .utility-item b{color:#f8fafc!important;}
@@ -275,7 +275,7 @@
     body.dark .obs-auto-note{color:#fecdd3!important;}
 
 
-    /* ===== Dark mode PRO fix v15: KPIs, botones y utilidades legibles ===== */
+    
     body.dark .stat-card{background:#151b26!important;border-color:#2d3748!important;box-shadow:0 14px 32px rgba(0,0,0,.22)!important;}
     body.dark .stat-card .n, body.dark #summaryDiag, body.dark #summaryPhotos, body.dark #summaryEstr, body.dark #summaryPending{color:#f8fafc!important;text-shadow:0 1px 0 rgba(0,0,0,.25);}
     body.dark .stat-card .l{color:#cbd5e1!important;}
@@ -289,7 +289,7 @@
     body.dark button.secondary, body.dark .soft-btn{color:#f8fafc!important;background:#151b26!important;border-color:#2d3748!important;}
 
 
-    /* ===== Ajustes Heidi v16: encabezados, fotos obligatorias y cliente ===== */
+    
     .sectionLabel{
       color:var(--rojo) !important;
       border-top:0 !important;
@@ -308,11 +308,7 @@
 
   
 
-/* ==========================================================
-   GS DIAGNÓSTICOS V2 PRO REAL
-   Distribución tipo ficha técnica, cintas por apartado y menos scroll.
-   No cambia nombres de campos ni lógica de captura.
-   ========================================================== */
+
 :root{
   --gs-navy:#00133A;
   --gs-navy-2:#000B20;
@@ -475,7 +471,7 @@ input[type="file"]{padding:8px!important;background:#F8FBFF!important;}
 .gs-bottom-nav button{background:transparent!important;border:0!important;box-shadow:none!important;color:#DDE9FB!important;display:flex;flex-direction:column;gap:2px;align-items:center;justify-content:center;font-size:11px!important;font-weight:800!important;min-height:46px!important;padding:3px!important;border-radius:12px!important;}
 .gs-bottom-nav button strong{font-size:19px;line-height:1;color:#fff;}
 .gs-bottom-nav button:active,.gs-bottom-nav button.active{background:rgba(255,255,255,.12)!important;}
-/* Dark */
+
 body.dark{background:#000B20!important;color:#F8FBFF!important;}
 body.dark .card,body.dark .floating-panel,body.dark .modalCard{background:#071A42!important;border-color:#18386F!important;}
 body.dark .title h2,body.dark label,body.dark .sectionLabel{color:#F8FBFF!important;}
@@ -494,7 +490,7 @@ body.dark .pill,body.dark .form-counter{background:#102A5C!important;color:#C9DB
 
 
 <style>
-/* === GS V2 PRO Correcciones visuales PDF Heidi === */
+
 .form-local-nav{display:none!important;}
 body.gs-home-active .gs-bottom-nav{display:none!important;}
 body.gs-home-active{padding-bottom:0!important;}
@@ -518,7 +514,7 @@ body.dark .gs-segment button.active{background:#3399FF!important;color:#00133A!i
 
 
 <style id="gs-inmel-corporativo-fix">
-/* === FIX INMEL: regresar a rojo corporativo y conservar layout actual === */
+
 :root{
   --gs-navy:#d40000!important;
   --gs-navy-2:#9f0000!important;
@@ -709,7 +705,7 @@ body.dark .sectionLabel::before{
 
 
 <style id="gs-dark-readable-final">
-/* Modo oscuro legible: menos rojo saturado, más contraste */
+
 body.dark{
   background:#121212 !important;
   color:#f8fafc !important;
@@ -831,6 +827,161 @@ body.dark .modalBack{
 }
 </style>
 
+
+<style id="gs-final-clean-ui">
+#gsVersionChip,
+#gsVersionChip::before,
+#gsVersionChip::after{
+  display:none !important;
+}
+
+/* Subtítulos homogéneos: solo punto antes del texto */
+.sectionLabel{
+  display:flex !important;
+  align-items:center !important;
+  gap:10px !important;
+}
+.sectionLabel::before,
+.sectionLabel[data-gs-icon]::before{
+  content:"" !important;
+  width:14px !important;
+  height:14px !important;
+  min-width:14px !important;
+  border-radius:50% !important;
+  background:#00133A !important;
+  display:inline-block !important;
+  margin-right:10px !important;
+  align-self:center !important;
+}
+body.dark .sectionLabel::before,
+body.dark .sectionLabel[data-gs-icon]::before{
+  background:#ffffff !important;
+}
+
+/* Modo oscuro más legible */
+body.dark{
+  background:#121212 !important;
+  color:#f8fafc !important;
+}
+body.dark main{
+  background:#121212 !important;
+}
+body.dark header,
+body.dark .gs-bottom-nav{
+  background:linear-gradient(135deg,#d40000 0%,#8f0000 72%,#5a0000 100%) !important;
+  color:#fff !important;
+}
+body.dark .card,
+body.dark .floating-panel,
+body.dark .modalCard,
+body.dark .stat-card,
+body.dark .action-btn,
+body.dark .registro-card-menu button{
+  background:#1c1c1f !important;
+  border-color:#4b5563 !important;
+  color:#f8fafc !important;
+  box-shadow:0 14px 32px rgba(0,0,0,.35) !important;
+}
+body.dark #screen1 .grid,
+body.dark #screen2 .grid,
+body.dark #screen3 .grid,
+body.dark .checklist{
+  background:#1f2024 !important;
+  border-color:#4b5563 !important;
+}
+body.dark #screen1 .grid > div,
+body.dark #screen2 .grid > div,
+body.dark #screen3 .grid > div,
+body.dark .checkItem{
+  background:#1f2024 !important;
+  border-color:rgba(255,255,255,.16) !important;
+  color:#f8fafc !important;
+}
+body.dark .sectionLabel{
+  background:linear-gradient(90deg,#2a2a2e,#1f2024) !important;
+  border-color:#4b5563 !important;
+  color:#ffffff !important;
+}
+body.dark label,
+body.dark #screen1 label,
+body.dark #screen2 label,
+body.dark #screen3 label,
+body.dark .gs-segment-row .gs-segment-label{
+  color:#e5e7eb !important;
+}
+body.dark input,
+body.dark select,
+body.dark textarea{
+  background:#f8fafc !important;
+  color:#111827 !important;
+  border-color:#e5e7eb !important;
+}
+body.dark input::placeholder,
+body.dark textarea::placeholder{
+  color:#6b7280 !important;
+}
+body.dark input[readonly],
+body.dark input[readonly][id$="_long_nodo"]{
+  background:#eef2f7 !important;
+  color:#374151 !important;
+  border-color:#d1d5db !important;
+}
+body.dark .pill,
+body.dark .form-counter{
+  background:#2b1111 !important;
+  color:#ffffff !important;
+  border-color:#7f1d1d !important;
+}
+body.dark .checkItem span,
+body.dark .checkItem,
+body.dark .chip{
+  color:#f8fafc !important;
+}
+body.dark .foto-hint,
+body.dark .field-hint,
+body.dark .obs-auto-note,
+body.dark .muted-p,
+body.dark .small-footer{
+  color:#cbd5e1 !important;
+}
+body.dark .gs-segment-row{
+  background:#1f2024 !important;
+  border-color:rgba(255,255,255,.16) !important;
+}
+body.dark .gs-segment{
+  background:#111827 !important;
+  border-color:#6b7280 !important;
+}
+body.dark .gs-segment button{
+  background:#111827 !important;
+  color:#f8fafc !important;
+}
+body.dark .gs-segment button.active{
+  background:#d40000 !important;
+  color:#ffffff !important;
+}
+body.dark button.secondary,
+body.dark .soft-btn,
+body.dark .utility-item{
+  background:#27272a !important;
+  color:#ffffff !important;
+  border-color:#52525b !important;
+}
+body.dark .action-btn .ico,
+body.dark .registro-card-menu .reg-ico{
+  background:#2b1111 !important;
+  color:#ffffff !important;
+}
+body.dark .modalBack{
+  background:rgba(0,0,0,.72) !important;
+}
+
+/* Observaciones amplias */
+textarea[id$="_obs"]{
+  min-height:165px !important;
+}
+</style>
+
 </head>
 <body>
 <header>
@@ -937,7 +1088,7 @@ body.dark .modalBack{
     <div class="small-footer">Creado por Heidi Díaz para el proceso de Gestión Social.</div>
   </section>
 
-  <!-- SCREEN 1: ESTRUCTURAS + EXPORT -->
+  
   <section class="card" id="screen1" style="display:none;">
     <div class="title">
       <div><h2>Estructuras</h2></div>
@@ -1035,7 +1186,7 @@ body.dark .modalBack{
     </div>
   </section>
 
-  <!-- SCREEN 2: FORMULARIOS -->
+  
   <section class="card floating-panel" id="screen2" style="display:none;">
     <div class="title" id="registroMenuTitle">
       <div><h2>Caracterización</h2></div>
@@ -1051,7 +1202,7 @@ body.dark .modalBack{
       <button class="secondary" id="btnInicioFromRegistro" type="button">Inicio</button>
     </div>
 
-    <!-- UNC -->
+    
     <div id="formUNC" style="display:none;">
       <div class="sep"></div>
       <div class="form-headline"><div class="pill">Registro UNC</div><div class="form-counter" id="countUNCForm">UNC: 0</div></div>
@@ -1128,10 +1279,7 @@ body.dark .modalBack{
         <div><label>Precisión (m)</label><input id="unc_acc" readonly placeholder="GPS"></div>
         <div class="btnrow" style="margin:0;"><button class="secondary" id="unc_btnGPS" type="button">📍 Coordenadas</button></div>
       </div>
-
-      <div class="grid">
-        <div><label>Fotos</label><input id="unc_fotos" type="file" accept="image/*" multiple data-max="7" required><div class="foto-hint">Obligatorio: mínimo 3 y máximo 7 fotos.</div></div>
-      </div>
+</div>
 
       <div class="sep"></div>
       <div class="grid two">
@@ -1180,7 +1328,12 @@ body.dark .modalBack{
         <label class="checkItem"><input type="checkbox" id="unc_inst_interna"> <span>INSTALACIÓN INTERNA</span></label>
       </div>
 
+      
+
       <div class="grid">
+        <div><label>Fotos</label><input id="unc_fotos" type="file" accept="image/*" multiple data-max="7" required><div class="foto-hint">Obligatorio: mínimo 3 y máximo 7 fotos.</div></div>
+      
+<div class="grid">
         <div>
           <label>Observaciones</label>
           <div class="dictWrap">
@@ -1196,7 +1349,7 @@ body.dark .modalBack{
       </div>
     </div>
 
-    <!-- CLIENTE -->
+    
     <div id="formCliente" style="display:none;">
       <div class="sep"></div>
       <div class="form-headline"><div class="pill">Registro Cliente</div><div class="form-counter" id="countCLIForm">Clientes: 0</div></div>
@@ -1264,7 +1417,7 @@ body.dark .modalBack{
       </div>
     </div>
 
-    <!-- SUSP -->
+    
     <div id="formSusp" style="display:none;">
       <div class="sep"></div>
       <div class="form-headline"><div class="pill">Registro Suspensión</div><div class="form-counter" id="countSUSForm">Suspensiones: 0</div></div>
@@ -1315,7 +1468,7 @@ body.dark .modalBack{
       </div>
     </div>
 
-    <!-- BALDIOS -->
+    
     <div id="formBaldio" style="display:none;">
       <div class="sep"></div>
       <div class="form-headline"><div class="pill">Registro Baldío</div><div class="form-counter" id="countBALForm">Baldíos: 0</div></div>
@@ -1364,7 +1517,7 @@ body.dark .modalBack{
     </div>
   </section>
 
-  <!-- SCREEN 3: MODIFICAR EXCEL -->
+  
   <section class="card" id="screen3" style="display:none;">
     <div class="title">
       <div><h2>Modificar registros UNC desde Excel</h2></div>
@@ -1404,7 +1557,7 @@ body.dark .modalBack{
   <div class="toast" id="toast"></div>
 </main>
 
-<!-- MODAL: AFTER SAVE -->
+
 <div class="modalBack" id="modalAfterSave">
   <div class="modalCard">
     <div style="font-weight:900;font-size:16px;">¿DESEA REALIZAR OTRO REGISTRO EN ESTE NODO?</div>
@@ -1418,7 +1571,7 @@ body.dark .modalBack{
   </div>
 </div>
 
-<!-- MODAL: UPDATE -->
+
 <div class="modalBack" id="modalUpdate">
   <div class="modalCard">
     <div style="font-weight:900;font-size:16px;">Actualizar registro</div>
@@ -1443,7 +1596,7 @@ body.dark .modalBack{
 </div>
 
 
-<!-- MODAL: CONTEOS -->
+
 <div class="modalBack" id="countModal">
   <div class="modalCard">
     <div style="font-weight:900;font-size:16px;">Conteo general</div>
@@ -1454,7 +1607,7 @@ body.dark .modalBack{
   </div>
 </div>
 
-<!-- MODAL: DOWNLOAD FALLBACK -->
+
 <div class="modalBack" id="dlModal">
   <div class="modalCard">
     <div style="font-weight:900;font-size:16px;">Descarga lista ✅</div>
@@ -1468,7 +1621,7 @@ body.dark .modalBack{
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
-/* =================== util ZIP (TinyZip) =================== */
+
 function crc32(buf){
   let c = 0xFFFFFFFF;
   for(let i=0;i<buf.length;i++){
@@ -1556,7 +1709,7 @@ class TinyZip{
   }
 }
 
-/* =================== helpers UI =================== */
+
 const $ = (id)=>document.getElementById(id);
 const toastEl=$("toast");
 function toast(msg){toastEl.textContent=msg;toastEl.classList.add("show");setTimeout(()=>toastEl.classList.remove("show"),2400);}
@@ -1701,7 +1854,7 @@ window.addEventListener('beforeunload', ()=>{
   saveDraft('baldio', collectFormValues(['bal_pf','bal_estado','bal_lat','bal_lon','bal_acc','bal_long_nodo','bal_obs']));
 });
 
-/* =================== Características Nodo (dependiente) =================== */
+
 const caracteristicas = {
   "Nodo BT|Fibra de vidrio":["8MX510KGF","10MX510KGF","10MX750KGF","10MX1050KGF"],
   "Nodo BT|Hormigón":["8MX510KGF","10MX510KGF","10MX750KGF","10MX1050KGF"],
@@ -1726,7 +1879,7 @@ function wireCarDep(tipoId, matId, carId){
   refresh();
 }
 
-/* =================== Sede -> Municipio (dependiente) =================== */
+
 const sedeMunicipios = {
   "FACATATIVÁ":["EL PEÑÓN","EL ROSAL","FACATATIVÁ","FUNZA","GUAYABAL DE SÍQUIME","LA VEGA","MADRID","MOSQUERA","NIMAIMA","NOCAIMA","PUERTO SALGAR","QUEBRADANEGRA","TOPAIPÍ","ÚTICA","VERGARA","VIANÍ","VILLETA","YACOPÍ","ZIPACÓN"],
   "FUSAGASUGÁ":["ARBELÁEZ","BOGOTÁ","CABRERA","CABUYARO","CÁQUEZA","CHIPAQUE","CHOACHÍ","EL CALVARIO","FÓMEQUE","FOSCA","FUSAGASUGÁ","GRANADA","GUAYABETAL","GUTIÉRREZ","ICONONZO","MEDINA","PANDI","PARATEBUENO","PASCA","QUETAME","SAN BERNARDO","SAN JUANITO","SIBATÉ","SILVANIA","SOACHA","TIBACUY","UBAQUE","UNE","VENECIA"],
@@ -1744,7 +1897,7 @@ function fillSedeMunicipio(){
   });
 }
 
-/* =================== IndexedDB =================== */
+
 const DB_NAME="gs_dx_db_v1";
 const DB_VER=1;
 let db;
@@ -1792,7 +1945,7 @@ async function nextItem(storeKey){
   return n;
 }
 
-/* =================== GPS (robusto) =================== */
+
 function gpsErrMsg(err){
   if(!err) return "No se pudo capturar";
   if(err.code===1) return "Permiso de ubicación denegado";
@@ -1847,7 +2000,7 @@ function captureGPS(latEl, lonEl, accEl){
   }, opts);
 }
 
-/* =================== Fotos =================== */
+
 function enforceMaxFiles(inputEl){
   const max=Number(inputEl.getAttribute('data-max')||0);
   if(!max) return;
@@ -1893,7 +2046,7 @@ function dataURLtoU8(dataURL){
   return out;
 }
 
-/* =================== pantallas =================== */
+
 let activeCD=null, activeCAP=null;
 function show(id){
   ["screenHome","screenFotos","screenAcerca","screenRespaldo","screen1","screen2","screen3"].forEach(x=>{
@@ -2326,7 +2479,7 @@ function validateSection(elOrId){
   return true;
 }
 
-/* =================== dictado =================== */
+
 let recog=null;
 function speechAvailable(){
   return ("webkitSpeechRecognition" in window) || ("SpeechRecognition" in window);
@@ -2352,7 +2505,7 @@ function startDictation(textarea){
   try{ r.start(); }catch(e){ toast("No se pudo dictar"); setBadge("LISTO ✅"); }
 }
 
-/* =================== PF Selectors =================== */
+
 async function refreshPFSelectors(){
   const estr = await getAll("estructuras");
   const puntos = estr
@@ -2366,7 +2519,7 @@ async function refreshPFSelectors(){
   });
 }
 
-/* =================== builders =================== */
+
 async function buildEstructura(){
   const modo=document.querySelector('input[name="modoCd"]:checked').value;
   let cd=activeCD, cap=activeCAP;
@@ -2539,7 +2692,7 @@ async function buildBaldio(){
   return obj;
 }
 
-/* =================== Excel (HTML) =================== */
+
 function buildExcel(estr,unc,cli,sus,bal){
   const escXml=(v)=> String(v==null?"":v)
     .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
@@ -2614,7 +2767,7 @@ function buildExcel(estr,unc,cli,sus,bal){
   return new TextEncoder().encode(xml);
 }
 
-/* =================== Export ZIP =================== */
+
 function safeName(s){return (s||"").toString().trim().replace(/[\\/:*?\\"<>|]+/g," ").replace(/\s+/g," ").trim();}
 function photoNameToken(v){ return safeName(String(v||'')).replace(/\s+/g,'_') || 'SIN_DATO'; }
 const GS_STORES=["estructuras","unc","clientes","susp","baldios"];
@@ -2833,7 +2986,7 @@ async function exportAll(opts={}){
   }
 }
 
-/* =================== Service Worker =================== */
+
 async function registerSW(){
   try{
     if(location.protocol==="file:") return;
@@ -2854,7 +3007,7 @@ function syncClienteReqInspeccion(){
   if(typeof maybeAutofillClienteObservation === 'function') maybeAutofillClienteObservation(false);
 }
 
-/* =================== events =================== */
+
 let editCtx=null;
 
 function listenIf(id,event,handler){
@@ -3273,7 +3426,7 @@ function wireEvents(){
 }
 
 
-/* =================== Modificar Excel =================== */
+
 let modExcelWorkbook = null;
 let modExcelSheetName = "Modificar";
 let modExcelHeaders = [];
@@ -3512,7 +3665,7 @@ function loadModExcelFile(){
   reader.readAsArrayBuffer(file);
 }
 
-/* =================== init =================== */
+
 (async function init(){
   try{
     await openDB();
@@ -3554,7 +3707,7 @@ function loadModExcelFile(){
   }
 })();
 </script>
-  <!-- ☁️ DRIVE + RESPALDO -->
+  
 <div class="card hide" id="cloudSyncCard" style="margin:12px 14px 18px;display:none;">
   <div class="btnrow" style="margin-top:0;">
     <button id="btnSyncDrive" type="button" style="flex:1 1 260px;">☁️ SINCRONIZAR DRIVE</button>
@@ -4010,18 +4163,9 @@ if ("serviceWorker" in navigator) {
 
 
 <script>
-/* === GS V2 PRO: presentación, secciones y galería. No cambia lógica. === */
+
 (function(){
-  const iconFor = (txt)=>{
-    txt=(txt||'').toLowerCase();
-    if(txt.includes('document')) return '▣';
-    if(txt.includes('norma')) return '⚙';
-    if(txt.includes('medidor')) return '▤';
-    if(txt.includes('técnic')||txt.includes('tecnic')) return '⚒';
-    if(txt.includes('población')||txt.includes('poblacion')) return '●';
-    if(txt.includes('foto')) return '▧';
-    return '●';
-  };
+  const iconFor = ()=> '●';
   function applySectionIcons(){
     document.querySelectorAll('.sectionLabel').forEach(el=>{
       if(!el.dataset.gsIcon) el.dataset.gsIcon = iconFor(el.textContent);
@@ -4072,12 +4216,10 @@ if ("serviceWorker" in navigator) {
     });
   }
   function groupFormSections(){
-    // Añade cintas visuales antes de bloques cuando el formulario no tiene suficiente separación.
-    const defs = [
+        const defs = [
       ['formUNC','1. Identificación del habitante','unc_nombres'],
       ['formUNC','2. Información del predio','unc_pf'],
       ['formUNC','3. Caracterización social','unc_tipo_poblacion'],
-      ['formUNC','4. Características técnicas','unc_estado'],
       ['formCliente','1. Información del medidor','cli_pf'],
       ['formCliente','2. Estado del medidor','cli_estado_medidor_group'],
       ['formSusp','1. Información de suspensión','sus_pf'],
@@ -4105,7 +4247,7 @@ if ("serviceWorker" in navigator) {
 
 
 <script>
-/* === GS V2 PRO Correcciones PDF Heidi === */
+
 (function(){
   const $ = (id)=>document.getElementById(id);
   const titleCase = (txt)=>String(txt||'').toLowerCase().replace(/(^|[\s¿(\/\-])([a-záéíóúñü])/g,(m,p,c)=>p+c.toUpperCase()).replace(/\bCc\b/g,'CC').replace(/\bCm\b/g,'CM').replace(/\bTp\b/g,'TP').replace(/\bLed(s)?\b/g,'LED$1').replace(/\bSpt\b/g,'SPT').replace(/\bRetie\b/g,'RETIE').replace(/\bInmel\b/g,'INMEL').replace(/\bE1\b/g,'E1').replace(/\bE6\b/g,'E6').replace(/\bDj\b/g,'DJ').replace(/\bAr\b/g,'AR');
@@ -4203,17 +4345,14 @@ if ("serviceWorker" in navigator) {
   function reorderUNC(){
     const form=$('formUNC'); if(!form || form.dataset.gsOrdered==='1') return;
     form.dataset.gsOrdered='1';
-    // Quitar el campo predio habitable antes de organizar.
-    removePredioHabitable();
+        removePredioHabitable();
 
-    // Documento de propiedad pasa a ser el primer campo del apartado Documentos requeridos.
-    const docSec=findSection('documentos requeridos') || [...form.querySelectorAll('.sectionLabel')].find(x=>(x.textContent||'').toLowerCase().includes('documentos'));
+        const docSec=findSection('documentos requeridos') || [...form.querySelectorAll('.sectionLabel')].find(x=>(x.textContent||'').toLowerCase().includes('documentos'));
     const docGrid=$('unc_doc_propiedad')?.closest('.grid');
     const docsList=docSec ? docSec.nextElementSibling : null;
     if(docSec && docGrid){ docSec.insertAdjacentElement('afterend', docGrid); }
 
-    // Características técnicas: se mantiene Estado allí y se agregan tres botones Sí/No.
-    const estadoGrid=$('unc_estado')?.closest('.grid');
+        const estadoGrid=$('unc_estado')?.closest('.grid');
     const longGrid=$('unc_long_nodo')?.closest('.grid');
     const gpsGrid=$('unc_lat')?.closest('.grid');
     const carSec=findSection('características técnicas') || [...form.querySelectorAll('.sectionLabel')].find(x=>(x.textContent||'').toLowerCase().includes('caracter'));
@@ -4233,8 +4372,7 @@ if ("serviceWorker" in navigator) {
     let after = $('unc_estado')?.closest('.grid') || carSec;
     segments.forEach(seg=>{ if(after){ after.insertAdjacentElement('afterend',seg); after=seg; } });
 
-    // Revisión norma técnica queda después de Características y solo con los demás ítems normativos.
-    if(revSec){
+        if(revSec){
       const revList = revSec.nextElementSibling;
       const ref = $('unc_acc')?.closest('.grid') || longGrid || after;
       if(ref){
@@ -4294,67 +4432,6 @@ if ("serviceWorker" in navigator) {
   }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',initFixes); else initFixes();
   setTimeout(initFixes,500); setTimeout(initFixes,1600);
-})();
-</script>
-
-
-<script id="gs-unc-fix-inmel">
-(function(){
-  function $(id){ return document.getElementById(id); }
-  function norm(t){ return (t||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/^\s*\d+\.\s*/,'').trim(); }
-
-  function dedupeUncCaracteristicas(){
-    const form = $('formUNC');
-    if(!form) return;
-    const sections = [...form.querySelectorAll('.sectionLabel')];
-    const chars = sections.filter(s => norm(s.textContent).includes('caracteristicas tecnicas'));
-    if(chars.length <= 1) return;
-    const keep = chars[0];
-    chars.slice(1).forEach(sec => {
-      // Si la cinta duplicada está vacía o seguida por otra cinta, se elimina.
-      const next = sec.nextElementSibling;
-      if(!next || next.classList.contains('sectionLabel') || (next.classList.contains('grid') && !next.textContent.trim())){
-        sec.remove();
-      }else{
-        // Si tiene contenido, solo se quita la franja para no perder campos.
-        sec.remove();
-      }
-    });
-    keep.textContent = keep.textContent.replace(/^\s*\d+\.\s*/,'').trim();
-  }
-
-  function fotosAntesObservacionesUNC(){
-    const form = $('formUNC');
-    const fotos = $('unc_fotos')?.closest('.grid');
-    const obs = $('unc_obs')?.closest('.grid');
-    if(form && fotos && obs && fotos.compareDocumentPosition(obs) & Node.DOCUMENT_POSITION_PRECEDING){
-      obs.parentNode.insertBefore(fotos, obs);
-    }
-  }
-
-  function agrandarObsUNC(){
-    const obs = $('unc_obs');
-    if(obs){
-      obs.style.minHeight = '150px';
-      obs.rows = Math.max(Number(obs.rows)||0, 6);
-    }
-  }
-
-  function runFix(){
-    dedupeUncCaracteristicas();
-    fotosAntesObservacionesUNC();
-    agrandarObsUNC();
-  }
-
-  document.addEventListener('DOMContentLoaded', runFix);
-  setTimeout(runFix, 300);
-  setTimeout(runFix, 1200);
-  document.addEventListener('click', function(e){
-    if(e.target && (e.target.id === 'btnUNC' || e.target.closest && e.target.closest('#btnUNC'))){
-      setTimeout(runFix, 80);
-      setTimeout(runFix, 350);
-    }
-  });
 })();
 </script>
 
@@ -4441,46 +4518,170 @@ if ("serviceWorker" in navigator) {
 </script>
 
 
-<script id="gs-final-reorder-photos-icons">
+
+<script id="gs-final-unc-order-clean">
 (function(){
-  function moveFotosBeforeObservaciones(formId){
-    const form = document.getElementById(formId);
+  const $ = (id)=>document.getElementById(id);
+
+  function normalizeText(t){
+    return String(t||'')
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g,'')
+      .replace(/^\s*\d+\.\s*/,'')
+      .trim();
+  }
+
+  function newSection(title){
+    const sec=document.createElement('div');
+    sec.className='sectionLabel';
+    sec.textContent=title;
+    return sec;
+  }
+
+  function blockOf(id){
+    const el=$(id);
+    return el ? (el.closest('.grid,.checklist,.gs-segment-row,.chips') || el.parentElement) : null;
+  }
+
+  function checklistWith(id){
+    const el=$(id);
+    return el ? el.closest('.checklist') : null;
+  }
+
+  function ensureSegmentForCheckbox(id,labelText){
+    const cb=$(id);
+    if(!cb) return null;
+
+    let row=document.querySelector(`.gs-segment-row[data-for="${id}"]`);
+    if(!row){
+      const original=cb.closest('.checkItem,.chip');
+      if(original) original.style.display='none';
+
+      row=document.createElement('div');
+      row.className='gs-segment-row';
+      row.dataset.for=id;
+      row.innerHTML=`<div class="gs-segment-label">${labelText}</div><div class="gs-segment"><button type="button" data-v="1">Sí</button><button type="button" data-v="0">No</button></div>`;
+
+      const sync=()=>{
+        const yes=row.querySelector('[data-v="1"]');
+        const no=row.querySelector('[data-v="0"]');
+        if(yes) yes.classList.toggle('active', cb.checked);
+        if(no) no.classList.toggle('active', !cb.checked);
+      };
+      row.addEventListener('click',e=>{
+        const b=e.target.closest('button[data-v]');
+        if(!b) return;
+        cb.checked = b.dataset.v === '1';
+        cb.dispatchEvent(new Event('change',{bubbles:true}));
+        sync();
+      });
+      cb.addEventListener('change',sync);
+      sync();
+    }
+    return row;
+  }
+
+  function moveFotosBeforeObs(formId){
+    const form=$(formId);
     if(!form) return;
-    const fotoInput = form.querySelector('input[type="file"][id$="_fotos"], input[type="file"][data-max]');
-    const obs = form.querySelector('textarea[id$="_obs"]');
-    if(!fotoInput || !obs) return;
-
-    const fotoBlock = fotoInput.closest('.grid') || fotoInput.closest('div');
-    const obsBlock = obs.closest('.grid') || obs.closest('div');
-    if(!fotoBlock || !obsBlock || fotoBlock === obsBlock) return;
-
-    // Si fotos está después de observaciones, mover justo antes.
-    const pos = fotoBlock.compareDocumentPosition(obsBlock);
-    if(pos & Node.DOCUMENT_POSITION_PRECEDING){
+    const foto=form.querySelector('input[type="file"][id$="_fotos"]');
+    const obs=form.querySelector('textarea[id$="_obs"]');
+    if(!foto || !obs) return;
+    const fotoBlock=foto.closest('.grid') || foto.parentElement;
+    const obsBlock=obs.closest('.grid') || obs.parentElement;
+    if(fotoBlock && obsBlock && fotoBlock!==obsBlock){
       obsBlock.parentNode.insertBefore(fotoBlock, obsBlock);
     }
   }
 
-  function normalizeSubtitleDots(){
-    document.querySelectorAll('.sectionLabel').forEach(sec => {
+  function cleanSectionIcons(){
+    document.querySelectorAll('.sectionLabel').forEach(sec=>{
       sec.removeAttribute('data-gs-icon');
-      sec.style.setProperty('--gs-icon','');
+      sec.style.removeProperty('--gs-icon');
     });
   }
 
-  function runFinalUXFix(){
-    ['formUNC','formCliente','formSusp','formBaldio','screen1'].forEach(moveFotosBeforeObservaciones);
-    normalizeSubtitleDots();
+  function cleanDuplicateSections(form){
+    if(!form) return;
+    form.querySelectorAll('.sectionLabel').forEach(sec=>sec.remove());
+    form.querySelectorAll('.sep').forEach(sep=>sep.remove());
   }
 
-  document.addEventListener('DOMContentLoaded', runFinalUXFix);
-  setTimeout(runFinalUXFix, 250);
-  setTimeout(runFinalUXFix, 900);
-  document.addEventListener('click', function(e){
-    const ids = ['btnUNC','btnCliente','btnSusp','btnBaldio','btnIrARegistro','homeRegistrar'];
-    if(e.target && ids.some(id => e.target.id === id || (e.target.closest && e.target.closest('#'+id)))){
-      setTimeout(runFinalUXFix, 80);
-      setTimeout(runFinalUXFix, 350);
+  function reorderUNC(){
+    const form=$('formUNC');
+    if(!form) return;
+
+    cleanDuplicateSections(form);
+
+    const saveRow=$('btnGuardarUNC')?.closest('.btnrow');
+    if(!saveRow) return;
+
+    const ident=[blockOf('unc_nombres')].filter(Boolean);
+    const predio=[
+      blockOf('unc_pf'),
+      blockOf('unc_sede'),
+      blockOf('unc_localidad')
+    ].filter((v,i,a)=>v && a.indexOf(v)===i);
+
+    const social=[blockOf('unc_tipo_poblacion')].filter(Boolean);
+
+    const docGrid=blockOf('unc_doc_propiedad');
+    const docsList=checklistWith('unc_e1');
+    const docs=[docGrid,docsList].filter((v,i,a)=>v && a.indexOf(v)===i);
+
+    const segs=[
+      ensureSegmentForCheckbox('unc_ampliacion_redes','Para servicio requiere ampliación de redes'),
+      ensureSegmentForCheckbox('unc_requiere_muro','¿Requiere construir muro?'),
+      ensureSegmentForCheckbox('unc_arriostre','¿Requiere uso de arriostre?')
+    ].filter(Boolean);
+
+    const tecnicas=[
+      blockOf('unc_estado'),
+      ...segs,
+      blockOf('unc_long_nodo'),
+      blockOf('unc_lat')
+    ].filter((v,i,a)=>v && a.indexOf(v)===i);
+
+    const revision=checklistWith('unc_acometida') || checklistWith('unc_ducto') || checklistWith('unc_interruptor');
+    const fotos=blockOf('unc_fotos');
+    const obs=blockOf('unc_obs');
+
+    const sequence=[
+      ['1. Identificación del habitante', ident],
+      ['2. Información del predio', predio],
+      ['3. Caracterización social', social],
+      ['4. Documentos requeridos', docs],
+      ['5. Características técnicas', tecnicas],
+      ['6. Revisión norma técnica', revision ? [revision] : []],
+      ['7. Registro fotográfico', fotos ? [fotos] : []],
+      ['8. Observaciones', obs ? [obs] : []]
+    ];
+
+    sequence.forEach(([title,nodes])=>{
+      const cleanNodes=nodes.filter(Boolean);
+      if(!cleanNodes.length) return;
+      form.insertBefore(newSection(title), saveRow);
+      cleanNodes.forEach(n=>form.insertBefore(n, saveRow));
+    });
+  }
+
+  function runFinalClean(){
+    cleanSectionIcons();
+    ['formUNC','formCliente','formSusp','formBaldio','screen1'].forEach(moveFotosBeforeObs);
+    reorderUNC();
+    cleanSectionIcons();
+  }
+
+  document.addEventListener('DOMContentLoaded', runFinalClean);
+  setTimeout(runFinalClean,100);
+  setTimeout(runFinalClean,600);
+  setTimeout(runFinalClean,1800);
+  document.addEventListener('click',function(e){
+    const ids=['btnUNC','btnCliente','btnSusp','btnBaldio','btnIrARegistro','homeRegistrar','toggleDark'];
+    if(e.target && ids.some(id=>e.target.id===id || (e.target.closest && e.target.closest('#'+id)))){
+      setTimeout(runFinalClean,80);
+      setTimeout(runFinalClean,350);
     }
   });
 })();
