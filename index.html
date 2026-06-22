@@ -888,51 +888,83 @@ body.dark #formUNC .grid:has(#unc_obs){
 </style>
 
 
-<style id="gs-final-observaciones-nav-fix">
-/* Observaciones: tamaños finales por formulario */
-#unc_obs{
-  min-height:230px !important;
+<style id="gs-final-bottom-observaciones-fix-v2">
+/* Quitar franja roja sobrante entre contenido y menú inferior */
+html{
+  background:#fff7f7 !important;
 }
-#cli_obs,
-#sus_obs,
-#bal_obs{
-  min-height:190px !important;
+body{
+  background:linear-gradient(180deg,#fff1f1 0%,#fffafa 42%,#fff4f4 100%) !important;
+  min-height:100dvh !important;
+  padding-bottom:82px !important;
 }
-#est_obs{
-  min-height:120px !important;
+main{
+  background:transparent !important;
+  padding-bottom:14px !important;
+}
+body.dark,
+body.dark html{
+  background:#121212 !important;
 }
 
-/* Evita que reglas globales agranden Estructuras innecesariamente */
-#screen1 #est_obs{
-  min-height:120px !important;
-}
-
-/* Menú inferior: quitar bloque rojo sobrante y mantener solo la barra */
+/* Barra inferior: solo la barra, sin banda gigante */
 .gs-bottom-nav{
+  position:fixed !important;
+  left:0 !important;
+  right:0 !important;
+  bottom:0 !important;
   height:76px !important;
   min-height:76px !important;
   max-height:76px !important;
   padding:6px 6px calc(6px + env(safe-area-inset-bottom)) !important;
   align-items:center !important;
   overflow:hidden !important;
+  box-sizing:border-box !important;
 }
 .gs-bottom-nav button{
   min-height:56px !important;
   height:56px !important;
+  padding:3px !important;
   align-self:center !important;
-}
-body{
-  padding-bottom:86px !important;
 }
 body.gs-home-active{
   padding-bottom:0 !important;
 }
-@media(max-width:420px){
-  .gs-bottom-nav{
-    height:76px !important;
-    min-height:76px !important;
-    max-height:76px !important;
-  }
+
+/* Observaciones: UNC queda amplia; los otros formularios suben tamaño real */
+#unc_obs{
+  min-height:230px !important;
+  height:230px !important;
+}
+#cli_obs,
+#sus_obs,
+#bal_obs{
+  min-height:230px !important;
+  height:230px !important;
+}
+#est_obs{
+  min-height:130px !important;
+  height:130px !important;
+}
+
+/* Forzar que el contenedor no recorte los textareas */
+#formCliente .grid > div:has(#cli_obs),
+#formSusp .grid > div:has(#sus_obs),
+#formBaldio .grid > div:has(#bal_obs),
+#screen1 .grid > div:has(#est_obs){
+  display:block !important;
+  min-height:auto !important;
+  height:auto !important;
+  padding:10px !important;
+  overflow:visible !important;
+}
+
+/* Ajuste del botón de micrófono para no tapar tanto texto */
+#formCliente .dictWrap .mic,
+#formSusp .dictWrap .mic,
+#formBaldio .dictWrap .mic{
+  right:8px !important;
+  bottom:8px !important;
 }
 </style>
 
@@ -4654,38 +4686,46 @@ if ("serviceWorker" in navigator) {
 </script>
 
 
-<script id="gs-final-observaciones-required-fix">
+<script id="gs-final-bottom-observaciones-fix-v2">
 (function(){
-  function fixObs(){
+  function applyFinalFix(){
     const est = document.getElementById('est_obs');
     if(est){
       est.removeAttribute('required');
       est.required = false;
-      est.style.minHeight = '120px';
+      est.style.minHeight = '130px';
+      est.style.height = '130px';
     }
 
     const sizes = {
       unc_obs: '230px',
-      cli_obs: '190px',
-      sus_obs: '190px',
-      bal_obs: '190px'
+      cli_obs: '230px',
+      sus_obs: '230px',
+      bal_obs: '230px'
     };
 
     Object.entries(sizes).forEach(([id,size])=>{
       const el = document.getElementById(id);
-      if(el) el.style.minHeight = size;
+      if(el){
+        el.style.minHeight = size;
+        el.style.height = size;
+      }
     });
+
+    document.documentElement.style.background = document.body.classList.contains('dark') ? '#121212' : '#fff7f7';
+    document.body.style.paddingBottom = document.body.classList.contains('gs-home-active') ? '0px' : '82px';
   }
 
-  document.addEventListener('DOMContentLoaded', fixObs);
-  setTimeout(fixObs, 150);
-  setTimeout(fixObs, 800);
-  setTimeout(fixObs, 1800);
+  document.addEventListener('DOMContentLoaded', applyFinalFix);
+  setTimeout(applyFinalFix, 150);
+  setTimeout(applyFinalFix, 700);
+  setTimeout(applyFinalFix, 1800);
+
   document.addEventListener('click', function(e){
-    const ids = ['btnUNC','btnCliente','btnSusp','btnBaldio','btnBack1','btnIrARegistro','homeRegistrar'];
+    const ids = ['btnUNC','btnCliente','btnSusp','btnBaldio','btnBack1','btnIrARegistro','homeRegistrar','toggleDark'];
     if(e.target && ids.some(id => e.target.id === id || (e.target.closest && e.target.closest('#'+id)))){
-      setTimeout(fixObs, 100);
-      setTimeout(fixObs, 400);
+      setTimeout(applyFinalFix, 80);
+      setTimeout(applyFinalFix, 350);
     }
   });
 })();
