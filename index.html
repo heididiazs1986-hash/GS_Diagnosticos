@@ -670,12 +670,164 @@ label{font-size:12.5px!important;}
 #gsVersionChip{
   display:none !important;
 }
-}
 body.dark #gsVersionChip{background:#2a0707;color:#ffd6d6;border-color:#7f1d1d;}
 @media(max-width:420px){
   #gsUpdateBanner{bottom:76px;left:8px;right:8px;padding:12px;}
   #gsUpdateBanner .txt{font-size:13px;}
   #gsUpdateBanner button{font-size:13px!important;padding:9px 10px!important;}
+}
+</style>
+
+
+<style id="gs-final-homogeneous-fixes">
+/* Ocultar chip flotante de versión */
+#gsVersionChip,
+#gsVersionChip::before,
+#gsVersionChip::after{
+  display:none !important;
+}
+
+/* Unificar subtítulos: solo punto sobrio antes del texto */
+.sectionLabel::before{
+  content:"" !important;
+  width:14px !important;
+  height:14px !important;
+  min-width:14px !important;
+  border-radius:50% !important;
+  background:#00133A !important;
+  display:inline-block !important;
+  margin-right:10px !important;
+  align-self:center !important;
+}
+body.dark .sectionLabel::before{
+  background:#ffd6d6 !important;
+}
+.sectionLabel[data-gs-icon]::before{
+  content:"" !important;
+}
+</style>
+
+
+<style id="gs-dark-readable-final">
+/* Modo oscuro legible: menos rojo saturado, más contraste */
+body.dark{
+  background:#121212 !important;
+  color:#f8fafc !important;
+}
+body.dark main{
+  background:#121212 !important;
+}
+body.dark header,
+body.dark .gs-bottom-nav{
+  background:linear-gradient(135deg,#d40000 0%,#8f0000 72%,#5a0000 100%) !important;
+  color:#ffffff !important;
+}
+body.dark .card,
+body.dark .floating-panel,
+body.dark .modalCard,
+body.dark .stat-card,
+body.dark .action-btn,
+body.dark .registro-card-menu button{
+  background:#1c1c1f !important;
+  border-color:#4b5563 !important;
+  color:#f8fafc !important;
+  box-shadow:0 14px 32px rgba(0,0,0,.35) !important;
+}
+body.dark #screen1 .grid,
+body.dark #screen2 .grid,
+body.dark #screen3 .grid,
+body.dark .checklist{
+  background:#1f2024 !important;
+  border-color:#4b5563 !important;
+}
+body.dark #screen1 .grid > div,
+body.dark #screen2 .grid > div,
+body.dark #screen3 .grid > div,
+body.dark .checkItem{
+  background:#1f2024 !important;
+  border-color:rgba(255,255,255,.16) !important;
+  color:#f8fafc !important;
+}
+body.dark .sectionLabel{
+  background:linear-gradient(90deg,#2a2a2e,#1f2024) !important;
+  border-color:#4b5563 !important;
+  color:#ffffff !important;
+}
+body.dark .sectionLabel::before{
+  background:#ffffff !important;
+}
+body.dark label,
+body.dark #screen1 label,
+body.dark #screen2 label,
+body.dark #screen3 label,
+body.dark .gs-segment-row .gs-segment-label{
+  color:#e5e7eb !important;
+}
+body.dark input,
+body.dark select,
+body.dark textarea{
+  background:#f8fafc !important;
+  color:#111827 !important;
+  border-color:#e5e7eb !important;
+}
+body.dark input::placeholder,
+body.dark textarea::placeholder{
+  color:#6b7280 !important;
+}
+body.dark input[readonly],
+body.dark input[readonly][id$="_long_nodo"]{
+  background:#eef2f7 !important;
+  color:#374151 !important;
+  border-color:#d1d5db !important;
+}
+body.dark .pill,
+body.dark .form-counter{
+  background:#2b1111 !important;
+  color:#ffffff !important;
+  border-color:#7f1d1d !important;
+}
+body.dark .checkItem span,
+body.dark .checkItem,
+body.dark .chip{
+  color:#f8fafc !important;
+}
+body.dark .foto-hint,
+body.dark .field-hint,
+body.dark .obs-auto-note,
+body.dark .muted-p,
+body.dark .small-footer{
+  color:#cbd5e1 !important;
+}
+body.dark .gs-segment-row{
+  background:#1f2024 !important;
+  border-color:rgba(255,255,255,.16) !important;
+}
+body.dark .gs-segment{
+  background:#111827 !important;
+  border-color:#6b7280 !important;
+}
+body.dark .gs-segment button{
+  background:#111827 !important;
+  color:#f8fafc !important;
+}
+body.dark .gs-segment button.active{
+  background:#d40000 !important;
+  color:#ffffff !important;
+}
+body.dark button.secondary,
+body.dark .soft-btn,
+body.dark .utility-item{
+  background:#27272a !important;
+  color:#ffffff !important;
+  border-color:#52525b !important;
+}
+body.dark .action-btn .ico,
+body.dark .registro-card-menu .reg-ico{
+  background:#2b1111 !important;
+  color:#ffffff !important;
+}
+body.dark .modalBack{
+  background:rgba(0,0,0,.72) !important;
 }
 </style>
 
@@ -4285,6 +4437,52 @@ if ("serviceWorker" in navigator) {
   });
 
   window.GS_FORCE_UPDATE = forceUpdate;
+})();
+</script>
+
+
+<script id="gs-final-reorder-photos-icons">
+(function(){
+  function moveFotosBeforeObservaciones(formId){
+    const form = document.getElementById(formId);
+    if(!form) return;
+    const fotoInput = form.querySelector('input[type="file"][id$="_fotos"], input[type="file"][data-max]');
+    const obs = form.querySelector('textarea[id$="_obs"]');
+    if(!fotoInput || !obs) return;
+
+    const fotoBlock = fotoInput.closest('.grid') || fotoInput.closest('div');
+    const obsBlock = obs.closest('.grid') || obs.closest('div');
+    if(!fotoBlock || !obsBlock || fotoBlock === obsBlock) return;
+
+    // Si fotos está después de observaciones, mover justo antes.
+    const pos = fotoBlock.compareDocumentPosition(obsBlock);
+    if(pos & Node.DOCUMENT_POSITION_PRECEDING){
+      obsBlock.parentNode.insertBefore(fotoBlock, obsBlock);
+    }
+  }
+
+  function normalizeSubtitleDots(){
+    document.querySelectorAll('.sectionLabel').forEach(sec => {
+      sec.removeAttribute('data-gs-icon');
+      sec.style.setProperty('--gs-icon','');
+    });
+  }
+
+  function runFinalUXFix(){
+    ['formUNC','formCliente','formSusp','formBaldio','screen1'].forEach(moveFotosBeforeObservaciones);
+    normalizeSubtitleDots();
+  }
+
+  document.addEventListener('DOMContentLoaded', runFinalUXFix);
+  setTimeout(runFinalUXFix, 250);
+  setTimeout(runFinalUXFix, 900);
+  document.addEventListener('click', function(e){
+    const ids = ['btnUNC','btnCliente','btnSusp','btnBaldio','btnIrARegistro','homeRegistrar'];
+    if(e.target && ids.some(id => e.target.id === id || (e.target.closest && e.target.closest('#'+id)))){
+      setTimeout(runFinalUXFix, 80);
+      setTimeout(runFinalUXFix, 350);
+    }
+  });
 })();
 </script>
 
