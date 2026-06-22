@@ -35,16 +35,31 @@ jobs:
 
           cd apk-build
 
-          # Si el archivo quedó con tilde por traducción del navegador, crear copia correcta.
+          # Seguridad por si el navegador traduce index.html.
           if [ -f "www/índice.html" ] && [ ! -f "www/index.html" ]; then
             cp "www/índice.html" "www/index.html"
           fi
 
-          # Verificación mínima para evitar APK en blanco.
           if [ ! -f "www/index.html" ]; then
-            echo "ERROR: No existe www/index.html. Renombra índice.html a index.html en el repositorio."
+            echo "ERROR: No existe www/index.html."
             exit 1
           fi
+
+          # La APK es local: ocultar/confundir menos el estado MODO ENLACE.
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path("www/index.html")
+          txt = p.read_text(encoding="utf-8", errors="ignore")
+          replacements = {
+              "MODO ENLACE 🌐": "APK LOCAL ✅",
+              "MODO ENLACE": "APK LOCAL",
+              "APP INSTALADA ✅": "APK LOCAL ✅",
+              "APP INSTALADA": "APK LOCAL"
+          }
+          for a,b in replacements.items():
+              txt = txt.replace(a,b)
+          p.write_text(txt, encoding="utf-8")
+          PY
 
           npm init -y
           npm install @capacitor/core@latest @capacitor/cli@latest @capacitor/android@latest
@@ -53,7 +68,7 @@ jobs:
           npx cap add android
           npx cap sync android
 
-      - name: Ajustar nombre y permisos Android
+      - name: Ajustar nombre, permisos e icono Android
         run: |
           set -e
           cd apk-build
@@ -62,17 +77,23 @@ jobs:
           from pathlib import Path
           import re
 
-          # Nombre visible
+          # Nombre visible de la app
           strings = Path("android/app/src/main/res/values/strings.xml")
           txt = strings.read_text(encoding="utf-8")
           txt = re.sub(r'<string name="app_name">.*?</string>', '<string name="app_name">GS Diagnósticos</string>', txt)
           txt = re.sub(r'<string name="title_activity_main">.*?</string>', '<string name="title_activity_main">GS Diagnósticos</string>', txt)
           strings.write_text(txt, encoding="utf-8")
 
-          # Permisos dentro de <manifest>, forma segura.
+          # Color de fondo del ícono adaptable
+          colors = Path("android/app/src/main/res/values/colors.xml")
+          if colors.exists():
+            c = colors.read_text(encoding="utf-8")
+            c = re.sub(r'<color name="ic_launcher_background">.*?</color>', '<color name="ic_launcher_background">#d40000</color>', c)
+            colors.write_text(c, encoding="utf-8")
+
+          # Permisos
           manifest = Path("android/app/src/main/AndroidManifest.xml")
           txt = manifest.read_text(encoding="utf-8")
-
           perms = [
             '<uses-permission android:name="android.permission.INTERNET" />',
             '<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />',
@@ -80,13 +101,34 @@ jobs:
             '<uses-permission android:name="android.permission.CAMERA" />',
             '<uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />'
           ]
-
           missing = [p for p in perms if p not in txt]
           if missing:
             txt = re.sub(r'(<manifest[^>]*>)', r'\1\n    ' + "\n    ".join(missing), txt, count=1)
-
           manifest.write_text(txt, encoding="utf-8")
           PY
+
+          # Crear iconos Android desde icon-512.png o icono-512.png
+          ICON=""
+          if [ -f "www/icon-512.png" ]; then ICON="www/icon-512.png"; fi
+          if [ -f "www/icono-512.png" ]; then ICON="www/icono-512.png"; fi
+          if [ -z "$ICON" ]; then
+            echo "ERROR: No encontré icon-512.png ni icono-512.png en la raíz."
+            exit 1
+          fi
+
+          sudo apt-get update
+          sudo apt-get install -y imagemagick
+
+          declare -A sizes
+          sizes=( ["mipmap-mdpi"]=48 ["mipmap-hdpi"]=72 ["mipmap-xhdpi"]=96 ["mipmap-xxhdpi"]=144 ["mipmap-xxxhdpi"]=192 )
+
+          for dir in "${!sizes[@]}"; do
+            mkdir -p "android/app/src/main/res/$dir"
+            size="${sizes[$dir]}"
+            magick "$ICON" -resize ${size}x${size} "android/app/src/main/res/$dir/ic_launcher.png"
+            magick "$ICON" -resize ${size}x${size} "android/app/src/main/res/$dir/ic_launcher_round.png"
+            magick "$ICON" -resize ${size}x${size} "android/app/src/main/res/$dir/ic_launcher_foreground.png"
+          done
 
       - name: Compilar APK debug
         run: |
