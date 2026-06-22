@@ -24,8 +24,8 @@ jobs:
 
       - name: Preparar proyecto Capacitor
         run: |
+          set -e
           mkdir -p apk-build/www
-          shopt -s extglob dotglob
 
           rsync -av \
             --exclude='.git' \
@@ -35,66 +35,76 @@ jobs:
 
           cd apk-build
 
-          # Si por error el archivo está como índice.html, crear copia como index.html
+          # Si el archivo quedó con tilde por traducción del navegador, crear copia correcta.
           if [ -f "www/índice.html" ] && [ ! -f "www/index.html" ]; then
             cp "www/índice.html" "www/index.html"
           fi
 
+          # Verificación mínima para evitar APK en blanco.
+          if [ ! -f "www/index.html" ]; then
+            echo "ERROR: No existe www/index.html. Renombra índice.html a index.html en el repositorio."
+            exit 1
+          fi
+
           npm init -y
-          npm install @capacitor/core @capacitor/cli @capacitor/android
+          npm install @capacitor/core@latest @capacitor/cli@latest @capacitor/android@latest
 
           npx cap init "GS Diagnósticos" "com.gsocial.gsdiagnosticos" --web-dir=www
           npx cap add android
-
           npx cap sync android
 
-          # Permisos útiles para GS Diagnósticos
+      - name: Ajustar nombre y permisos Android
+        run: |
+          set -e
+          cd apk-build
+
           python3 - <<'PY'
           from pathlib import Path
           import re
 
-          p = Path("android/app/src/main/AndroidManifest.xml")
-          txt = p.read_text()
-
-          perms = [
-              '<uses-permission android:name="android.permission.INTERNET" />',
-              '<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />',
-              '<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />',
-              '<uses-permission android:name="android.permission.CAMERA" />',
-              '<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />',
-              '<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="28" />',
-              '<uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />'
-          ]
-
-          # Insertar permisos DESPUÉS de la etiqueta <manifest ...>, no antes.
-          insert = "\n    " + "\n    ".join([perm for perm in perms if perm not in txt]) + "\n"
-          if insert.strip():
-              txt = re.sub(r'(<manifest[^>]*>)', r'\1' + insert, txt, count=1)
-
-          p.write_text(txt)
-          PY
-
-          # Nombre visible de la app
-          python3 - <<'PY'
-          from pathlib import Path
-          import re
-          p = Path("android/app/src/main/res/values/strings.xml")
-          txt = p.read_text()
+          # Nombre visible
+          strings = Path("android/app/src/main/res/values/strings.xml")
+          txt = strings.read_text(encoding="utf-8")
           txt = re.sub(r'<string name="app_name">.*?</string>', '<string name="app_name">GS Diagnósticos</string>', txt)
           txt = re.sub(r'<string name="title_activity_main">.*?</string>', '<string name="title_activity_main">GS Diagnósticos</string>', txt)
-          p.write_text(txt)
-          PY
+          strings.write_text(txt, encoding="utf-8")
 
-          npx cap sync android
+          # Permisos dentro de <manifest>, forma segura.
+          manifest = Path("android/app/src/main/AndroidManifest.xml")
+          txt = manifest.read_text(encoding="utf-8")
+
+          perms = [
+            '<uses-permission android:name="android.permission.INTERNET" />',
+            '<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />',
+            '<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />',
+            '<uses-permission android:name="android.permission.CAMERA" />',
+            '<uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />'
+          ]
+
+          missing = [p for p in perms if p not in txt]
+          if missing:
+            txt = re.sub(r'(<manifest[^>]*>)', r'\1\n    ' + "\n    ".join(missing), txt, count=1)
+
+          manifest.write_text(txt, encoding="utf-8")
+          PY
 
       - name: Compilar APK debug
         run: |
+          set -o pipefail
           cd apk-build/android
           chmod +x gradlew
-          ./gradlew assembleDebug --stacktrace
+          ./gradlew assembleDebug --stacktrace --info 2>&1 | tee ../../gradle-build.log
 
       - name: Subir APK como artefacto
+        if: success()
         uses: actions/upload-artifact@v4
         with:
           name: GS-Diagnosticos-APK-debug
           path: apk-build/android/app/build/outputs/apk/debug/app-debug.apk
+
+      - name: Subir log si falla
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: GS-Diagnosticos-build-log
+          path: gradle-build.log
