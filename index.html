@@ -973,7 +973,7 @@ body.gs-home-active{
 <header>
   <div class="row">
     <h1>GS Diagnósticos</h1>
-    <div class="header-actions"><button class="icon-toggle" id="toggleDark" type="button" aria-label="Modo oscuro">🌙</button><div class="badge" id="hdrBadge">INMEL INGENIERÍA SAS</div></div>
+    <div class="header-actions"><button class="icon-toggle" id="toggleDark" type="button" aria-label="Modo oscuro">🌙</button><div class="badge" id="hdrBadge">LISTO ✅</div></div>
   </div>
 </header>
 
@@ -1721,8 +1721,7 @@ function isStandaloneMode(){
   return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true || document.referrer.startsWith('android-app://');
 }
 function updateInstallStateUI(){
-  const mode = isStandaloneMode() ? 'APP INSTALADA ✅' : 'MODO ENLACE 🌐';
-  setBadge(mode);
+  setBadge('LISTO ✅');
 }
 async function requestPersistentStorage(){
   try{
@@ -2858,7 +2857,7 @@ async function ofrecerLimpiezaDespuesExportar(cdAct, resumenExportado=null){
       "Aceptar = Sí, limpiar información del aplicativo.",
       "Cancelar = No, conservar para continuar en otra jornada."
     ];
-    const ok = confirm(lineas.join("\\n"));
+    const ok = confirm(lineas.join("\n"));
     if(!ok){
       toast("Información conservada para continuar en otra jornada");
       return;
@@ -2866,13 +2865,80 @@ async function ofrecerLimpiezaDespuesExportar(cdAct, resumenExportado=null){
     const total = await limpiarCDActualDespuesExportar(cdAct);
     toast("CD finalizado y limpiado del aplicativo ✅");
     alert(
-      "Limpieza completada.\\n\\n" +
-      "Se eliminaron " + total + " registros del CD " + cdAct + " dentro de la app.\\n\\n" +
+      "Limpieza completada.\n\n" +
+      "Se eliminaron " + total + " registros del CD " + cdAct + " dentro de la app.\n\n" +
       "Puedes iniciar o continuar con otro CD."
     );
   }catch(e){
     console.error(e);
     toast("No se pudo limpiar el CD ❌");
+  }
+}
+
+
+function u8ToBase64(u8){
+  let binary = "";
+  const chunk = 0x8000;
+  for(let i=0;i<u8.length;i+=chunk){
+    binary += String.fromCharCode.apply(null, u8.subarray(i, i+chunk));
+  }
+  return btoa(binary);
+}
+function isCapacitorNative(){
+  try{
+    return !!(window.Capacitor && (window.Capacitor.isNativePlatform?.() || window.Capacitor.getPlatform?.() === "android"));
+  }catch(e){ return false; }
+}
+async function saveZipSmart(zipU8, zipName){
+  const cap = window.Capacitor;
+  const plugins = cap && cap.Plugins ? cap.Plugins : {};
+  const Filesystem = plugins.Filesystem;
+  const Share = plugins.Share;
+
+  if(isCapacitorNative() && Filesystem){
+    try{
+      const base64 = u8ToBase64(zipU8);
+      const result = await Filesystem.writeFile({
+        path: zipName,
+        data: base64,
+        directory: "DOCUMENTS",
+        recursive: true
+      });
+      toast("ZIP guardado en Documentos ✅");
+      if(Share && result && result.uri){
+        try{
+          await Share.share({
+            title: zipName,
+            text: "Exportación GS Diagnósticos",
+            url: result.uri,
+            dialogTitle: "Compartir o guardar ZIP"
+          });
+        }catch(e){ console.warn("Share cancelado/no disponible", e); }
+      }else{
+        alert("ZIP guardado en Documentos de la app.\n\nArchivo: " + zipName);
+      }
+      return true;
+    }catch(e){
+      console.error("Error guardando ZIP nativo", e);
+      alert("No se pudo guardar el ZIP en la APK.\n\n" + (e && e.message ? e.message : e));
+      return false;
+    }
+  }
+
+  try{
+    const blob=new Blob([zipU8],{type:"application/zip"});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement("a");
+    a.href=url; a.download=zipName;
+    document.body.appendChild(a); a.click(); a.remove();
+
+    const link=$("dlLink");
+    link.href=url; link.download=zipName;
+    $("dlModal").style.display="flex";
+    return true;
+  }catch(e){
+    console.error("Error descargando ZIP web", e);
+    return false;
   }
 }
 
@@ -2934,16 +3000,12 @@ async function exportAll(opts={}){
     const zipU8 = zip.finalize();
     const zipName = `${baseName}.zip`;
 
-    const blob=new Blob([zipU8],{type:"application/zip"});
-    const url=URL.createObjectURL(blob);
-
-    const a=document.createElement("a");
-    a.href=url; a.download=zipName;
-    document.body.appendChild(a); a.click(); a.remove();
-
-    const link=$("dlLink");
-    link.href=url; link.download=zipName;
-    $("dlModal").style.display="flex";
+    const savedOk = await saveZipSmart(zipU8, zipName);
+    if(!savedOk){
+      setBadge("LISTO ✅");
+      toast("No se pudo generar/guardar el archivo ❌");
+      return;
+    }
 
     if(!historico){
       await markExportedBatch({estructuras:estrF, unc:uncF, clientes:cliF, susp:susF, baldios:balF}, batchId, isoExport);

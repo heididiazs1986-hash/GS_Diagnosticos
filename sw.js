@@ -1,4 +1,4 @@
-const CACHE_NAME = "gsdx-cache-v3.0.2-final-apk-ready";
+const CACHE_NAME = "gsdx-cache-v3.0.3-apk-native-export";
 
 const APP_SHELL = [
   "/",

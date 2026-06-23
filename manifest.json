@@ -1,7 +1,7 @@
 {
-  "name": "GS Diagnósticos",
-  "short_name": "GS_DX",
-  "start_url": "/index.html?v=v3.0.2-final-apk-ready",
+  "name": "GS DX",
+  "short_name": "GS DX",
+  "start_url": "/index.html?v=v3.0.3-apk-native-export",
   "display": "standalone",
   "background_color": "#d40000",
   "theme_color": "#d40000",
@@ -11,13 +11,13 @@
       "src": "/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
     },
     {
       "src": "/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
     }
   ],
   "scope": "/",

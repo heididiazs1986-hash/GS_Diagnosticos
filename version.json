@@ -1,7 +1,7 @@
 {
-  "version": "v3.0.2-final-apk-ready",
-  "build": "Final APK Ready",
-  "date": "2026-06-22T17:42:39",
-  "app": "GS Diagnósticos",
+  "version": "v3.0.3-apk-native-export",
+  "build": "APK native export fix",
+  "date": "2026-06-22T19:30:00",
+  "app": "GS DX",
   "theme": "INMEL rojo corporativo"
 }
