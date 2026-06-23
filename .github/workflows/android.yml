@@ -1,4 +1,4 @@
-name: Generar APK GS Diagnósticos REMOTA
+name: Generar APK GS DX
 
 on:
   workflow_dispatch:
@@ -25,22 +25,20 @@ jobs:
       - name: Preparar APK remota con Capacitor
         run: |
           set -e
-
           mkdir -p apk-build/www
-          echo '<!doctype html><html><head><meta charset="utf-8"><title>GS Diagnósticos</title></head><body>GS Diagnósticos</body></html>' > apk-build/www/index.html
+          echo '<!doctype html><html><head><meta charset="utf-8"><title>GS DX</title></head><body>GS DX</body></html>' > apk-build/www/index.html
 
           cd apk-build
-
           npm init -y
-          npm install @capacitor/core@latest @capacitor/cli@latest @capacitor/android@latest
+          npm install @capacitor/core@latest @capacitor/cli@latest @capacitor/android@latest @capacitor/filesystem@latest @capacitor/share@latest
 
-          npx cap init "GS Diagnósticos" "com.gsocial.gsdiagnosticos" --web-dir=www
+          npx cap init "GS DX" "com.gsocial.gsdiagnosticos" --web-dir=www
           npx cap add android
 
           cat > capacitor.config.json <<'JSON'
           {
             "appId": "com.gsocial.gsdiagnosticos",
-            "appName": "GS Diagnósticos",
+            "appName": "GS DX",
             "webDir": "www",
             "server": {
               "url": "https://gsdiagnosticos.vercel.app/",
@@ -65,8 +63,8 @@ jobs:
 
           strings = Path("android/app/src/main/res/values/strings.xml")
           txt = strings.read_text(encoding="utf-8")
-          txt = re.sub(r'<string name="app_name">.*?</string>', '<string name="app_name">GS Diagnósticos</string>', txt)
-          txt = re.sub(r'<string name="title_activity_main">.*?</string>', '<string name="title_activity_main">GS Diagnósticos</string>', txt)
+          txt = re.sub(r'<string name="app_name">.*?</string>', '<string name="app_name">GS DX</string>', txt)
+          txt = re.sub(r'<string name="title_activity_main">.*?</string>', '<string name="title_activity_main">GS DX</string>', txt)
           strings.write_text(txt, encoding="utf-8")
 
           colors = Path("android/app/src/main/res/values/colors.xml")
@@ -100,19 +98,16 @@ jobs:
           icon = next((p for p in candidates if p.exists()), None)
           if icon:
               img = Image.open(icon).convert("RGBA")
-              sizes = {
-                  "mipmap-mdpi": 48,
-                  "mipmap-hdpi": 72,
-                  "mipmap-xhdpi": 96,
-                  "mipmap-xxhdpi": 144,
-                  "mipmap-xxxhdpi": 192,
-              }
+              sizes = {"mipmap-mdpi":48,"mipmap-hdpi":72,"mipmap-xhdpi":96,"mipmap-xxhdpi":144,"mipmap-xxxhdpi":192}
               for folder, size in sizes.items():
                   outdir = Path("android/app/src/main/res") / folder
                   outdir.mkdir(parents=True, exist_ok=True)
-                  resized = img.resize((size, size), Image.LANCZOS)
+                  bg = Image.new("RGBA", (size,size), (212,0,0,255))
+                  inner = int(size*0.78)
+                  resized = img.resize((inner,inner), Image.LANCZOS)
+                  bg.alpha_composite(resized, ((size-inner)//2,(size-inner)//2))
                   for name in ["ic_launcher.png", "ic_launcher_round.png", "ic_launcher_foreground.png"]:
-                      resized.save(outdir / name)
+                      bg.save(outdir / name)
               print("Icono Android generado desde:", icon)
           else:
               print("No encontré icono en repo; se usará el default.")
@@ -129,12 +124,12 @@ jobs:
         if: success()
         uses: actions/upload-artifact@v4
         with:
-          name: GS-Diagnosticos-APK-remota-debug
+          name: GS-DX-APK-debug
           path: apk-build/android/app/build/outputs/apk/debug/app-debug.apk
 
       - name: Subir log si falla
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: GS-Diagnosticos-build-log
-          path: gradle-build.log
+          name: GS-DX-build-log
+          path:
