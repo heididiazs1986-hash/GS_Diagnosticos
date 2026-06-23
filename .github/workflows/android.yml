@@ -1,4 +1,4 @@
-name: Generar APK GS DX
+name: Generar APK GS DX Performance
 
 on:
   workflow_dispatch:
@@ -22,34 +22,34 @@ jobs:
         with:
           node-version: '22'
 
-      - name: Preparar APK remota con Capacitor
+      - name: Preparar proyecto Capacitor local
         run: |
           set -e
           mkdir -p apk-build/www
-          echo '<!doctype html><html><head><meta charset="utf-8"><title>GS DX</title></head><body>GS DX</body></html>' > apk-build/www/index.html
+
+          rsync -av \
+            --exclude='.git' \
+            --exclude='.github' \
+            --exclude='apk-build' \
+            --exclude='*.apk' \
+            ./ apk-build/www/
 
           cd apk-build
+
+          if [ -f "www/índice.html" ] && [ ! -f "www/index.html" ]; then
+            cp "www/índice.html" "www/index.html"
+          fi
+
+          if [ ! -f "www/index.html" ]; then
+            echo "ERROR: No existe www/index.html."
+            exit 1
+          fi
+
           npm init -y
           npm install @capacitor/core@latest @capacitor/cli@latest @capacitor/android@latest @capacitor/filesystem@latest @capacitor/share@latest
 
           npx cap init "GS DX" "com.gsocial.gsdiagnosticos" --web-dir=www
           npx cap add android
-
-          cat > capacitor.config.json <<'JSON'
-          {
-            "appId": "com.gsocial.gsdiagnosticos",
-            "appName": "GS DX",
-            "webDir": "www",
-            "server": {
-              "url": "https://gsdiagnosticos.vercel.app/",
-              "cleartext": false
-            },
-            "android": {
-              "allowMixedContent": false
-            }
-          }
-          JSON
-
           npx cap sync android
 
       - name: Ajustar nombre, permisos e icono Android
@@ -94,23 +94,24 @@ jobs:
           from pathlib import Path
           from PIL import Image
 
-          candidates = [Path("../icon-512.png"), Path("../icono-512.png"), Path("../icon-192.png"), Path("../icono-192.png")]
+          candidates = [Path("www/icon-512.png"), Path("www/icono-512.png"), Path("www/icon-192.png"), Path("www/icono-192.png")]
           icon = next((p for p in candidates if p.exists()), None)
-          if icon:
-              img = Image.open(icon).convert("RGBA")
-              sizes = {"mipmap-mdpi":48,"mipmap-hdpi":72,"mipmap-xhdpi":96,"mipmap-xxhdpi":144,"mipmap-xxxhdpi":192}
-              for folder, size in sizes.items():
-                  outdir = Path("android/app/src/main/res") / folder
-                  outdir.mkdir(parents=True, exist_ok=True)
-                  bg = Image.new("RGBA", (size,size), (212,0,0,255))
-                  inner = int(size*0.78)
-                  resized = img.resize((inner,inner), Image.LANCZOS)
-                  bg.alpha_composite(resized, ((size-inner)//2,(size-inner)//2))
-                  for name in ["ic_launcher.png", "ic_launcher_round.png", "ic_launcher_foreground.png"]:
-                      bg.save(outdir / name)
-              print("Icono Android generado desde:", icon)
-          else:
-              print("No encontré icono en repo; se usará el default.")
+          if not icon:
+              raise SystemExit("ERROR: No encontré icono en la raíz.")
+
+          img = Image.open(icon).convert("RGBA")
+          sizes = {"mipmap-mdpi":48,"mipmap-hdpi":72,"mipmap-xhdpi":96,"mipmap-xxhdpi":144,"mipmap-xxxhdpi":192}
+
+          for folder, size in sizes.items():
+              outdir = Path("android/app/src/main/res") / folder
+              outdir.mkdir(parents=True, exist_ok=True)
+              bg = Image.new("RGBA", (size,size), (212,0,0,255))
+              inner = int(size * 0.78)
+              resized = img.resize((inner,inner), Image.LANCZOS)
+              bg.alpha_composite(resized, ((size-inner)//2,(size-inner)//2))
+              for name in ["ic_launcher.png", "ic_launcher_round.png", "ic_launcher_foreground.png"]:
+                  bg.save(outdir / name)
+          print("Icono Android generado desde:", icon)
           PY
 
       - name: Compilar APK debug
@@ -124,7 +125,7 @@ jobs:
         if: success()
         uses: actions/upload-artifact@v4
         with:
-          name: GS-DX-APK-debug
+          name: GS-DX-APK-performance-lite
           path: apk-build/android/app/build/outputs/apk/debug/app-debug.apk
 
       - name: Subir log si falla
