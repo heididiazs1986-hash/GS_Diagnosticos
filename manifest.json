@@ -1,7 +1,7 @@
 {
   "name": "GS DX",
   "short_name": "GS DX",
-  "start_url": "/index.html?v=v3.0.4-apk-final",
+  "start_url": "/index.html?v=v3.0.3-apk-native-export",
   "display": "standalone",
   "background_color": "#d40000",
   "theme_color": "#d40000",

@@ -969,22 +969,12 @@ body.gs-home-active{
 </style>
 
 
-<style id="gs-v304-update-silent-fix">
-/* v3.0.4: Actualizaciones solo desde Más → Actualizaciones */
+<style id="gs-solo-quitar-aviso-version">
 #gsUpdateBanner,
-#gsUpdateBanner.show,
-.update-banner,
-.updateBanner,
-.version-banner,
-#updateBanner{
+#gsUpdateBanner.show{
   display:none !important;
   opacity:0 !important;
   pointer-events:none !important;
-}
-
-/* Estado superior: nunca mostrar modo enlace */
-#hdrBadge{
-  white-space:nowrap !important;
 }
 </style>
 
@@ -993,7 +983,7 @@ body.gs-home-active{
 <header>
   <div class="row">
     <h1>GS Diagnósticos</h1>
-    <div class="header-actions"><button class="icon-toggle" id="toggleDark" type="button" aria-label="Modo oscuro">🌙</button><div class="badge" id="hdrBadge">INMEL INGENIERÍA SAS</div></div>
+    <div class="header-actions"><button class="icon-toggle" id="toggleDark" type="button" aria-label="Modo oscuro">🌙</button><div class="badge" id="hdrBadge">LISTO ✅</div></div>
   </div>
 </header>
 
@@ -1741,8 +1731,7 @@ function isStandaloneMode(){
   return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true || document.referrer.startsWith('android-app://');
 }
 function updateInstallStateUI(){
-  const mode = isStandaloneMode() ? 'LISTO ✅' : 'LISTO ✅';
-  setBadge(mode);
+  setBadge('LISTO ✅');
 }
 async function requestPersistentStorage(){
   try{
@@ -2878,7 +2867,7 @@ async function ofrecerLimpiezaDespuesExportar(cdAct, resumenExportado=null){
       "Aceptar = Sí, limpiar información del aplicativo.",
       "Cancelar = No, conservar para continuar en otra jornada."
     ];
-    const ok = confirm(lineas.join("\\n"));
+    const ok = confirm(lineas.join("\n"));
     if(!ok){
       toast("Información conservada para continuar en otra jornada");
       return;
@@ -2886,13 +2875,80 @@ async function ofrecerLimpiezaDespuesExportar(cdAct, resumenExportado=null){
     const total = await limpiarCDActualDespuesExportar(cdAct);
     toast("CD finalizado y limpiado del aplicativo ✅");
     alert(
-      "Limpieza completada.\\n\\n" +
-      "Se eliminaron " + total + " registros del CD " + cdAct + " dentro de la app.\\n\\n" +
+      "Limpieza completada.\n\n" +
+      "Se eliminaron " + total + " registros del CD " + cdAct + " dentro de la app.\n\n" +
       "Puedes iniciar o continuar con otro CD."
     );
   }catch(e){
     console.error(e);
     toast("No se pudo limpiar el CD ❌");
+  }
+}
+
+
+function u8ToBase64(u8){
+  let binary = "";
+  const chunk = 0x8000;
+  for(let i=0;i<u8.length;i+=chunk){
+    binary += String.fromCharCode.apply(null, u8.subarray(i, i+chunk));
+  }
+  return btoa(binary);
+}
+function isCapacitorNative(){
+  try{
+    return !!(window.Capacitor && (window.Capacitor.isNativePlatform?.() || window.Capacitor.getPlatform?.() === "android"));
+  }catch(e){ return false; }
+}
+async function saveZipSmart(zipU8, zipName){
+  const cap = window.Capacitor;
+  const plugins = cap && cap.Plugins ? cap.Plugins : {};
+  const Filesystem = plugins.Filesystem;
+  const Share = plugins.Share;
+
+  if(isCapacitorNative() && Filesystem){
+    try{
+      const base64 = u8ToBase64(zipU8);
+      const result = await Filesystem.writeFile({
+        path: zipName,
+        data: base64,
+        directory: "DOCUMENTS",
+        recursive: true
+      });
+      toast("ZIP guardado en Documentos ✅");
+      if(Share && result && result.uri){
+        try{
+          await Share.share({
+            title: zipName,
+            text: "Exportación GS Diagnósticos",
+            url: result.uri,
+            dialogTitle: "Compartir o guardar ZIP"
+          });
+        }catch(e){ console.warn("Share cancelado/no disponible", e); }
+      }else{
+        alert("ZIP guardado en Documentos de la app.\n\nArchivo: " + zipName);
+      }
+      return true;
+    }catch(e){
+      console.error("Error guardando ZIP nativo", e);
+      alert("No se pudo guardar el ZIP en la APK.\n\n" + (e && e.message ? e.message : e));
+      return false;
+    }
+  }
+
+  try{
+    const blob=new Blob([zipU8],{type:"application/zip"});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement("a");
+    a.href=url; a.download=zipName;
+    document.body.appendChild(a); a.click(); a.remove();
+
+    const link=$("dlLink");
+    link.href=url; link.download=zipName;
+    $("dlModal").style.display="flex";
+    return true;
+  }catch(e){
+    console.error("Error descargando ZIP web", e);
+    return false;
   }
 }
 
@@ -2954,16 +3010,12 @@ async function exportAll(opts={}){
     const zipU8 = zip.finalize();
     const zipName = `${baseName}.zip`;
 
-    const blob=new Blob([zipU8],{type:"application/zip"});
-    const url=URL.createObjectURL(blob);
-
-    const a=document.createElement("a");
-    a.href=url; a.download=zipName;
-    document.body.appendChild(a); a.click(); a.remove();
-
-    const link=$("dlLink");
-    link.href=url; link.download=zipName;
-    $("dlModal").style.display="flex";
+    const savedOk = await saveZipSmart(zipU8, zipName);
+    if(!savedOk){
+      setBadge("LISTO ✅");
+      toast("No se pudo generar/guardar el archivo ❌");
+      return;
+    }
 
     if(!historico){
       await markExportedBatch({estructuras:estrF, unc:uncF, clientes:cliF, susp:susF, baldios:balF}, batchId, isoExport);
@@ -2994,7 +3046,7 @@ async function registerSW(){
   try{
     if(location.protocol==="file:") return;
     if(!("serviceWorker" in navigator)) return;
-    const reg = await navigator.serviceWorker.register("./sw.js?v=v3.0.4-apk-final", { updateViaCache: "none" });
+    const reg = await navigator.serviceWorker.register("./sw.js?v=v3.0.2-final-apk-ready", { updateViaCache: "none" });
     await reg.update();
   }catch(e){}
 }
@@ -4157,7 +4209,7 @@ updateLastDriveSyncUI();
 <script>
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("./sw.js?v=v3.0.4-apk-final")
+    navigator.serviceWorker.register("./sw.js?v=v3.0.2-final-apk-ready")
       .then(reg => console.log("SW registrado:", reg.scope))
       .catch(err => console.error("SW error:", err));
   });
@@ -4446,7 +4498,7 @@ if ("serviceWorker" in navigator) {
 
 <script id="gs-cache-manager">
 (function(){
-  const GS_APP_VERSION = "v3.0.4-apk-final";
+  const GS_APP_VERSION = "v3.0.2-final-apk-ready";
   const VERSION_URL = "./version.json?v=" + Date.now();
 
   function showBanner(remoteVersion){
@@ -4503,7 +4555,7 @@ if ("serviceWorker" in navigator) {
     const banner = document.getElementById("gsUpdateBanner");
     if(banner) banner.remove();
     const cleanPath = location.pathname.replace(/index\\s*\\(1\\)\\.html/i, "index.html");
-    location.replace(location.origin + cleanPath + "?v=v3.0.4-apk-final&t=" + Date.now());
+    location.replace(location.origin + cleanPath + "?v=v3.0.2-final-apk-ready&t=" + Date.now());
   }
 
   if("serviceWorker" in navigator){
@@ -4751,61 +4803,23 @@ if ("serviceWorker" in navigator) {
 </script>
 
 
-<script id="gs-v304-update-silent-fix">
+<script id="gs-solo-quitar-aviso-version">
 (function(){
-  const VERSION_LOCAL = "v3.0.4-apk-final";
-  const VERSION_LABEL = "GS DX v3.0.4";
-
-  function forceReadyBadge(){
-    const badge = document.getElementById("hdrBadge");
-    if(badge){
-      badge.textContent = "LISTO ✅";
-    }
-    document.querySelectorAll("#gsUpdateBanner,.update-banner,.updateBanner,.version-banner,#updateBanner").forEach(el=>{
+  function ocultarAviso(){
+    document.querySelectorAll("#gsUpdateBanner").forEach(el=>{
       el.classList.remove("show");
-      el.style.display = "none";
-      el.style.opacity = "0";
-      el.style.pointerEvents = "none";
+      el.style.display="none";
+      el.style.opacity="0";
+      el.style.pointerEvents="none";
     });
   }
 
-  // Neutralizar avisos automáticos sin eliminar menú/funciones manuales.
-  const silent = function(){ forceReadyBadge(); return false; };
-  [
-    "showUpdateBanner",
-    "mostrarUpdateBanner",
-    "showGsUpdateBanner",
-    "gsShowUpdateBanner",
-    "notifyUpdateAvailable",
-    "mostrarNuevaVersion",
-    "showNewVersion"
-  ].forEach(name=>{
-    try{ window[name] = silent; }catch(e){}
-  });
-
-  // Solo cambia textos visuales confusos.
-  function replaceTextNodes(root){
-    const walker = document.createTreeWalker(root || document.body, NodeFilter.SHOW_TEXT);
-    let node;
-    while((node = walker.nextNode())){
-      if(node.nodeValue && node.nodeValue.includes("MODO ENLACE")){
-        node.nodeValue = node.nodeValue.replace(/MODO ENLACE\s*🌐?/g, "LISTO ✅");
-      }
-      if(node.nodeValue && node.nodeValue.includes("APP INSTALADA")){
-        node.nodeValue = node.nodeValue.replace(/APP INSTALADA\s*✅?/g, "LISTO ✅");
-      }
-    }
-  }
-
-  document.addEventListener("DOMContentLoaded", ()=>{
-    forceReadyBadge();
-    replaceTextNodes(document.body);
-    setTimeout(forceReadyBadge, 300);
-    setTimeout(forceReadyBadge, 1200);
-    setTimeout(()=>replaceTextNodes(document.body), 1200);
-  });
-
-  setInterval(forceReadyBadge, 2500);
+  // No cambia exportación, guardado, limpieza ni IndexedDB.
+  // Solo evita que la banda de nueva versión se muestre automáticamente.
+  document.addEventListener("DOMContentLoaded", ocultarAviso);
+  setTimeout(ocultarAviso, 100);
+  setTimeout(ocultarAviso, 800);
+  setInterval(ocultarAviso, 3000);
 })();
 </script>
 
